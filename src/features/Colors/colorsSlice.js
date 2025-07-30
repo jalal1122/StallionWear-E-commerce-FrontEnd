@@ -1,35 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const mode = localStorage.getItem("mode") || "light";
+
 const colorSlice = createSlice({
   name: "colors",
   initialState: {
-    mode: "light",
+    mode: mode,
     colors: {
-      textColor1: "#000",
-      textColor2: "#858585",
-      bgColor1: "#FFF",
-      bgColor2: "#F0F0F0",
+      primaryText: "#000",
+      secondaryText: "#858585",
+      primaryBg: "#FFF",
+      secondaryBg: "#F0F0F0",
     },
   },
   reducers: {
     GetMode: (state, action) => {
       state.mode = action.payload;
       if (action.payload === "dark") {
-        state.colors.textColor1 = "#FFFFFF";
-        state.colors.textColor2 = "#858585";
-        state.colors.bgColor1 = "#000";
-        state.colors.bgColor2 = "#F0F0F0";
+        state.colors.primaryText = "#fff";
+        state.colors.primaryBg = "#000";
       } else {
-        state.colors.textColor1 = "#000";
-        state.colors.textColor2 = "#858585";
-        state.colors.bgColor1 = "#FFFFFF";
-        state.colors.bgColor2 = "#F0F0F0";
+        state.colors.primaryText = "#000";
+        state.colors.primaryBg = "#fff";
       }
     },
   },
 });
 
-export const { GetMode } =
-  colorSlice.actions;
+export const { GetMode } = colorSlice.actions;
 
 export default colorSlice.reducer;

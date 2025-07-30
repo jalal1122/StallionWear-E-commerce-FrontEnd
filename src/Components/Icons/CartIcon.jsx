@@ -2,8 +2,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
 const CartIcon = () => {
-  const textColor1 = useSelector((state) => state.colors.colors.textColor1);
-  const bgColor1 = useSelector((state) => state.colors.colors.bgColor1);
+  const { primaryText } = useSelector((state) => state.colors.colors);
 
   return (
     <>
@@ -11,7 +10,7 @@ const CartIcon = () => {
         <FaShoppingCart
           size={24}
           style={{
-            fill: textColor1,
+            fill: primaryText,
             cursor: "pointer",
             transition: "color 0.3s ease",
           }}
@@ -23,7 +22,7 @@ const CartIcon = () => {
             top: -8,
             right: -8,
             background: "red",
-            color: bgColor1,
+            color: primaryText,
             borderRadius: "50%",
             padding: "2px 4px",
             fontSize: "12px",

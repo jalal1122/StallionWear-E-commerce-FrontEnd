@@ -1,0 +1,66 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { userService } from "./userService.js";
+
+// Initial state for the user slice
+const initialState = {
+  user: null,
+  isError: false,
+  isLoading: false,
+  isSuccess: false,
+  message: "",
+};
+
+// Thunk for registering a user
+export const registerUser = createAsyncThunk(
+  "user/register",
+  async (userData, thunkApi) => {
+    try {
+      const result = await userService.registerUser(userData);
+      return result;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+);
+
+// User Slice
+const UserSlice = createSlice({
+  name: "user",
+  initialState: initialState,
+  //   Normal Reducers
+  reducers: {
+    reset: (state) => {
+      state.isError = false;
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.message = "";
+      state.user = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(registerUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
+      });
+  },
+});
+
+export const { reset } = UserSlice.actions;
+export default UserSlice.reducer;
