@@ -38,7 +38,7 @@ const RightSideIcons = () => {
         <button
           onClick={() => {
             dispatch(logoutUser());
-            navigate("/login");
+            navigate("/");
           }}
         >
           <FaSignOutAlt

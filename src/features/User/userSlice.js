@@ -106,8 +106,6 @@ const UserSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload.data;
-        // Store in localStorage for persistence
-        localStorage.setItem("user", JSON.stringify(action.payload.data));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -122,9 +120,8 @@ const UserSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
+        console.log("User logged out successfully", state.user);
         state.user = null;
-        // Remove from localStorage
-        localStorage.removeItem("user");
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
