@@ -1,12 +1,16 @@
 import CartIcon from "../Icons/CartIcon";
 import WishList from "../Icons/WishList";
-import { FaSun, FaMoon, FaUser } from "react-icons/fa";
+import { FaSun, FaMoon, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { GetMode } from "../../features/Colors/colorsSlice";
 import { useDispatch } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
+import { logoutUser } from "../../features/User/userSlice";
 
 const RightSideIcons = () => {
   // initialize the dispatch
   const dispatch = useDispatch();
+  // initialize the navigate
+  const navigate = useNavigate();
 
   // change the theme
   const toggleTheme = () => {
@@ -28,11 +32,31 @@ const RightSideIcons = () => {
       {/* Wish List Icon */}
       <WishList className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
 
-      {/* User Icon */}
-      <FaUser
-        size={22}
-        className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
-      />
+      {/* If user is logged in, show the sign out icon */}
+      {/* Sign Out Icon */}
+      {localStorage.getItem("user") ? (
+        <button
+          onClick={() => {
+            dispatch(logoutUser());
+            navigate("/login");
+          }}
+        >
+          <FaSignOutAlt
+            size={22}
+            className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
+          />
+        </button>
+      ) : (
+        /* If user is not logged in, show the user icon */
+
+        /* User Icon */
+        <Link to="/register">
+          <FaUser
+            size={22}
+            className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
+          />
+        </Link>
+      )}
 
       {/* conditional Rendering */}
       {isDarkMode ? (

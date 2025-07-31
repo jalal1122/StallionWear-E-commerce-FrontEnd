@@ -103,9 +103,9 @@ const Login = () => {
           color: primaryText,
         }}
         >  
-        <div className="heading flex items-center gap-2 mb-4">
-            <h1>Login</h1>
-            <FaUser />
+        <div className="heading flex items-center gap-4 mb-4">
+            <h1 className="text-4xl font-bold">Login</h1>
+            <FaUser size={30} />
         </div>
         <form onSubmit={submitForm}>
           {isError ? (
@@ -164,7 +164,7 @@ const Login = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200"
+              className="bg-blue-500 text-white p-2 my-2 rounded hover:bg-blue-600 transition duration-200"
             >
               Login
             </button>

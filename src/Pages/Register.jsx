@@ -3,7 +3,7 @@ import { registerUser, reset } from "../features/User/userSlice.js";
 import { FaUser, FaEnvelope, FaLock, FaFile } from "react-icons/fa";
 import Header from "../Components/Header/Header";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Loader from "../Components/Loader";
 
 const Register = () => {
@@ -178,7 +178,7 @@ const Register = () => {
       <Header />
 
       <div
-        className="register-container w-[1200px] my-10 mx-auto flex flex-col items-center justify-center p-4"
+        className="register-container w-[1200px] my-10 mx-auto flex flex-col items-center justify-center p-10"
         style={{
           backgroundColor: primaryBg,
           color: primaryText,
@@ -339,6 +339,12 @@ const Register = () => {
                 >
                   Register
                 </button>
+                <p className="mt-4 text-sm mx-auto">
+                  Already have an account?{" "}
+                  <Link to="/login" className="text-blue-500 hover:underline">
+                    Login
+                  </Link>
+                </p>
               </div>
             </>
           )}
