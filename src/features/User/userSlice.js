@@ -64,23 +64,22 @@ const UserSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Register user cases
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(registerUser.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = null;
+        state.user = null
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
         state.user = null;
-      });
-  },
-  extraReducers: (builder) => {
-    builder
+      })
+      // Login user cases
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
       })

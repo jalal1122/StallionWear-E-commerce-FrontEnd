@@ -3,9 +3,8 @@ import axios from "axios";
 const Api_URL = "api/user";
 
 const options = {
-  headers: {
-    Credentials: true,
-  },
+  headers: {},
+  withCredentials: true, // Include credentials for cross-origin requests
 };
 
 const registerUser = async (userData) => {
@@ -16,13 +15,12 @@ const registerUser = async (userData) => {
   formData.append("password", userData.password);
   formData.append("profilePicture", userData.profilePicture);
 
-  const response = await axios.post(`${Api_URL}/register`, formData, options);
+  const response = await axios.post(`http://localhost:5000/api/user/register`, formData, options);
   return response.data;
 };
 
-
 const loginUser = async (userData) => {
-  const response = await axios.post(`${Api_URL}/login`, userData, options);
+  const response = await axios.post(`http://localhost:5000/api/user/login`, userData, options);
   return response.data;
 };
 

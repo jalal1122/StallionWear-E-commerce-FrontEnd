@@ -15,7 +15,6 @@ const Router = () => {
 
         {/* Login Route */}
         <Route path="/login" element={<Login />} />
-
       </Routes>
     </>
   );
