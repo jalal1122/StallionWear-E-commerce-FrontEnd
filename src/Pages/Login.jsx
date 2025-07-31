@@ -1,11 +1,40 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useState, useEffect } from "react"
-import { loginUser } from "../features/User/userSlice.js"
+import { loginUser, reset } from "../features/User/userSlice.js"
 import Header from "../Components/Header/Header"
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa"
+import { useNavigate } from "react-router-dom"
+import Loader from "../Components/Loader"
 
 const Login = () => {
     const dispatch = useDispatch();
+
+    const navigate = useNavigate();
+
+
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+        (state) => state.user
+    );
+
+    const [formError, setFormError] = useState("");
+
+    useEffect(() => {
+        if (isError) {
+            setFormError(message);
+          console.log("Error:", message);
+        }
+
+        if (isSuccess || user) {
+            console.log("User logged in:", user);
+            navigate("/");
+        }
+
+        return () => {
+            dispatch(reset());
+            setFormError("");
+        };
+    }, [user, isSuccess, isError, message, dispatch, navigate]);
+
 
     const { primaryText, primaryBg } = useSelector(
         (state) => state.colors.colors
@@ -60,6 +89,10 @@ const Login = () => {
         }
     }
 
+    if (isLoading) {
+        return <Loader />;
+    }
+
 
   return (
     <>
@@ -75,6 +108,12 @@ const Login = () => {
             <FaUser />
         </div>
         <form onSubmit={submitForm}>
+          {isError ? (
+            <>
+              <p className="error-message">{formError}</p>
+            </>
+          ) : (
+            <>
           <div className="flex flex-col gap-4 w-[300px]">
             {/* Email Div */}
             <div className="relative emailDiv">
@@ -130,6 +169,8 @@ const Login = () => {
               Login
             </button>
           </div>
+          </>
+          )}
         </form>
 
         {errors.form && (
