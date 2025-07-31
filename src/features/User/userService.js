@@ -20,6 +20,13 @@ const registerUser = async (userData) => {
   return response.data;
 };
 
+
+const loginUser = async (userData) => {
+  const response = await axios.post(`${Api_URL}/login`, userData, options);
+  return response.data;
+};
+
 export const userService = {
   registerUser,
+  loginUser,
 };

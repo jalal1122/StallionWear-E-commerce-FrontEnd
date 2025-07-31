@@ -29,6 +29,25 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// Thunk for logging in a user
+export const loginUser = createAsyncThunk(
+  "user/login",
+  async (userData, thunkApi) => {
+    try {
+      const result = await userService.loginUser(userData);
+      return result;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+);
+
 // User Slice
 const UserSlice = createSlice({
   name: "user",
@@ -54,6 +73,23 @@ const UserSlice = createSlice({
         state.user = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
+      });
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

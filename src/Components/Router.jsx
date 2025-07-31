@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router";
 import LandingPage from "../Pages/LandingPage";
 import Register from "../Pages/Register";
+import Login from "../Pages/Login";
 
 const Router = () => {
   return (
@@ -11,6 +12,10 @@ const Router = () => {
 
         {/* Register Route */}
         <Route path="/register" element={<Register />} />
+
+        {/* Login Route */}
+        <Route path="/login" element={<Login />} />
+
       </Routes>
     </>
   );
