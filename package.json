@@ -2,7 +2,7 @@
   "name": "stallionwear-e-commerce-frontend",
   "private": true,
   "version": "0.0.0",
-  "proxy": "https://localhost:5000",
+  "proxy": "http://localhost:5000",
   "description": "E-commerce frontend for StallionWear",
   "type": "module",
   "scripts": {
@@ -20,6 +20,7 @@
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router": "^7.7.1",
+    "react-router-dom": "^7.7.1",
     "styled-components": "^6.1.19",
     "tailwindcss": "^4.1.11"
   },

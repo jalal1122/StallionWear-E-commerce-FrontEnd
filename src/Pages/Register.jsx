@@ -3,7 +3,7 @@ import { registerUser, reset } from "../features/User/userSlice.js";
 import { FaUser, FaEnvelope, FaLock, FaFile } from "react-icons/fa";
 import Header from "../Components/Header/Header";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import Loader from "../Components/Loader";
 
 const Register = () => {
@@ -69,13 +69,50 @@ const Register = () => {
   const onchange = (e) => {
     const { name, value, files } = e.target;
     if (name === "profilePicture") {
-      setUserData({ ...userData, [name]: files[0] });
       const file = files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
+
+      // Validate file if provided
+      if (file) {
+        const allowedTypes = [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/webp",
+        ];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+
+        if (!allowedTypes.includes(file.type)) {
+          setErrors({
+            ...errors,
+            profilePicture:
+              "Please select a valid image file (JPEG, JPG, PNG, WebP)",
+          });
+          return;
+        }
+
+        if (file.size > maxSize) {
+          setErrors({
+            ...errors,
+            profilePicture: "File size must be less than 5MB",
+          });
+          return;
+        }
+
+        // Clear any previous file errors
+        if (errors.profilePicture) {
+          setErrors({ ...errors, profilePicture: "" });
+        }
+      }
+
+      setUserData({ ...userData, [name]: file });
+
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          setPreview(reader.result);
+        };
+      }
     } else {
       setUserData({ ...userData, [name]: value });
 
@@ -263,7 +300,11 @@ const Register = () => {
                   <input
                     type="file"
                     name="profilePicture"
-                    className="w-full p-2 border border-gray-300 rounded"
+                    className={`w-full p-2 border rounded ${
+                      errors.profilePicture
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
                     onChange={onchange}
                     accept="image/*"
                   />
@@ -273,6 +314,11 @@ const Register = () => {
                       color: primaryText,
                     }}
                   />
+                  {errors.profilePicture && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.profilePicture}
+                    </p>
+                  )}
                 </div>
 
                 {/* Preview Image */}
