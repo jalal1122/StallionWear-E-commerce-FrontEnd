@@ -9,8 +9,8 @@ const colorSlice = createSlice({
     colors: {
       primaryText: "#000",
       secondaryText: "#858585",
-      primaryBg: "#FFF",
-      secondaryBg: "#F0F0F0",
+      primaryBg: "#fff",
+      secondaryBg: "#f0f0f0",
     },
   },
   reducers: {
