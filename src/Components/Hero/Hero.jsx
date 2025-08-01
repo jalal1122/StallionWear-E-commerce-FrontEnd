@@ -1,11 +1,12 @@
-import heroImage from "../../Images/hero2.png";
+import heroImage from "../../Images/Hero.png";
+import { useSelector } from "react-redux";
 
 const Hero = () => {
   return (
     <>
       <div className="hero-container bg-white py-16 px-4 md:px-20 grid grid-cols-1 md:grid-cols-2 items-center gap-8">
         {/* Left side */}
-        <div className="hero-content space-y-6 text-center">
+        <div className="hero-content space-y-6 text-center delay-1000 transition-all duration-1000">
           <h1 className="hero-title text-5xl md:text-5xl font-bold text-black">
             FIND OUT-FITS THAT
             <br /> MATCHES YOUR
@@ -35,7 +36,7 @@ const Hero = () => {
         </div>
 
         {/* Right side */}
-        <div className="h-full flex items-center justify-center">
+        <div className="h-full flex items-center justify-center delay-1000 transition-all duration-1000">
           <img
             src={heroImage}
             alt="Hero"
