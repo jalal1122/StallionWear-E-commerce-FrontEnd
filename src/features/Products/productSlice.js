@@ -21,7 +21,29 @@ export const getNewArrivals = createAsyncThunk(
       console.log("New Arrivals fetched successfully:", response);
 
       console.log(response.data[0].images[0]);
-      
+
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+// get the top selling products
+export const getTopSelling = createAsyncThunk(
+  "products/getTopSelling",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await productService.getTopSelling();
+      console.log("Top Selling fetched successfully:", response);
+
+      console.log(response.data[0].images[0]);
 
       return response;
     } catch (error) {
@@ -64,6 +86,21 @@ const productSlice = createSlice({
         state.newArrivals = action.payload.data;
       })
       .addCase(getNewArrivals.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getTopSelling.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(getTopSelling.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.topSelling = action.payload.data;
+      })
+      .addCase(getTopSelling.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

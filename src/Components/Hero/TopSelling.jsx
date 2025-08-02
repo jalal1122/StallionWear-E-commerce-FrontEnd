@@ -1,35 +1,35 @@
 import { useDispatch, useSelector } from "react-redux";
-import { getNewArrivals } from "../../features/Products/productSlice.js";
+import { getTopSelling } from "../../features/Products/productSlice.js";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useEffect } from "react";
 import renderStars from "../../utils/renderStars";
 
-const NewArrivals = () => {
+const TopSelling = () => {
   // initialize this dispatch
   const dispatch = useDispatch();
 
-  const { newArrivals, isLoading, isError, isSuccess, message } = useSelector(
+  const { topSelling, isLoading, isError, message } = useSelector(
     (state) => state.products
   );
 
   useEffect(() => {
     // Fetch new arrivals when the component mounts
-    dispatch(getNewArrivals());
+    dispatch(getTopSelling());
   }, [dispatch]);
 
   return (
     <>
       <div className="flex flex-col items-center justify-center mt-10 pt-5 pb-15 border-b border-gray-500">
-        <h2 className="text-6xl font-bold mb-8">New Arrivals</h2>
-        <div className="newArrivals">
+        <h2 className="text-6xl font-bold mb-8">Top Selling</h2>
+        <div className="topSelling">
           {isLoading && <p>Loading...</p>}
           {isError && <p className="text-red-500">{message}</p>}
-          {!isLoading && !isError && newArrivals.length === 0 && (
-            <p>No new arrivals found.</p>
+          {!isLoading && !isError && topSelling.length === 0 && (
+            <p>No top selling products found.</p>
           )}
-          {!isLoading && !isError && newArrivals.length > 0 && (
+          {!isLoading && !isError && topSelling.length > 0 && (
             <div className="flex justify-center items-center text-center flex-wrap gap-10">
-              {newArrivals.map((product) => (
+              {topSelling.map((product) => (
                 <div
                   key={product._id}
                   className="shadow-lg p-4 w-[25vw] rounded-2xl cursor-pointer transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-105 hover:bg-gray-50 relative overflow-hidden group"
@@ -100,4 +100,4 @@ const NewArrivals = () => {
   );
 };
 
-export default NewArrivals;
+export default TopSelling;

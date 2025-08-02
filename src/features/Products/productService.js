@@ -16,8 +16,23 @@ const getNewArrivals = async () => {
   return response.data;
 };
 
+// Function to get top selling products
+const getTopSelling = async () => {
+  // Fetch top selling products from the API
+  const response = await axios.get(`${Api_URL}/topSelling`);
+
+  // If the response is successful, store the data in localStorage
+  if (response.status === 200) {
+    localStorage.setItem("topSelling", JSON.stringify(response.data));
+  }
+
+  // Return the top selling products data
+  return response.data;
+};
+
 const productService = {
   getNewArrivals,
+  getTopSelling,
 };
 
 export default productService;
