@@ -15,7 +15,7 @@ const Categories = () => {
   return (
     <>
        <div className="categories-container bg-white py-16 px-5 sm:px-20" style={{ backgroundColor: primaryBg, color: primaryText }}>
-          <h2 className=" sm:text-5xl text-3xl font-bold text-center my-8">
+          <h2 className="sm:text-5xl text-4xl font-extrabold text-center mb-12 tracking-wide">
               Browse By Categories
           </h2>
             <div className='category-layer-1 flex flex-row justify-center gap-10'>
