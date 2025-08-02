@@ -8,7 +8,7 @@ const NewArrivals = () => {
   // initialize this dispatch
   const dispatch = useDispatch();
 
-  const { newArrivals, isLoading, isError, isSuccess, message } = useSelector(
+  const { newArrivals, isLoading, isError, message } = useSelector(
     (state) => state.products
   );
 
