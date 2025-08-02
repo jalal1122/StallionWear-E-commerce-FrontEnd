@@ -4,6 +4,7 @@ import Categories from "../Components/Category/Categories";
 import NewArrivals from "../Components/Hero/NewArrivals";
 import TopSelling from "../Components/Hero/TopSelling";
 import Reviews from "../Components/Reviews/Reviews";
+import Footer from "../Components/Footer/Footer";
 
 const LandingPage = () => {
   return (
@@ -14,6 +15,7 @@ const LandingPage = () => {
       <TopSelling />
       <Categories />
       <Reviews />
+      <Footer />
     </>
   );
 };
