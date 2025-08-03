@@ -1,7 +1,7 @@
-import { FiSearch } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import Search from "./Search";
 import RightSideIcons from "./RightSideIcons";
+import { Link } from "react-router";
 
 const Header = () => {
   const { primaryBg, primaryText } = useSelector(
@@ -23,7 +23,9 @@ const Header = () => {
         <div>
           <ul className="flex space-x-6">
             <li className="cursor-pointer hover:opacity-75">Home</li>
-            <li className="cursor-pointer hover:opacity-75">Categories</li>
+            <Link to="/categories">
+              <li className="cursor-pointer hover:opacity-75">Categories</li>
+            </Link>
           </ul>
         </div>
         {/* Search Bar */}

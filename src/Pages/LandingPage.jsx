@@ -1,6 +1,6 @@
 import Header from "../Components/Header/Header";
 import Hero from "../Components/LandingPage/Hero";
-import Categories from "../Components/LandingPage/Categories";
+import BrowseByCategories from "../Components/LandingPage/BrowseByCategories";
 import NewArrivals from "../Components/LandingPage/NewArrivals";
 import TopSelling from "../Components/LandingPage/TopSelling";
 import Reviews from "../Components/LandingPage/Reviews";
@@ -13,7 +13,7 @@ const LandingPage = () => {
       <Hero />
       <NewArrivals />
       <TopSelling />
-      <Categories />
+      <BrowseByCategories />
       <Reviews />
       <Footer />
     </>
