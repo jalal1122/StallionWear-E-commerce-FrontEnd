@@ -3,6 +3,7 @@ import LandingPage from "../Pages/LandingPage";
 import Register from "../Pages/Register";
 import Login from "../Pages/Login";
 import Cart from "../Pages/Cart"
+import Categories from "./LandingPage/BrowseByCategories";
 
 const Router = () => {
   return (
@@ -19,6 +20,9 @@ const Router = () => {
 
         {/* Login Route */}
         <Route path="/login" element={<Login />} />
+
+        {/* Categories Route */}
+        <Route path="/categories" element={<Categories />} />
       </Routes>
     </>
   );

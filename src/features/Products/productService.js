@@ -2,6 +2,57 @@ import axios from "../../utils/axios.js";
 
 const Api_URL = "api/product";
 
+// Function to get all products with optional filtering
+const getAllProducts = async (filter) => {
+  const previousPage =
+    parseInt(JSON.parse(localStorage.getItem("currentPage"))) || 1;
+
+  // if next page button is pressed, increment the current page
+  if (filter && filter.nextPage) {
+    localStorage.setItem("currentPage", JSON.stringify(previousPage + 1));
+  }
+
+  // if previous page button is pressed, decrement the current page
+  if (filter && filter.previousPage) {
+    localStorage.setItem("currentPage", JSON.stringify(previousPage - 1));
+  }
+
+  // get the current page from localStorage
+  const currentPage =
+    parseInt(JSON.parse(localStorage.getItem("currentPage"))) || 1;
+
+  console.log("page to render is: ", currentPage);
+
+  // fetch all products from the API with optional filter
+  const response = await axios.get(
+    `${Api_URL}?page=${currentPage}&sortOrder=${
+      filter?.sortBy || "desc"
+    }&category=${filter?.category || ""}${
+      filter.brand ? "&brand=" + filter.brand : ""
+    }`,
+    {},
+    {
+      Headers: {},
+    }
+  );
+
+  // If the response is successful, store the data in localStorage
+  if (response.status === 200) {
+    localStorage.setItem("products", JSON.stringify(response.data));
+    localStorage.setItem(
+      "totalPages",
+      JSON.stringify(response.data.data.totalPages)
+    );
+    localStorage.setItem(
+      "currentPage",
+      JSON.stringify(response.data.data.currentPage)
+    );
+  }
+
+  // Return the products data
+  return response.data;
+};
+
 // Function to get new arrivals products
 const getNewArrivals = async () => {
   // Fetch new arrivals from the API
@@ -33,6 +84,7 @@ const getTopSelling = async () => {
 const productService = {
   getNewArrivals,
   getTopSelling,
+  getAllProducts,
 };
 
 export default productService;
