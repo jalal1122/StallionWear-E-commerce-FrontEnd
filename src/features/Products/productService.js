@@ -1,5 +1,4 @@
 import axios from "../../utils/axios.js";
-import { useSelector } from "react-redux";
 
 const Api_URL = "api/product";
 
@@ -28,7 +27,9 @@ const getAllProducts = async (filter) => {
   const response = await axios.get(
     `${Api_URL}?page=${currentPage}&sortOrder=${
       filter?.sortBy || "desc"
-    }&category=${filter?.category || ""}`,
+    }&category=${filter?.category || ""}${
+      filter.brand ? "&brand=" + filter.brand : ""
+    }`,
     {},
     {
       Headers: {},
