@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTopSelling } from "../../features/Products/productSlice.js";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useEffect } from "react";
-import renderStars from "../../utils/renderStars";
+import renderStars from "../../utils/renderStars.jsx";
 
 const TopSelling = () => {
   // initialize this dispatch

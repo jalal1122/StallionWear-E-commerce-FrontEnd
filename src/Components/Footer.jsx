@@ -11,11 +11,11 @@ const Footer = () => {
   return (
     <footer className=" Footer-Container bg-white">
       {/* Newsletter Section */}
-      <div className="bg-black text-white py-6 px-3 ml-30 rounded-xl lg:w-[80%]">
-        <h2 className="text-3xl font-bold text-center mb-4">
+      <div className="bg-black flex gap-5 text-white py-6 px-6 ml-30 rounded-xl lg:w-[80%]">
+        <h2 className="text-5xl font-bold text-center mb-4">
           STAY UP TO DATE ABOUT OUR LATEST OFFERS
         </h2>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+        <div className="flex flex-row md:flex-col items-center justify-center gap-4">
           <div className="bg-white flex items-center rounded-full px-4 py-2 w-full md:w-[400px]">
             <FaEnvelope className="text-gray-400 mr-2" />
             <input
@@ -24,7 +24,7 @@ const Footer = () => {
               className="w-full outline-none text-black bg-transparent"
             />
           </div>
-          <button className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-200 cursor-pointer ">
+          <button className="bg-white w-full text-black px-6 py-2 rounded-full font-semibold hover:bg-gray-200 cursor-pointer ">
             Subscribe to Newsletter
           </button>
         </div>
