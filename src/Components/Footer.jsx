@@ -9,7 +9,7 @@ import {
 const Footer = () => {
     
   return (
-    <footer className=" Footer-Container bg-white">
+    <footer className=" Footer-Container bg-gray-200">
       {/* Newsletter Section */}
       <div className="bg-black flex gap-5 text-white py-6 px-6 ml-30 rounded-xl lg:w-[80%]">
         <h2 className="text-5xl font-bold text-center mb-4">

@@ -27,7 +27,9 @@ const RightSideIcons = () => {
   return (
     <div className="flex space-x-4">
       {/* Cart Icon */}
-      <CartIcon className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
+      <Link to="/cart">
+        <CartIcon className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
+      </Link>
 
       {/* Wish List Icon */}
       <WishList className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />

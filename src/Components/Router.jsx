@@ -2,7 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "../Pages/LandingPage";
 import Register from "../Pages/Register";
 import Login from "../Pages/Login";
-import Categories from "../Pages/Categories";
+import Cart from "../Pages/Cart"
+import Categories from "./LandingPage/BrowseByCategories";
 
 const Router = () => {
   return (
@@ -10,6 +11,9 @@ const Router = () => {
       <Routes>
         {/* Home Route */}
         <Route path="/" element={<LandingPage />} />
+
+        {/* Cart Route */}
+        <Route path="/cart" element={<Cart />} />
 
         {/* Register Route */}
         <Route path="/register" element={<Register />} />
