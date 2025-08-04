@@ -22,7 +22,13 @@ const Header = () => {
         {/* Navigation Links */}
         <div>
           <ul className="flex space-x-6">
-            <li className="cursor-pointer hover:opacity-75">Home</li>
+
+            {/* Home Page Link */}
+            <Link to="/">
+              <li className="cursor-pointer hover:opacity-75">Home</li>
+            </Link>
+
+            {/* Categories Page Link */}
             <Link to="/categories">
               <li className="cursor-pointer hover:opacity-75">Categories</li>
             </Link>
@@ -33,7 +39,6 @@ const Header = () => {
 
         {/* Icons for login cart etc */}
         <RightSideIcons />
-        
       </div>
     </>
   );

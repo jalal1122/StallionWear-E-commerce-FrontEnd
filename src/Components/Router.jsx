@@ -3,7 +3,7 @@ import LandingPage from "../Pages/LandingPage";
 import Register from "../Pages/Register";
 import Login from "../Pages/Login";
 import Cart from "../Pages/Cart"
-import Categories from "./LandingPage/BrowseByCategories";
+import Categories from "../Pages/Categories";
 
 const Router = () => {
   return (
