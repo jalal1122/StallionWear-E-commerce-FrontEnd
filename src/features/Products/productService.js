@@ -25,11 +25,11 @@ const getAllProducts = async (filter) => {
 
   // fetch all products from the API with optional filter
   const response = await axios.get(
-    `${Api_URL}?page=${currentPage}&sortOrder=${
-      filter?.sortBy || "desc"
-    }&category=${filter?.category || ""}${
-      filter.brand ? "&brand=" + filter.brand : ""
-    }`,
+    `${Api_URL}?page=${currentPage}&sortOrder=${filter?.sortBy || "desc"}${
+      filter?.category ? "&category=" + filter.category : ""
+    }${filter.brand ? "&brand=" + filter.brand : ""}${
+      filter.minPrice ? "&minPrice=" + filter.minPrice : ""
+    }${filter.maxPrice ? "&maxPrice=" + filter.maxPrice : ""}`,
     {},
     {
       Headers: {},
