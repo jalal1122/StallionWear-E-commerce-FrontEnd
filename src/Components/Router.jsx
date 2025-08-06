@@ -5,6 +5,7 @@ import Login from "../Pages/Login";
 import Cart from "../Pages/Cart";
 import Categories from "../Pages/Categories";
 import ProductPage from "../Pages/ProductPage";
+import WishList from "../Pages/Wishlist";
 
 const Router = () => {
   return (
@@ -15,6 +16,9 @@ const Router = () => {
 
         {/* Cart Route */}
         <Route path="/cart" element={<Cart />} />
+
+        {/* Wishlist Route */}
+        <Route path="/wishlist" element={<WishList />} />
 
         {/* Register Route */}
         <Route path="/register" element={<Register />} />
