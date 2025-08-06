@@ -1,51 +1,54 @@
-import { Swiper, SwiperSlide, } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { FaStar, FaCheckCircle, FaChevronRight, FaChevronLeft } from "react-icons/fa";
+import {
+  FaStar,
+  FaCheckCircle,
+  FaChevronRight,
+  FaChevronLeft,
+} from "react-icons/fa";
 import { useRef } from "react";
+import RenderStars from "../utils/RenderStars";
 
-const reviews = [
-  {
-    name: "Anis Khan",
-    review: "Loved the quality and comfort of the hoodie!",
-    rating: "5"
-  },
-  {
-    name: "Muhammad Jalal",
-    review: "Great fitting and fabric, totally worth the price!",
-    rating: "5"
-  },
-  {
-    name: "Uzair Khan",
-    review: "Soft material and trendy design. Will buy again!",
-    rating: "5"
-  },
-  {
-    name: "Fazle Samad",
-    review: "Color is exactly like the picture. Very happy!",
-    rating: "5"
-  },
-];
-
-const Reviews = () => {
+const Reviews = ({ heading, reviews }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+
+  // If no reviews are provided, return null
+  if (!reviews || reviews.length === 0) {
+    return (
+      <div className="bg-white py-16 px-4 md:px-20">
+        <h2 className="text-4xl font-extrabold text-center mb-12 tracking-wide">
+          {heading || "Reviews"}
+        </h2>
+        <p className="text-center text-lg text-gray-500">
+          No reviews available at this time.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white py-16 px-4 md:px-20 relative">
       <h2 className="text-4xl font-extrabold text-center mb-12 tracking-wide">
-        OUR HAPPY CUSTOMERS
+        {heading || "Reviews"}
       </h2>
 
       {/* Navigation Buttons */}
       <div className=" flex items-center absolute top-[60%] left-0 z-10 translate-y-[-50%] hidden md:flex">
-        <button ref={prevRef} className="text-4xl p-3 rounded-full hover:bg-gray-200">
+        <button
+          ref={prevRef}
+          className="text-4xl p-3 rounded-full hover:bg-gray-200"
+        >
           <FaChevronLeft />
         </button>
       </div>
       <div className="fex items-center absolute top-[60%] right-0 z-10 translate-y-[-50%] hidden md:flex">
-        <button ref={nextRef} className="text-4xl p-3 rounded-full hover:bg-gray-200">
+        <button
+          ref={nextRef}
+          className="text-4xl p-3 rounded-full hover:bg-gray-200"
+        >
           <FaChevronRight />
         </button>
       </div>
@@ -65,17 +68,16 @@ const Reviews = () => {
         spaceBetween={24}
         breakpoints={{
           0: { slidesPerView: 1 },
-          768: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
+          480: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 4 },
         }}
       >
         {reviews.map((review, index) => (
           <SwiperSlide key={index}>
             <div className="bg-white border rounded-xl shadow-md p-6 h-full">
-              <div className="flex mb-3 text-yellow-400">
-                {Array.from({ length: review.rating }).map((_, i) => (
-                  <FaStar key={i} />
-                ))}
+              <div className="">
+                <RenderStars rating={parseFloat(review.rating)} />
               </div>
               <div className="flex items-center gap-2 font-semibold text-lg mb-2">
                 {review.name}
@@ -91,6 +93,5 @@ const Reviews = () => {
     </div>
   );
 };
-
 
 export default Reviews;

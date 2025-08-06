@@ -117,10 +117,20 @@ const productSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
+    clearError: (state) => {
+      state.isError = false;
+      state.message = "";
+    },
+    clearProduct: (state) => {
+      state.product = null;
+      state.isError = false;
+      state.message = "";
+      state.isLoading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
-    
+
       // Handle the getNewArrivals action
       .addCase(getNewArrivals.pending, (state) => {
         state.isLoading = true;
@@ -193,6 +203,6 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetProducts } = productSlice.actions;
+export const { resetProducts, clearError, clearProduct } = productSlice.actions;
 
 export default productSlice.reducer;
