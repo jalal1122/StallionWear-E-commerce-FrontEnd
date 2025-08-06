@@ -11,7 +11,7 @@ const Cart = () => {
         {/* Cart */}
         <div className="ml-5 mt-3">
             <a href="/">Home  </a>
-            >
+            &gt;
             <span>  Cart</span>
         </div>
         <div className='cart-container m-4'>

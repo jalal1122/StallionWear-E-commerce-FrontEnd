@@ -530,6 +530,7 @@ const Categories = () => {
         </div>
       </div>
 
+      {/* Footer */}
       <Footer />
     </>
   );

@@ -2,8 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import LandingPage from "../Pages/LandingPage";
 import Register from "../Pages/Register";
 import Login from "../Pages/Login";
-import Cart from "../Pages/Cart"
+import Cart from "../Pages/Cart";
 import Categories from "../Pages/Categories";
+import ProductPage from "../Pages/ProductPage";
 
 const Router = () => {
   return (
@@ -23,6 +24,12 @@ const Router = () => {
 
         {/* Categories Route */}
         <Route path="/categories" element={<Categories />} />
+
+        {/* Product Page Route */}
+        <Route path="/product" element={<ProductPage />} />
+
+        {/* Fallback Route */}
+        <Route path="*" element={<LandingPage />} />
       </Routes>
     </>
   );
