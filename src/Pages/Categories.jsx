@@ -2,12 +2,13 @@ import { FaSliders } from "react-icons/fa6";
 import { MdCategory } from "react-icons/md";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
-import renderStars from "../utils/renderStars";
+import RenderStars from "../utils/RenderStars.jsx";
 import { useSelector } from "react-redux";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllProducts } from "../features/Products/productSlice.js";
+import { Link } from "react-router-dom";
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -476,23 +477,25 @@ const Categories = () => {
                   </div>
 
                   {/* Product Name */}
-                  <h3 className="text-xl font-bold mt-2 transition-colors duration-200">
-                    {product.name}
-                  </h3>
+                  <Link to={`/product/${product._id}`}>
+                    <h3 className="text-xl font-bold mt-2 transition-colors duration-200">
+                      {product.name}
+                    </h3>
 
-                  {/* rating */}
-                  <div className="mt-2">
-                    {product.reviews && product.reviews.averageRating ? (
-                      renderStars(product.reviews.averageRating)
-                    ) : (
-                      <p className="text-gray-500">No ratings yet</p>
-                    )}
-                  </div>
+                    {/* rating */}
+                    <div className="mt-2">
+                      {product.reviews && product.reviews.averageRating ? (
+                        RenderStars(product.reviews.averageRating)
+                      ) : (
+                        <p className="text-gray-500">No ratings yet</p>
+                      )}
+                    </div>
 
-                  {/* Price */}
-                  <p className="text-lg font-semibold mt-2">
-                    ${product.price.toFixed(2)}
-                  </p>
+                    {/* Price */}
+                    <p className="text-lg font-semibold mt-2">
+                      ${product.price.toFixed(2)}
+                    </p>
+                  </Link>
                 </div>
               ))}
             </div>

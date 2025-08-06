@@ -1,5 +1,5 @@
 // Function to render star rating
-const renderStars = (rating) => {
+const RenderStars = (rating) => {
   const fullStars = Math.floor(rating);
 
   return (
@@ -11,9 +11,11 @@ const renderStars = (rating) => {
         </span>
       ))}
 
-      <span className="ml-2 text-sm text-gray-600">({rating.toFixed(0)})</span>
+      <span className="ml-2 text-sm text-gray-600">
+        ({rating && rating.toFixed(0)})
+      </span>
     </div>
   );
 };
 
-export default renderStars;
+export default RenderStars;

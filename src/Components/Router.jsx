@@ -26,7 +26,7 @@ const Router = () => {
         <Route path="/categories" element={<Categories />} />
 
         {/* Product Page Route */}
-        <Route path="/product" element={<ProductPage />} />
+        <Route path="/product/:id" element={<ProductPage />} />
 
         {/* Fallback Route */}
         <Route path="*" element={<LandingPage />} />

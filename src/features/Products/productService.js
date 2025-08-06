@@ -53,6 +53,14 @@ const getAllProducts = async (filter) => {
   return response.data;
 };
 
+// Function to get product details by ID
+const getProductById = async (id) => {
+  // Fetch product details from the API by ID
+  const response = await axios.get(`${Api_URL}/${id}`);
+
+  return response.data;
+};
+
 // Function to get new arrivals products
 const getNewArrivals = async () => {
   // Fetch new arrivals from the API
@@ -85,6 +93,7 @@ const productService = {
   getNewArrivals,
   getTopSelling,
   getAllProducts,
+  getProductById,
 };
 
 export default productService;

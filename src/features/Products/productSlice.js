@@ -4,6 +4,7 @@ import productService from "./productService";
 // initial state for the product slice
 const initialState = {
   products: [],
+  product: null,
   newArrivals: JSON.parse(localStorage.getItem("newArrivals")) || [],
   topSelling: JSON.parse(localStorage.getItem("topSelling")) || [],
   totalPages: JSON.parse(localStorage.getItem("totalPages")) || 0,
@@ -82,6 +83,26 @@ export const getAllProducts = createAsyncThunk(
   }
 );
 
+// get the product by id
+export const getProductById = createAsyncThunk(
+  "product/getProductById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await productService.getProductById(id);
+      console.log("Product fetched successfully:", response);
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
 // define the product slice
 const productSlice = createSlice({
   name: "products",
@@ -99,6 +120,8 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+    
+      // Handle the getNewArrivals action
       .addCase(getNewArrivals.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
@@ -114,6 +137,8 @@ const productSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+
+      // Handle the getTopSelling action
       .addCase(getTopSelling.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
@@ -129,6 +154,8 @@ const productSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
+
+      // Handle the getAllProducts action
       .addCase(getAllProducts.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
@@ -142,6 +169,23 @@ const productSlice = createSlice({
         state.currentPage = action.payload.data.currentPage;
       })
       .addCase(getAllProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // Handle the getProductById action
+      .addCase(getProductById.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(getProductById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.product = action.payload.data;
+      })
+      .addCase(getProductById.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
