@@ -1,19 +1,24 @@
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
-const Loader = () => {
+const Loader = ({ message = "Loading..." }) => {
   // get the color from colorSlice redux
-  const { primaryBg } = useSelector((state) => state.colors.colors);
+  const { primaryBg, primaryText } = useSelector(
+    (state) => state.colors.colors
+  );
 
   return (
     <StyledWrapper>
       <div
-        className="w-full h-screen flex items-center justify-center"
+        className="w-full h-screen flex flex-col items-center justify-center"
         style={{
           backgroundColor: primaryBg,
         }}
       >
         <div className="loader" />
+        <p className="mt-4 text-lg" style={{ color: primaryText }}>
+          {message}
+        </p>
       </div>
     </StyledWrapper>
   );

@@ -9,6 +9,7 @@ const initialState = {
   topSelling: JSON.parse(localStorage.getItem("topSelling")) || [],
   totalPages: JSON.parse(localStorage.getItem("totalPages")) || 0,
   currentPage: JSON.parse(localStorage.getItem("currentPage")) || 1,
+  relevantProducts: [],
   itemsPerPage: 10,
   isLoading: false,
   isError: false,
@@ -22,10 +23,6 @@ export const getNewArrivals = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await productService.getNewArrivals();
-      console.log("New Arrivals fetched successfully:", response);
-
-      console.log(response.data[0].images[0]);
-
       return response;
     } catch (error) {
       const message =
@@ -45,10 +42,6 @@ export const getTopSelling = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await productService.getTopSelling();
-      console.log("Top Selling fetched successfully:", response);
-
-      console.log(response.data[0].images[0]);
-
       return response;
     } catch (error) {
       const message =
@@ -90,6 +83,26 @@ export const getProductById = createAsyncThunk(
     try {
       const response = await productService.getProductById(id);
       console.log("Product fetched successfully:", response);
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+// get the relevant products based on the category
+export const getRelevantProducts = createAsyncThunk(
+  "product/getRelevantProducts",
+  async (category, { rejectWithValue }) => {
+    try {
+      const response = await productService.getRelevantProducts(category);
+      console.log("Relevant Products fetched successfully:", response);
       return response;
     } catch (error) {
       const message =
@@ -196,6 +209,23 @@ const productSlice = createSlice({
         state.product = action.payload.data;
       })
       .addCase(getProductById.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // Handle the getRelevantProducts action
+      .addCase(getRelevantProducts.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(getRelevantProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.relevantProducts = action.payload.data.products;
+      })
+      .addCase(getRelevantProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

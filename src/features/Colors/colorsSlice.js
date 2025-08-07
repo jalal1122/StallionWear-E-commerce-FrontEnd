@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const mode = localStorage.getItem("mode") || "light";
-
 const colorSlice = createSlice({
   name: "colors",
   initialState: {
-    mode: mode,
+    mode: "light", // Default mode, will be updated by component
     colors: {
       primaryText: "#000",
       secondaryText: "#858585",

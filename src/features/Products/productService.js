@@ -61,6 +61,16 @@ const getProductById = async (id) => {
   return response.data;
 };
 
+// Function to get products by category
+const getRelevantProducts = async (category) => {
+  // Fetch products by category from the API
+  const response = await axios.get(
+    `${Api_URL}${category ? `?category=${category}` : ""}`
+  );
+
+  return response.data;
+};
+
 // Function to get new arrivals products
 const getNewArrivals = async () => {
   // Fetch new arrivals from the API
@@ -94,6 +104,7 @@ const productService = {
   getTopSelling,
   getAllProducts,
   getProductById,
+  getRelevantProducts,
 };
 
 export default productService;

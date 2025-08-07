@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import "./App.css";
-import LandingPage from "./Pages/LandingPage";
 import { useDispatch } from "react-redux";
 import { GetMode } from "./features/Colors/colorsSlice";
 import Router from "./Components/Router";

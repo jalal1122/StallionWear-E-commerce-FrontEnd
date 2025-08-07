@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import Search from "./Search";
 import RightSideIcons from "./RightSideIcons";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { primaryBg, primaryText } = useSelector(
@@ -22,7 +22,6 @@ const Header = () => {
         {/* Navigation Links */}
         <div>
           <ul className="flex space-x-6">
-
             {/* Home Page Link */}
             <Link to="/">
               <li className="cursor-pointer hover:opacity-75">Home</li>

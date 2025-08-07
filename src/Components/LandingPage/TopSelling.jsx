@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTopSelling } from "../../features/Products/productSlice.js";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useEffect } from "react";
-import renderStars from "../../utils/renderStars.jsx";
+import RenderStars from "../../utils/RenderStars.jsx";
 
 const TopSelling = () => {
   // initialize this dispatch
@@ -54,7 +54,8 @@ const TopSelling = () => {
                             // Add your cart logic here
                           }}
                         >
-                          <FaShoppingCart className="inline-block mr-2" /> Add to Cart
+                          <FaShoppingCart className="inline-block mr-2" /> Add
+                          to Cart
                         </button>
 
                         {/* Add to Wishlist Button */}
@@ -66,7 +67,8 @@ const TopSelling = () => {
                             // Add your wishlist logic here
                           }}
                         >
-                          <FaHeart className="inline-block mr-2" /> Add to Wishlist
+                          <FaHeart className="inline-block mr-2" /> Add to
+                          Wishlist
                         </button>
                       </div>
                     </div>
@@ -80,7 +82,7 @@ const TopSelling = () => {
                   {/* rating */}
                   <div className="mt-2">
                     {product.reviews && product.reviews.averageRating ? (
-                      renderStars(product.reviews.averageRating)
+                      <RenderStars rating={product.reviews.averageRating} />
                     ) : (
                       <p className="text-gray-500">No ratings yet</p>
                     )}

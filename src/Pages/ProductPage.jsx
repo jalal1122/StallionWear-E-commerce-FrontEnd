@@ -8,6 +8,7 @@ import {
   getProductById,
   clearProduct,
   clearError,
+  getRelevantProducts,
 } from "../features/Products/productSlice.js";
 import RenderStars from "../utils/RenderStars";
 import { useState } from "react";
@@ -77,7 +78,22 @@ const ProductPage = () => {
       setCurrentSize(product.variants[0].size);
       setCurrentColor(product.variants[0].color);
     }
-  }, [product, mainImage, currentSize, currentColor]); // Include all dependencies
+
+    // Fetch relevant products when product is loaded and has a category
+    // Only fetch if we don't already have relevant products or if the category changed
+    if (product?.category) {
+      console.log("Fetching relevant products for category:", product.category);
+      dispatch(getRelevantProducts(product.category));
+    }
+  }, [
+    product?.category,
+    product?.images,
+    product?.variants,
+    mainImage,
+    currentSize,
+    currentColor,
+    dispatch,
+  ]); // Optimize dependencies
 
   // get the colors from the redux store
   const { primaryText, primaryBg, secondaryText } = useSelector(
@@ -340,11 +356,6 @@ const ProductPage = () => {
             {/* Product Price */}
             <p className="text-3xl font-bold text-green-600">
               ${price}
-              {priceModifier && (
-                <span className="text-lg text-gray-500 ml-2">
-                  (Base: ${basePrice.toFixed(2)} + ${priceModifier.toFixed(2)})
-                </span>
-              )}
             </p>
 
             {/* Product Description */}
@@ -490,7 +501,7 @@ const ProductPage = () => {
       <Reviews heading={"Rating & Reviews"} reviews={product?.reviews} />
 
       {/* Related Products Section */}
-      <RelevantProducts category={product?.category} />
+      <RelevantProducts />
 
       {/* Footer */}
       <Footer />
