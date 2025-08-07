@@ -32,7 +32,9 @@ const RightSideIcons = () => {
       </Link>
 
       {/* Wish List Icon */}
-      <WishList className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
+      <Link to="/wishlist">
+         <WishList className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
+      </Link>
 
       {/* If user is logged in, show the sign out icon */}
       {/* Sign Out Icon */}
