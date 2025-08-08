@@ -1,9 +1,76 @@
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
-import ProductImage from "../Images/J12.jpg"; 
-import { FaTrash } from "react-icons/fa6";
+import { FaTrash} from "react-icons/fa6";
+import CartIcon from "../Components/Icons/CartIcon";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchWishlist,
+  removeWishlistItem,
+} from "../features/Wishlist/wishlistSlice";
+import { addToCart } from "../features/Cart/cartSlice";
+import { useEffect, useState } from "react"; 
 
 const Wishlist = () => {
+  const dispatch = useDispatch();
+  const [addedToCart, setAddedToCart] = useState(null); // For success feedback
+
+  // Fixed: Added fallback for undefined state
+  const {
+    items: wishlistItems = [],
+    loading = false,
+    error = null,
+  } = useSelector((state) => state.wishlist || {});
+
+  useEffect(() => {
+    dispatch(fetchWishlist());
+  }, [dispatch]);
+
+
+  const handleAddToCart = async (item) => {
+    try {
+      await dispatch(addToCart(item));
+      setAddedToCart(item.id);
+
+      setTimeout(() => setAddedToCart(null), 2000);
+    } catch (error) {
+      console.error("Failed to add item to cart:", error);
+    }
+  };
+
+  const handleRemoveFromWishlist = async (itemId) => {
+    try {
+      await dispatch(removeWishlistItem(itemId));
+    } catch (error) {
+      console.error("Failed to remove item from wishlist:", error);
+    }
+  };
+
+  // Fixed: Add loading state
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="text-xl">Loading wishlist...</div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  // Fixed: Add error state
+  if (error) {
+    return (
+      <>
+        <Header />
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="text-xl text-red-500">Error: {error}</div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       {/* Header */}
@@ -11,7 +78,10 @@ const Wishlist = () => {
 
       {/* Breadcrumbs */}
       <div className="ml-5 mt-3">
-        <a href="/">Home</a> &gt; <span>Wishlist</span>
+        <a href="/" className="text-500 hover:underline">
+          Home
+        </a>{" "}
+        &gt; <span>Wishlist</span>
       </div>
 
       {/* Wishlist Heading */}
@@ -20,54 +90,70 @@ const Wishlist = () => {
           YOUR WISHLIST
         </h1>
 
-        {/* Wishlist Items */}
-        <div className="flex flex-col items-center w-[85%] mx-auto mt-10 border-2 rounded-lg">
-          {/* Wishlist Item Card */}
-          <div className="wishlist-item flex flex-col sm:flex-row justify-center items-center bg-white gap-5 p-5 m-2 border-2 border-[#f0f0f0] rounded-lg w-full md:w-2/3 shadow-md">
-            {/* Image */}
-            <div className="image w-fit h-fit flex items-center justify-center p-2 shadow-lg rounded-lg">
-              <img
-                src={ProductImage}
-                alt="Wishlist Product"
-                className="aspect-auto w-60 rounded-lg"
-              />
-            </div>
-
-            {/* Product Details */}
-            <div className="details flex flex-col gap-5 w-full justify-center">
-              <div className="title flex flex-col gap-3">
-                <h3 className="font-bold text-2xl text-black">
-                  Stylish Bomber Jacket - Black Edition
-                </h3>
-                <p className="text-lg text-black font-semibold">
-                  Size: Medium
-                </p>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <h2 className="font-bold text-black text-2xl">$42.99</h2>
-                <a href="/cart">
-                   <button className="bg-black text-white px-4 py-2 rounded-full hover:cursor-pointer active:scale-95">
-                  Move to Cart
-                </button>              
-                </a>
-              </div>
-
-              {/* Remove Button */}
-              <div className="remove-product flex justify-center items-center">
-                <button className="flex justify-center items-center bg-black text-white px-4 py-2 w-2/4 rounded-full hover:bg-red-600 active:scale-95">
-                  <FaTrash className="mr-2" /> 
-                </button>
-              </div>
-            </div>
+        {/* Fixed: Added null check for wishlistItems */}
+        {wishlistItems.length === 0 ? (
+          <div className="text-center mt-10">
+            <h2 className="text-2xl font-semibold">Your wishlist is empty</h2>
+            <p className="mt-2">Add items to your wishlist</p>
+            <a
+              href="/products"
+              className="mt-4 inline-block bg-black text-white px-6 py-2 rounded hover:cursor-pointer transition-colors"
+            >
+              Continue Shopping
+            </a>
           </div>
-        </div>
+        ) : (
+          <div className="wishlist-items grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {wishlistItems.map((item) => (
+              <div
+                key={item.id}
+                className="wishlist-item border p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                {/* Image */}
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-48 object-cover mb-4 rounded"
+                />
+                <h3 className="text-xl font-semibold">
+                  {item.name || "Unnamed Product"}
+                </h3>
+                <p className="text-gray-600 mt-2">${item.price}</p>
+
+                {/* Fixed: Better button layout with proper icons */}
+                <div className="flex justify-between items-center mt-4">
+                  <button
+                    onClick={() => handleAddToCart(item)}
+                    disabled={addedToCart === item.id}
+                    className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
+                      addedToCart === item.id
+                        ? "bg-green-500 text-white cursor-not-allowed"
+                        : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
+                  >
+                    <CartIcon />
+                    {addedToCart === item.id ? "Added!" : "Add to Cart"}
+                  </button>
+
+                  <button
+                    onClick={() => handleRemoveFromWishlist(item.id)}
+                    className="flex items-center gap-2 text-red-500 hover:text-red-700 px-2 py-2 transition-colors"
+                  >
+                    <FaTrash />
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Footer */}
       <Footer />
     </>
   );
-};
+}
+
 
 export default Wishlist;
