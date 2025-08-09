@@ -35,6 +35,7 @@ const wishlistSlice = createSlice({
     initialState: {
         items: [],
         status: "idle",
+        loading: false,
         error: null,
     },
     reducers: {
