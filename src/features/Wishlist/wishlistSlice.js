@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import wishlistService from "./wishlistService.js";
 
 const initialState = {
-  items: [],
+  wishlistProducts: [],
   loading: false, // Fixed: Changed from isLoading to loading
   success: false, // Fixed: Changed from isSuccess to success
   error: null, // Fixed: Changed from isError to error (and made it null instead of boolean)
@@ -12,9 +12,11 @@ const initialState = {
 // Fixed: Renamed to match component usage
 export const fetchWishlist = createAsyncThunk(
   "wishlist/fetchWishlist",
-  async (token, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      return await wishlistService.getWishlist(token);
+      const response = await wishlistService.getWishlist();
+      console.log(response);
+      return response;
     } catch (error) {
       const message =
         (error.response &&
@@ -105,16 +107,8 @@ const wishlistSlice = createSlice({
       .addCase(fetchWishlist.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        if (Array.isArray(action.payload)) {
-    state.items = action.payload;
-  } else if (Array.isArray(action.payload.data)) {
-    state.items = action.payload.data;
-  } else if (Array.isArray(action.payload.wishlist)) {
-    state.items = action.payload.wishlist;
-  } else {
-    state.items = [];
-  }
-})
+        state.wishlistProducts = action.payload.data.wishlist
+      })
       .addCase(fetchWishlist.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;

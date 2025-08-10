@@ -84,12 +84,19 @@ const Categories = () => {
             >
               Wallets
             </h1>
-            <img src={Wallets} alt="Jackets" className="w-50  rounded-md" />
+            <img
+              src={Wallets}
+              alt="Jackets"
+              className="w-50  rounded-md"
+            />
           </div>
           {/* Category 5 */}
-          <div className="category-5 flex flex-row items-center justify-center text-center p-4 gap-10   rounded-lg shadow-2xl hover:transition-shadow duration-300 cursor-pointer" style={{
-            backgroundColor: primaryBg,
-          }}>
+          <div
+            className="category-5 flex flex-row items-center justify-center text-center p-4 gap-10   rounded-lg shadow-2xl hover:transition-shadow duration-300 cursor-pointer"
+            style={{
+              backgroundColor: primaryBg,
+            }}
+          >
             <h1
               className="sm:text-3xl text-xl text-black font-bold"
               style={{ color: primaryText }}

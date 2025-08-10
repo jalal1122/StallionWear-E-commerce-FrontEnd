@@ -1,13 +1,11 @@
-import axios from "../../utils/axios.js"; 
+import axios from "../../utils/axios.js";
 
-const API_URL = "/api/wishlist"; 
+const API_URL = "/api/wishlist";
 
 // get the user's wishlist
-const getWishlist = async (token) => {
+const getWishlist = async () => {
   const response = await axios.get(API_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers: {},
   });
   return response.data;
 };
