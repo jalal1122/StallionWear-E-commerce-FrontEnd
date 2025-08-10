@@ -3,17 +3,19 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import {
-  FaStar,
   FaCheckCircle,
   FaChevronRight,
   FaChevronLeft,
 } from "react-icons/fa";
 import { useRef } from "react";
 import RenderStars from "../utils/RenderStars";
+import { useSelector } from "react-redux";
 
 const Reviews = ({ heading, reviews }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+
+  const { primaryBg, primaryText } = useSelector((state) => state.colors.colors);
 
   // If no reviews are provided, return null
   if (!reviews || reviews.length === 0) {
@@ -30,7 +32,9 @@ const Reviews = ({ heading, reviews }) => {
   }
 
   return (
-    <div className="bg-white py-16 px-4 md:px-20 relative">
+    <div className="py-16 px-4 md:px-20 relative" style={{
+      backgroundColor: primaryBg, color: primaryText
+    }}>
       <h2 className="text-4xl font-extrabold text-center mb-12 tracking-wide">
         {heading || "Reviews"}
       </h2>
@@ -75,7 +79,9 @@ const Reviews = ({ heading, reviews }) => {
       >
         {reviews.map((review, index) => (
           <SwiperSlide key={index}>
-            <div className="bg-white border rounded-xl shadow-md p-6 h-full">
+            <div className="border rounded-xl shadow-md p-6 h-full" style={{
+              backgroundColor: primaryBg, color: primaryText
+            }}>
               <div className="">
                 <RenderStars rating={parseFloat(review.rating)} />
               </div>
@@ -83,7 +89,7 @@ const Reviews = ({ heading, reviews }) => {
                 {review.name}
                 <FaCheckCircle className="text-green-500" />
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed">
+              <p className=" text-sm leading-relaxed">
                 “{review.review}”
               </p>
             </div>
