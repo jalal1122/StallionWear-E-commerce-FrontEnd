@@ -5,7 +5,7 @@ import Login from "../Pages/Login";
 import Cart from "../Pages/Cart";
 import Categories from "../Pages/Categories";
 import ProductPage from "../Pages/ProductPage";
-import WishList from "../Pages/Wishlist";
+import Wishlist from "../Pages/Wishlist";
 
 const Router = () => {
   return (
@@ -18,7 +18,7 @@ const Router = () => {
         <Route path="/cart" element={<Cart />} />
 
         {/* Wishlist Route */}
-        <Route path="/wishlist" element={<WishList />} />
+        <Route path="/wishlist" element={<Wishlist />} />
 
         {/* Register Route */}
         <Route path="/register" element={<Register />} />
