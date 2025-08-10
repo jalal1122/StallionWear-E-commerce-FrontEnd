@@ -3,13 +3,15 @@ import { useState, useEffect } from "react";
 import { loginUser, reset } from "../features/User/userSlice.js";
 import Header from "../Components/Header/Header";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 import Loader from "../Components/Loader";
 
 const Login = () => {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
+  
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
@@ -23,8 +25,15 @@ const Login = () => {
       console.log("Error:", message);
     }
 
-    if (isSuccess) {
+    if (isSuccess && user) {
       console.log("User logged in:", user);
+
+      if(user.token){
+        localStorage.setItem("token", data.token);
+      }
+      else if(user.accessToken){
+        localStorage.setItem("token", user.accessToken);
+      }
       navigate("/");
     }
     
