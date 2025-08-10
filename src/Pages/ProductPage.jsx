@@ -14,10 +14,18 @@ import RenderStars from "../utils/RenderStars";
 import { useState } from "react";
 import Reviews from "../Components/Reviews";
 import RelevantProducts from "../Components/ProductPage/RelevantProducts";
+import ImageGallery from "../Components/ProductPage/ImageGallery";
+import SizeOptions from "../Components/ProductPage/SizeOptions";
+import ColorOptions from "../Components/ProductPage/ColorOptions";
+import QuantitySelection from "../Components/ProductPage/QuantitySelection";
 
 // ProductPage component
 
 const ProductPage = () => {
+  const { primaryText, primaryBg } = useSelector(
+    (state) => state.colors.colors
+  );
+
   //   get the product details from the redux store
   const { product, isLoading, isError, message } = useSelector(
     (state) => state.products
@@ -95,52 +103,7 @@ const ProductPage = () => {
     dispatch,
   ]); // Optimize dependencies
 
-  // get the colors from the redux store
-  const { primaryText, primaryBg, secondaryText } = useSelector(
-    (state) => state.colors.colors
-  );
-
-  // Handle size selection
-  const handleSizeSelect = (size) => {
-    setCurrentSize(size);
-    console.log("Selected size:", size);
-  };
-
-  // Handle color selection
-  const handleColorSelect = (color) => {
-    setCurrentColor(color);
-    console.log("Selected color:", color);
-  };
-
-  // Get unique sizes from variants
-  const getUniqueSizes = () => {
-    if (!product?.variants) return [];
-    const sizes = product.variants.map((variant) => variant.size);
-    return [...new Set(sizes)]; // Remove duplicates
-  };
-
-  // Get unique colors from variants
-  const getUniqueColors = () => {
-    if (!product?.variants) return [];
-    const colors = product.variants.map((variant) => variant.color);
-    const uniqueColors = [...new Set(colors)]; // Remove duplicates
-
-    // Filter out invalid colors
-    return uniqueColors.filter(
-      (color) => color && typeof color === "string" && color.trim() !== ""
-    );
-  };
-
-  // Handle image gallery click - Switch main image with clicked thumbnail
-  const handleImageGallery = (clickedImage) => {
-    setMainImage(clickedImage);
-    console.log("Switched to image:", clickedImage);
-  };
-
-  // Handle quantity change
-  const handleQuantityChange = (change) => {
-    setQuantity((prev) => Math.max(1, prev + change));
-  };
+  
 
   // Retry loading the product
   const handleRetry = () => {
@@ -150,17 +113,6 @@ const ProductPage = () => {
       dispatch(getProductById(id));
     }
   };
-
-  // Debug logging
-  useEffect(() => {
-    console.log("ProductPage state:", {
-      product,
-      isLoading,
-      isError,
-      message,
-      id,
-    });
-  }, [product, isLoading, isError, message, id]);
 
   // Loading state
   if (isLoading) {
@@ -296,46 +248,24 @@ const ProductPage = () => {
       <LinkLeader productId={id} />
 
       {/* Main content for ProductPage */}
-      <div className="product-content flex flex-col items-center p-2">
+      <div
+        className="product-content flex flex-col items-center px-2 py-5"
+        style={{
+          backgroundColor: primaryBg,
+        }}
+      >
         {/* Product Detail */}
-        <div className="flex justify-between items-start w-[90%] gap-8">
+        <div className="flex justify-center items-start w-[90%] gap-8">
           {/* Left Side - Images */}
-          <div className="flex-1">
-            {/* main Product Image */}
-            <img
-              src={
-                mainImage || product?.images?.[0] || "/placeholder-image.jpg"
-              }
-              alt={product?.name || "Product"}
-              className="w-full max-w-md h-96 object-cover rounded-lg shadow-lg"
-            />
-
-            {/* Multiple small images */}
-            <div className="flex gap-2 mt-4">
-              {product?.images?.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleImageGallery(image)}
-                  className={`border-2 rounded transition-all duration-200 ${
-                    mainImage === image
-                      ? "border-blue-500"
-                      : "border-gray-300 hover:border-blue-300"
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`${product?.name || "Product"} ${index + 1}`}
-                    className="w-20 h-20 object-cover rounded cursor-pointer"
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
+          <ImageGallery product={product} />
 
           {/* Right Side - Product Details */}
-          <div className="flex-1 flex flex-col items-start gap-4 p-2">
+          <div
+            className="flex-1 flex flex-col items-start gap-4 p-2"
+            style={{ color: primaryText }}
+          >
             {/* Product Title */}
-            <h1 className="text-4xl font-bold" style={{ color: primaryText }}>
+            <h1 className="text-4xl font-bold">
               {product?.name || "Loading..."}
             </h1>
 
@@ -354,12 +284,10 @@ const ProductPage = () => {
             </div>
 
             {/* Product Price */}
-            <p className="text-3xl font-bold text-green-600">
-              ${price}
-            </p>
+            <p className="text-3xl font-bold">${price}</p>
 
             {/* Product Description */}
-            <p className="text-gray-600 max-w-md">
+            <p className=" max-w-md">
               {product?.description ||
                 "This is a brief description of the product. It highlights the key features and benefits."}
             </p>
@@ -368,96 +296,23 @@ const ProductPage = () => {
             <div className="w-full h-[1px] my-4 bg-gray-500"> </div>
 
             {/* Size Selection */}
-            <div className="flex flex-col gap-4 w-full">
-              <h2
-                className="text-xl font-semibold"
-                style={{ color: secondaryText }}
-              >
-                Choose Size
-              </h2>
-
-              {/* Size Options */}
-              <div className="sizeOptions flex gap-2 flex-wrap">
-                {getUniqueSizes().map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => handleSizeSelect(size)}
-                    className="text-lg font-bold px-6 py-2 rounded-3xl hover:cursor-pointer transition-all duration-200 border-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    style={{
-                      backgroundColor:
-                        currentSize === size ? primaryText : "transparent",
-                      color: currentSize === size ? primaryBg : primaryText,
-                      borderColor: primaryText,
-                    }}
-                    aria-label={`Select size ${size}`}
-                    aria-pressed={currentSize === size}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <SizeOptions
+              product={product}
+              currentSize={currentSize}
+              setCurrentSize={setCurrentSize}
+            />
 
             {/* Color Selection */}
-            <div className="flex flex-col gap-4 w-full">
-              <h2
-                className="text-xl font-semibold"
-                style={{ color: secondaryText }}
-              >
-                Choose Color
-              </h2>
-
-              {/* Color Options */}
-              <div className="colorOptions flex gap-2 flex-wrap">
-                {getUniqueColors().map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => handleColorSelect(color)}
-                    className="w-8 h-8 rounded-full border-4 hover:cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    style={{
-                      backgroundColor: color.toLowerCase(),
-                      borderColor:
-                        currentColor === color ? primaryText : "transparent",
-                    }}
-                    title={color}
-                    aria-label={`Select color ${color}`}
-                    aria-pressed={currentColor === color}
-                  />
-                ))}
-              </div>
-            </div>
+            <ColorOptions
+              currentColor={currentColor}
+              setCurrentColor={setCurrentColor}
+              product={product}
+            />
 
             {/* Add to Cart Section */}
             <div className="flex flex-col gap-4 w-full mt-4">
               {/* Quantity Selector */}
-              <div className="flex items-center gap-4">
-                <h3
-                  className="text-lg font-semibold"
-                  style={{ color: secondaryText }}
-                >
-                  Quantity:
-                </h3>
-                <div className="flex items-center border rounded">
-                  <button
-                    className="px-3 py-1 hover:bg-gray-100 disabled:opacity-50"
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
-                    aria-label="Decrease quantity"
-                  >
-                    -
-                  </button>
-                  <span className="px-4 py-1 border-x min-w-[3rem] text-center">
-                    {quantity}
-                  </span>
-                  <button
-                    className="px-3 py-1 hover:bg-gray-100"
-                    onClick={() => handleQuantityChange(1)}
-                    aria-label="Increase quantity"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
+              <QuantitySelection quantity={quantity} setQuantity={setQuantity} />
 
               {/* Action Buttons */}
               <div className="flex gap-4 w-full">
