@@ -69,7 +69,7 @@ const cartSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message = "Item added to cart successfully";
-        state.items.push(action.payload);
+        state.items = action.payload.data.items;
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
