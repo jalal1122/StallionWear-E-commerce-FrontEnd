@@ -10,6 +10,10 @@ import { useDispatch } from "react-redux";
 import { getAllProducts } from "../features/Products/productSlice.js";
 import { Link } from "react-router-dom";
 import Product from "../Components/Product";
+import PriceFilter from "../Components/Categories/PriceFilter";
+import BrandFilter from "../Components/Categories/BrandFilter";
+import CategoriesFilter from "../Components/Categories/CategoriesFilter";
+import SortBy from "../Components/Categories/SortBy";
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -113,30 +117,6 @@ const Categories = () => {
     return () => clearTimeout(delayedSearch);
   }, [minPrice, maxPrice, dispatch]); // Include dispatch as dependency
 
-  const brandChangeHandler = (e) => {
-    setbrand(e.target.value);
-    console.log("Brand input changed:", e.target.value);
-  };
-
-  // Price change handlers
-  const minPriceChangeHandler = (e) => {
-    const value = e.target.value;
-    // Only allow numbers and decimal point
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setMinPrice(value);
-      console.log("Min price changed:", value);
-    }
-  };
-
-  const maxPriceChangeHandler = (e) => {
-    const value = e.target.value;
-    // Only allow numbers and decimal point
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setMaxPrice(value);
-      console.log("Max price changed:", value);
-    }
-  };
-
   // State for sort option
   const [sortBy, setSortBy] = useState("Newest");
 
@@ -148,62 +128,6 @@ const Categories = () => {
     "Men Wallets": false,
     "Men Shoes": false,
   });
-
-  // Handle checkbox change
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-
-    setCategoryFilters((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-
-    console.log(`${name} is now ${checked ? "checked" : "unchecked"}`);
-    console.log("All filters:", { ...categoryFilters, [name]: checked });
-
-    // Update filter state to include selected categories
-    const updatedFilters = { ...categoryFilters, [name]: checked };
-    const selectedCategories = Object.keys(updatedFilters).filter(
-      (key) => updatedFilters[key]
-    );
-
-    setFilter({
-      ...filter,
-      category: selectedCategories,
-      nextPage: false,
-      previousPage: false,
-    });
-
-    dispatch(getAllProducts(filter));
-  };
-
-  // Handle sort change
-  const handleSortChange = (e) => {
-    const selectedValue = e.target.value;
-    setSortBy(selectedValue);
-    console.log("Selected sort option:", selectedValue);
-
-    if (selectedValue === "Newest") {
-      setFilter({
-        ...filter,
-        sortBy: "desc",
-        nextPage: false,
-        previousPage: false,
-      });
-    } else if (selectedValue === "Oldest") {
-      setFilter({
-        ...filter,
-        sortBy: "asc",
-        nextPage: false,
-        previousPage: false,
-      });
-    }
-
-    localStorage.removeItem("currentPage");
-
-    // dispatch the action to get all products with the selected sort option
-    dispatch(getAllProducts(filter));
-  };
 
   // Pagination Buttons Hover Function Enter
   const paginationButtonHoverEnter = (e) => {
@@ -264,6 +188,7 @@ const Categories = () => {
   return (
     <>
       <Header />
+
       <div className="flex flex-row items-center justify-center my-10 gap-5 relative">
         {/* Left Side */}
         <div
@@ -277,122 +202,31 @@ const Categories = () => {
           </div>
 
           {/* Categories Filters */}
-          <div className="p-2 border-b border-gray-500 pb-3 flex flex-col gap-3">
-            <div className="categories-filters flex items-center justify-between border-b border-gray-500 pb-3">
-              {/* sub heading */}
-              <h2 className="text-md font-semibold">Filter by Categories</h2>
-              <MdCategory size={22} />
-            </div>
-
-            {/* categories list */}
-
-            {/* Men Jackets */}
-            <div className="flex items-center justify-between">
-              <h2>Men Jackets</h2>
-              <input
-                type="checkbox"
-                className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
-                name="Men Jackets"
-                checked={categoryFilters.menJackets}
-                onChange={handleCheckboxChange}
-              />
-            </div>
-
-            {/* Men Clothings */}
-            <div className="flex items-center justify-between">
-              <h2>Men Clothings</h2>
-              <input
-                type="checkbox"
-                className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
-                name="Men Clothings"
-                checked={categoryFilters.menClothings}
-                onChange={handleCheckboxChange}
-              />
-            </div>
-
-            {/* Men Watches, Rings and Chains */}
-            <div className="flex items-center justify-between">
-              <h2 className="w-2/3">Men Watches, Rings and Chains</h2>
-              <input
-                type="checkbox"
-                className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
-                name="Men Watches Rings Chains"
-                checked={categoryFilters.menWatchesRingsChains}
-                onChange={handleCheckboxChange}
-              />
-            </div>
-
-            {/* Men Wallets */}
-            <div className="flex items-center justify-between">
-              <h2>Men Wallets</h2>
-              <input
-                type="checkbox"
-                className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
-                name="Men Wallets"
-                checked={categoryFilters.menWallets}
-                onChange={handleCheckboxChange}
-              />
-            </div>
-
-            {/* Men Shoes */}
-            <div className="flex items-center justify-between">
-              <h2>Men Shoes</h2>
-              <input
-                type="checkbox"
-                className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
-                name="Men Shoes"
-                checked={categoryFilters.menShoes}
-                onChange={handleCheckboxChange}
-              />
-            </div>
-          </div>
+          <CategoriesFilter
+            categoryFilters={categoryFilters}
+            setCategoryFilters={setCategoryFilters}
+            setFilter={setFilter}
+            dispatch={dispatch}
+            getAllProducts={getAllProducts}
+            filter={filter}
+          />
 
           {/* Filter by Brand */}
-          <div className="p-2 border-b border-gray-500 pb-3 flex flex-col gap-3">
-            <div className="categories-filters flex items-center justify-between border-b border-gray-500 pb-3">
-              {/* sub heading */}
-              <h2 className="text-md font-semibold">Filter by Brand</h2>
-              <MdCategory size={22} />
-            </div>
-
-            {/* Brand Input */}
-            <input
-              type="text"
-              placeholder="Search by Brand"
-              className="border border-gray-300 rounded-md p-2 h-8"
-              value={brand}
-              onChange={brandChangeHandler}
-            />
-          </div>
+          <BrandFilter
+            brand={brand}
+            setbrand={setbrand}
+            setFilter={setFilter}
+            dispatch={dispatch}
+            getAllProducts={getAllProducts}
+          />
 
           {/* Filter by Price */}
-          <div className="p-2 border-b border-gray-500 pb-3 flex flex-col gap-3">
-            <div className="categories-filters flex items-center justify-between border-b border-gray-500 pb-3 gap-5">
-              {/* sub heading */}
-              <h2 className="text-md font-semibold">Filter by Price</h2>
-              <MdCategory size={22} />
-            </div>
-
-            {/* Min Price Input */}
-            <input
-              type="text"
-              placeholder="Min Price"
-              className="border w-1/2 mx-auto border-gray-300 rounded-md p-2 h-8"
-              value={minPrice}
-              onChange={minPriceChangeHandler}
-            />
-
-            <h1 className="font-bold mx-auto text-lg">TO</h1>
-
-            {/* Max Price Input */}
-            <input
-              type="text"
-              placeholder="Max Price"
-              className="border w-1/2 mx-auto border-gray-300 rounded-md p-2 h-8"
-              value={maxPrice}
-              onChange={maxPriceChangeHandler}
-            />
-          </div>
+          <PriceFilter
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            setMinPrice={setMinPrice}
+            setMaxPrice={setMaxPrice}
+          />
         </div>
 
         {/* Right Side */}
@@ -405,25 +239,14 @@ const Categories = () => {
             <h1 className="font-bold text-2xl">Stallion Wear Products</h1>
 
             {/* Sort By */}
-            <div className="flex items-center gap-2">
-              <h3 className="font-bold text-lg">Sort By</h3>
-              <select
-                className="border border-gray-300 rounded-md p-2 hover:cursor-pointer"
-                style={{
-                  backgroundColor: primaryText,
-                  color: primaryBg,
-                }}
-                value={sortBy}
-                onChange={handleSortChange}
-              >
-                <option value="Newest" className="hover:cursor-pointer">
-                  Newest First
-                </option>
-                <option value="Oldest" className="hover:cursor-pointer">
-                  Oldest First
-                </option>
-              </select>
-            </div>
+            <SortBy
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              filter={filter}
+              setFilter={setFilter}
+              dispatch={dispatch}
+              getAllProducts={getAllProducts}
+            />
           </div>
 
           {/* Product List */}
