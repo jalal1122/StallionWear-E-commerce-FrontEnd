@@ -23,9 +23,11 @@ const addToWishlist = async (productId, size, color) => {
 // Fixed: Correct DELETE request syntax
 const removeFromWishlist = async (productId, size, color) => {
   const response = await axios.delete(`${API_URL}/remove`, {
-    productId,
-    size,
-    color,
+    data: {
+      productId,
+      size,
+      color,
+    },
   });
   return response.data;
 };

@@ -55,6 +55,8 @@ export const removeWishlistItem = createAsyncThunk(
   "wishlist/removeWishlistItem",
   async ({ productId, size, color }, thunkAPI) => {
     try {
+      console.log(productId, size, color);
+
       const response = await wishlistService.removeFromWishlist(
         productId,
         size,
