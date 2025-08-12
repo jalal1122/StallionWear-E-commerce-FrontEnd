@@ -61,7 +61,6 @@ export const getAllProducts = createAsyncThunk(
   async (filter, { rejectWithValue }) => {
     try {
       const response = await productService.getAllProducts(filter);
-      console.log("All Products fetched successfully:", response);
 
       return response;
     } catch (error) {
