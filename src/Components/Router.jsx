@@ -6,6 +6,7 @@ import Cart from "../Pages/Cart";
 import Categories from "../Pages/Categories";
 import ProductPage from "../Pages/ProductPage";
 import Wishlist from "../Pages/Wishlist";
+import Checkout from "../Pages/Checkout";
 
 const Router = () => {
   return (
@@ -13,7 +14,6 @@ const Router = () => {
       <Routes>
         {/* Home Route */}
         <Route path="/" element={<LandingPage />} />
-
 
         {/* Wishlist Route */}
         <Route path="/wishlist" element={<Wishlist />} />
@@ -32,6 +32,9 @@ const Router = () => {
 
         {/* Product Page Route */}
         <Route path="/product/:id" element={<ProductPage />} />
+
+        {/* Checkout Page Route */}
+        <Route path="/checkout" element={<Checkout />} />
 
         {/* Fallback Route */}
         <Route path="*" element={<LandingPage />} />

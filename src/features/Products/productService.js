@@ -21,8 +21,6 @@ const getAllProducts = async (filter) => {
   const currentPage =
     parseInt(JSON.parse(localStorage.getItem("currentPage"))) || 1;
 
-  console.log("page to render is: ", currentPage);
-
   // fetch all products from the API with optional filter
   const response = await axios.get(
     `${Api_URL}?page=${currentPage}&sortOrder=${filter?.sortBy || "desc"}${
