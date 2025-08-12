@@ -6,8 +6,8 @@ import { FaTrash, FaShoppingCart } from "react-icons/fa";
 import {
   fetchWishlist,
   removeWishlistItem,
+  moveToCart,
 } from "../features/Wishlist/wishlistSlice";
-import { addToCart } from "../features/Cart/cartSlice";
 // import { useNavigate } from "react-router";
 
 const Wishlist = () => {
@@ -24,14 +24,26 @@ const Wishlist = () => {
   }, [dispatch]);
 
   const handleAddToCart = (item) => {
-    dispatch(addToCart(item));
+    console.log(item);
+
+    dispatch(
+      moveToCart({
+        productId: item.product._id,
+        size: item.variant.size,
+        color: item.variant.color,
+      })
+    );
   };
 
-  const handleRemoveFromWishlist = (itemId) => {
-      dispatch(removeWishlistItem({ itemId}));
+  const handleRemoveFromWishlist = (item) => {
+    dispatch(
+      removeWishlistItem({
+        productId: item.product._id,
+        size: item.variant.size,
+        color: item.variant.color,
+      })
+    );
   };
-
-
 
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
@@ -75,7 +87,11 @@ const Wishlist = () => {
                 key={item?.product?._id}
                 className="border p-4 rounded-lg shadow-md"
               >
-                <img src={item?.product?.images[0]} alt={item?.product?.name} className="w-[200px] h-auto object-cover rounded-md" />
+                <img
+                  src={item?.product?.images[0]}
+                  alt={item?.product?.name}
+                  className="w-[200px] h-auto object-cover rounded-md"
+                />
 
                 <h2 className="text-xl font-semibold">{item?.product?.name}</h2>
                 <p className="text-gray-600">${item?.priceAtTime}</p>
@@ -84,10 +100,10 @@ const Wishlist = () => {
                   className="flex items-center justify-center mt-3 w-full bg-black text-white rounded-full px-4 py-2 rounded hover:bg-gray-600"
                 >
                   <FaShoppingCart className="mx-2" />
-                  Add to Cart 
+                  Add to Cart
                 </button>
                 <button
-                  onClick={() => handleRemoveFromWishlist(item._id || item.id)}
+                  onClick={() => handleRemoveFromWishlist(item)}
                   className="flex items-center justify-center mt-2 w-full bg-black text-white px-4 py-2 rounded-full hover:bg-red-600"
                 >
                   <FaTrash />

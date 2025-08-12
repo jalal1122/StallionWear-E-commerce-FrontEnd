@@ -1,11 +1,28 @@
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { Link } from "react-router";
 import RenderStars from "../utils/RenderStars";
+import { useDispatch } from "react-redux";
+import { addWishlistItem } from "../features/Wishlist/wishlistSlice.js";
 
 const Product = ({ product }) => {
+  const dispatch = useDispatch();
+
+  const handleAddToWishlist = (e) => {
+    e.stopPropagation();
+    console.log("Add to wishlist:", product._id);
+
+    dispatch(
+      addWishlistItem({
+        productId: product._id,
+        size: product.variants[0].size,
+        color: product.variants[0].color,
+      })
+    );
+  };
+
   return (
     <>
-    {/* Product Container */}
+      {/* Product Container */}
       <div
         className="shadow-lg p-4 w-[25vw] rounded-2xl cursor-pointer transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-105 hover:bg-gray-50 relative overflow-hidden group"
         style={{
@@ -38,11 +55,7 @@ const Product = ({ product }) => {
               {/* Add to Wishlist Button */}
               <button
                 className="bg-red-500 hover:bg-red-600 hover:cursor-pointer text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 opacity-0 group-hover:opacity-100 delay-200"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log("Add to wishlist:", product._id);
-                  // Add your wishlist logic here
-                }}
+                onClick={handleAddToWishlist}
               >
                 <FaHeart className="inline-block mr-2" /> Add to Wishlist
               </button>

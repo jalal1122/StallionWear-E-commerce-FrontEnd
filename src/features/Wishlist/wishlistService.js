@@ -11,35 +11,32 @@ const getWishlist = async () => {
 };
 
 // add an item to the user's wishlist
-const addToWishlist = async (itemId, token) => {
-  const response = await axios.post(
-    API_URL,
-    { itemId },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+const addToWishlist = async (productId, size, color) => {
+  const response = await axios.post(`${API_URL}/add`, {
+    productId,
+    size,
+    color,
+  });
   return response.data;
 };
 
 // Fixed: Correct DELETE request syntax
-const removeFromWishlist = async (itemId, token) => {
-  const response = await axios.delete(`${API_URL}/${itemId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+const removeFromWishlist = async (productId, size, color) => {
+  const response = await axios.delete(`${API_URL}/remove`, {
+    data: {
+      productId,
+      size,
+      color,
     },
   });
   return response.data;
 };
 
-// clear the user's wishlist
-const clearWishlist = async (token) => {
-  const response = await axios.delete(API_URL, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+const moveToCart = async (productId, size, color) => {
+  const response = await axios.post(`${API_URL}/moveToCart`, {
+    productId,
+    size,
+    color,
   });
   return response.data;
 };
@@ -48,7 +45,7 @@ const wishlistService = {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
-  clearWishlist,
+  moveToCart,
 };
 
 export default wishlistService;
