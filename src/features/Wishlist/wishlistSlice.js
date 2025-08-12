@@ -32,6 +32,7 @@ export const fetchWishlist = createAsyncThunk(
 export const addWishlistItem = createAsyncThunk(
   "wishlist/addWishlistItem",
   async ({ productId, size, color }, thunkAPI) => {
+  async ({ productId, size, color }, thunkAPI) => {
     try {
       const response = await wishlistService.addToWishlist(
         productId,
@@ -53,6 +54,7 @@ export const addWishlistItem = createAsyncThunk(
 
 export const removeWishlistItem = createAsyncThunk(
   "wishlist/removeWishlistItem",
+  async ({ productId, size, color }, thunkAPI) => {
   async ({ productId, size, color }, thunkAPI) => {
     try {
       const response = await wishlistService.removeFromWishlist(

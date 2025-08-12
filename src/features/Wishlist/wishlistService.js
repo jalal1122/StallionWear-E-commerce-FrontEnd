@@ -28,7 +28,11 @@ const removeFromWishlist = async (productId, size, color) => {
       size,
       color,
     },
-  });
+    {
+      headers: {},
+    }
+   
+  );
   return response.data;
 };
 
@@ -38,6 +42,17 @@ const moveToCart = async (productId, size, color) => {
     size,
     color,
   });
+  return response.data;
+};
+
+const moveToCart = async (productId, size, color) => {
+  const response = await axios.post(
+    "/api/cart",
+    { productId, size, color },
+    {
+      headers: {},
+    }
+  );
   return response.data;
 };
 

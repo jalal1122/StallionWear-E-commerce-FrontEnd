@@ -3,6 +3,7 @@ import cartService from "./cartService.js";
 
 const initialState = {
   items: [],
+  cartSummary: [],
   success: false,
   loading: false,
   error: null,
@@ -33,8 +34,8 @@ export const removeFromCart = createAsyncThunk(
   }
 );
 
-export const getCartItems = createAsyncThunk(
-  "cart/getCartItems",
+export const fetchCartItems = createAsyncThunk(
+  "cart/fetchCartItems",
   async (_, { rejectWithValue }) => {
     try {
       const response = await cartService.getCartItems();
@@ -45,6 +46,30 @@ export const getCartItems = createAsyncThunk(
   }
 );
 
+export const decrementCartItems = createAsyncThunk(
+  "cart/decrementCartItems",
+  async ({ productId, size, color }, { rejectWithValue }) => {
+    try {
+      const response = await cartService.decrementCartItem( productId, size, color);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const incrementCartItems = createAsyncThunk(
+  "cart/incrementCartItems",
+  async ({productId, size, color}, { rejectWithValue}) => {
+    try {
+      const response = await cartService.incrementCartItem(productId, size, color);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -53,7 +78,7 @@ const cartSlice = createSlice({
       state.items.push(action.payload);
     },
     removeItem: (state, action) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.items = state.items.filter((item) => item.id !== action.payload);
     },
     clearCart: (state) => {
       state.items = [];
@@ -83,28 +108,67 @@ const cartSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message = "Item removed from cart successfully";
-        state.items = state.items.filter(item => item.id !== action.payload.id);
+        state.items = state.items.filter(
+          (item) => item.id !== action.payload.id
+        );
       })
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.message = action.payload.message;
       })
-      .addCase(getCartItems.pending, (state) => {
+      .addCase(fetchCartItems.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getCartItems.fulfilled, (state, action) => {
+      .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
         state.message = "Cart items fetched successfully";
-        state.items = action.payload;
+        state.items = action.payload.data.cart;
+        state.cartSummary = action.payload.data.cartSummary;
       })
-      .addCase(getCartItems.rejected, (state, action) => {
+      .addCase(fetchCartItems.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.message = action.payload.message;
+      })
+      .addCase(decrementCartItems.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(decrementCartItems.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.message = "Cart item decremented successfully";
+        state.items = state.items.map((item) =>
+          item.id === action.payload.data.itemId
+            ? { ...item, quantity: action.payload.data.quantity }
+            : item
+        );
+      })
+      .addCase(decrementCartItems.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.message = action.payload.message;
+      })
+      .addCase(incrementCartItems.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(incrementCartItems.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.message = "Cart item incremented successfully";
+        state.items = state.items.map((item) =>
+          item.id === action.payload.data.itemId
+            ? { ...item, quantity: action.payload.data.quantity }
+            : item
+        );
+      })
+      .addCase(incrementCartItems.rejected, (state, action) => {
         state.loading = false;
         state.success = false;
         state.message = action.payload.message;
       });
-  }
+  },
 });
 
 export const { addItem, removeItem, clearCart } = cartSlice.actions;

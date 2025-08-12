@@ -14,11 +14,12 @@ const Router = () => {
         {/* Home Route */}
         <Route path="/" element={<LandingPage />} />
 
-        {/* Cart Route */}
-        <Route path="/cart" element={<Cart />} />
 
         {/* Wishlist Route */}
         <Route path="/wishlist" element={<Wishlist />} />
+
+        {/* Cart Route */}
+        <Route path="/cart" element={<Cart />} />
 
         {/* Register Route */}
         <Route path="/register" element={<Register />} />

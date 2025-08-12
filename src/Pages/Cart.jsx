@@ -1,93 +1,241 @@
 import Header from "../Components/Header/Header";
-import Footer from "../Components/Footer"
-import Jacket from "../Images/J12.jpg"
+import Footer from "../Components/Footer";
 import { FaTrash } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCartItems,
+  removeFromCart,
+  clearCart,
+  decrementCartItems,
+  incrementCartItems,
+} from "../features/Cart/cartSlice.js";
+import { useEffect } from "react";
 
 const Cart = () => {
+  const dispatch = useDispatch();
+
+  // Fixed: Added default array and get all needed values
+  const {
+    items = [], // Fixed: Added default empty array
+    cartSummary = [], // Fixed: Added default empty array
+    loading = false,
+    error = null,
+  } = useSelector((state) => state.cart || {});
+
+  // Fixed: Calculate missing values
+  // const shippingFee = totalPrice > 100 ? 0 : 10;
+  // const finalTotal = totalPrice + shippingFee;
+
+  useEffect(() => {
+    dispatch(fetchCartItems());
+  }, [dispatch]);
+
+  const handleRemoveFromCart = (itemId) => {
+    dispatch(removeFromCart(itemId));
+  };
+
+  const handleDecrement = (productId, size, color, quantity) => {
+    dispatch(
+      decrementCartItems({ productId, size, color, quantity: quantity - 1 })
+    );
+  };
+  const handleIncrement = (productId, size, color, quantity) => {
+    dispatch(
+      incrementCartItems({ productId, size, color, quantity: quantity + 1 })
+    );
+  };
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
+
+  if (loading) {
+    return (
+      <>
+        <Header />
+        <div className="text-center mt-10">Loading cart...</div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Header />
+        <div className="text-center mt-10 text-red-500">
+          Error: {typeof error === "string" ? error : "Failed to load cart"}
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
-      {/* Headrer */}
-        <Header />
-        {/* Cart */}
-        <div className="ml-5 mt-3">
-            <a href="/">Home  </a>
-            &gt;
-            <span>  Cart</span>
-        </div>
-        <div className='cart-container m-4'>
-            <h1 className="text-3xl font-bold sm:text-5xl text-black text-center">
-                YOUR CART
-            </h1>
-            <div className="flex flex-col lg:flex-row w-[95%] items-center lg:items-start mx-auto mt-10">
-                {/* Right-Side */}
-                <div className="cart-items flex flex-col justify-center items-center gap-5 p-5 m-2 border-2 border-[#f0f0f0] rounded-lg w-full lg:w-2/3">
-                    <div className="cart-item flex flex-col sm:flex-row justify-center items-center bg-white gap-5 p-5 m-2 border-2 border- [#f0f0f0] rounded-lg w-full shadow-md">
-                        {/* Image */}
-                        <div className="image w-fit h-fit flex items-center justify-center p-2 shadow-lg rounded-lg">
-                            <img src={Jacket} alt="J-P" className=" aspect-auto w-60 rounded-lg"/>
+      <Header />
+
+      {/* Breadcrumb */}
+      <div className="ml-5 mt-3">
+        <a href="/" className="text-gray-500 hover:underline">
+          Home
+        </a>
+        &gt;
+        <span className="ml-2">Cart</span>
+      </div>
+
+      <div className="cart-container m-4">
+        <h1 className="text-3xl font-bold sm:text-5xl text-black text-center">
+          YOUR CART
+        </h1>
+
+        {items.length === 0 ? (
+          <div className="text-center mt-10">
+            <h2 className="text-2xl font-semibold">Your cart is empty</h2>
+            <p className="mt-4 text-gray-600">
+              Browse our products and add items to your cart.
+            </p>
+            <a
+              href="/products"
+              className="mt-4 inline-block px-6 py-2 bg-black text-white rounded hover:bg-gray-700 transition-colors"
+            >
+              Continue Shopping
+            </a>
+          </div>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto mt-10">
+            {/* Cart Items */}
+            <div className="flex-1">
+              <div className="space-y-4">
+                {items.map((item) => {
+                  // Fixed: Determine correct item ID and properties
+                  const itemId = item?.product?._id || item?._id || item?.id;
+                  const itemName =
+                    item?.product?.name || item?.name || "Unnamed Product";
+                  const itemPrice = item?.product?.price || item?.price || 0;
+                  const itemImage =
+                    item?.product?.images?.[0] ||
+                    item?.image ||
+                    "/Images/J12.jpg";
+                  const itemQuantity = item?.quantity || 1;
+
+                  return (
+                    <div
+                      key={itemId}
+                      className="flex items-center justify-between border-b pb-4"
+                    >
+                      {/* Product Info */}
+                      <div className="flex items-center flex-1">
+                        <img
+                          src={itemImage}
+                          alt={itemName}
+                          className="w-20 h-20 object-cover rounded mr-4"
+                          onError={(e) => {
+                            e.target.src = "/Images/J12.jpg";
+                          }}
+                        />
+                        <div>
+                          <h3 className="text-lg font-semibold">{itemName}</h3>
+                          <p className="text-gray-600">${itemPrice}</p>
                         </div>
-                        {/* Product-Details */}
-                        <div className="details flex flex-col gap-5 w-full justify-center">
-                            <div className="title flex flex-col gap-3">
-                                <h3 className="font-bold text-2xl text--black">TACVASEN Men's Bomber Jacket Lightweight Casual Spring Fall Windbreaker Zip Up Coat with Pocket</h3>
-                                <p className="text-lg text-black font-semibold">
-                                    Size : Medium
-                                </p>
-                            </div>
-                            <div className="flex justify-between items-center gap-3 ">
-                                <h2 className="font-bold text-black text-2xl">$33.99</h2>
-                                <div className="quantity flex justify-center items-center bg-[#f0f0f0] gap-5 rounded-full px-3 py-1">
-                                   <button className="decrease-quantity text-xl sm:text-2xl rounded-full hover:cursor-pointer hover:bg-gray-300"> - </button>
-                                   <span className="p-quntity font-bold sm:text-lg text-md"> 1 </span>
-                                   <button className="decrease-quantity text-xl sm:text-2xl rounded-full hover:cursor-pointer hover:bg-gray-300"> + </button>
-                                </div>
-                            </div>
-                            {/* Delete-Button */}
-                            <div className="delete-product flex justify-center items-center">
-                                <button className="flex justify-center items-center bg-black text-white px-4 py-2 w-3/4 rounded-full hover:cursor-pointer hover:bg-red-600 active:scale-95">
-                                    <FaTrash />
-                                </button>
-                            </div>
-                        </div>                   
-                    </div>                
-                </div>
+                      </div>
 
-                {/* Left-SIde */}
-                <div className="cart-summary flex flex-col justify-center items-center gap-5 p-5 m-2 border-2 border-[#f0f0f0] rounded-lg w-full md:w-1/3">
-                   <h2 className="text-3xl font-bold text-black">Order Summary</h2>
-
-                   <div className="subTotal flex justify-between items-center w-2/3 lg:w-full gap-5">
-                       <p>Subtotal</p>
-                       <p className="font-bold text-lg">$33.99</p>
-                   </div>
-                   <div className="discount flex justify-between items-center w-2/3 lg:w-full gap-5">
-                       <p>Discount</p>
-                       <p className="font-bold text-lg">$0</p>
-                   </div>
-                   <div className="Ship-fee flex justify-between items-center w-2/3 lg:w-full gap-5">
-                       <p>Shipping Fee</p>
-                       <p className="font-bold text-lg">$15</p>
-                   </div>
-                   <div className="line h-[1px] w-full bg-[#f0f0f0] "></div>
-                   {/* Total Amont */}
-                   <div className="total flex justify-between items-center w-2/3 lg:w-full gap-5">
-                       <p className="font-bold text-lg">Total</p>
-                       <p className="font-bold text-lg">$48.99</p>
-                   </div>
-                   {/* Checkout Button */}
-                   <div className="chechout-button flex justify-between items-center w-1/3">
-                      <button className="bg-black w-full text-white active:scale-95 px-5 py-2 rounded-full hover:cursor-pointer">
-                        Checkout
+                      {/* Quantity Controls */}
+                      <div className="flex items-center mx-4">
+                        <button
+                          onClick={() =>
+                            handleDecrement(
+                              item.product._id,
+                              item.product.size,
+                              item.product.color,
+                              item.product.quantity - 1
+                            )
+                          }
+                          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                          disabled={item.product.quantity <= 1}
+                        >
+                          -
                         </button>
-                   </div>
-                </div>
-            </div>
-        </div>
-        {/* Footer */}
-        <Footer />
-         
-    </>
-  )
-}
+                        <span className="mx-3 min-w-[2rem] text-center">
+                          {itemQuantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            handleIncrement(
+                              item.product._id,
+                              item.product.size,
+                              item.product.color,
+                              item.product.quantity + 1
+                            )
+                          }
+                          className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        >
+                          +
+                        </button>
+                      </div>
 
-export default Cart
+                      {/* Item Total */}
+                      <div className="text-lg font-semibold min-w-[4rem] text-center">
+                        ${(itemPrice * itemQuantity).toFixed(2)}
+                      </div>
+
+                      {/* Remove Button */}
+                      <button
+                        onClick={() => handleRemoveFromCart(itemId)}
+                        className="text-red-600 hover:text-red-800 ml-4 p-2"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Clear Cart Button */}
+              <div className="mt-6">
+                <button
+                  onClick={handleClearCart}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                >
+                  Clear Cart
+                </button>
+              </div>
+            </div>
+
+            {/* Cart Summary */}
+            <div className="lg:w-80">
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span>Items ({cartSummary.totalItems}):</span>
+                    <span>${cartSummary.totalAmount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping:</span>
+                    <span>${10}</span>
+                  </div>
+                  <div className="border-t pt-2 mt-2">
+                    <div className="flex justify-between font-semibold text-lg">
+                      <span>Total:</span>
+                      <span>${cartSummary.totalAmount + 10}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="w-full mt-6 px-6 py-3 bg-black text-white rounded hover:bg-gray-800 transition-colors">
+                  Proceed to Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Footer />
+    </>
+  );
+};
+
+export default Cart;
