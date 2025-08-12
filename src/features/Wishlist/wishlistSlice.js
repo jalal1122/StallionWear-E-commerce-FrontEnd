@@ -31,9 +31,9 @@ export const fetchWishlist = createAsyncThunk(
 
 export const addWishlistItem = createAsyncThunk(
   "wishlist/addWishlistItem",
-  async ({ itemId, token }, thunkAPI) => {
+  async ({ productId, size, color }, thunkAPI) => {
     try {
-      return await wishlistService.addToWishlist(itemId, token);
+      return await wishlistService.addToWishlist(productId, size, color);
     } catch (error) {
       const message =
         (error.response &&
@@ -48,9 +48,9 @@ export const addWishlistItem = createAsyncThunk(
 
 export const removeWishlistItem = createAsyncThunk(
   "wishlist/removeWishlistItem",
-  async ({ itemId, token }, thunkAPI) => {
+  async ({ productId, size, color }, thunkAPI) => {
     try {
-      return await wishlistService.removeFromWishlist(itemId, token);
+      return await wishlistService.removeFromWishlist(productId, size, color);
     } catch (error) {
       const message =
         (error.response &&
@@ -68,6 +68,23 @@ export const clearWishlist = createAsyncThunk(
   async (token, thunkAPI) => {
     try {
       return await wishlistService.clearWishlist(token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const moveToCart = createAsyncThunk(
+  "wishlist/moveToCart",
+  async ({ productId, size, color }, thunkAPI) => {
+    try {
+      return await wishlistService.moveToCart(productId, size, color);
     } catch (error) {
       const message =
         (error.response &&
@@ -163,7 +180,23 @@ const wishlistSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.message = action.payload;
-      });
+      })
+      // Move to Cart
+      .addCase(moveToCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(moveToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.items = state.items.filter(
+          (item) => item.product._id !== action.payload.productId
+        );
+      })
+      .addCase(moveToCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.message = action.payload;
+      })
   },
 });
 
