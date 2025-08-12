@@ -1,17 +1,34 @@
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
 import { useSelector } from "react-redux";
-import { FaMoneyBillWave, FaPaypal } from "react-icons/fa";
-import { SiStripe } from "react-icons/si";
 import COD from "../assets/cash-on-delivery.png";
 import paypal from "../assets/paypal.png";
 import stripe from "../assets/stripe.png";
+import { useState } from "react";
 
 const Checkout = () => {
   // get the colors from the redux store
   const { primaryText, primaryBg } = useSelector(
     (state) => state.colors.colors
   );
+
+  const [billingInfo, setBillingInfo] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    zipCode: "",
+    country: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setBillingInfo((prevInfo) => ({
+      ...prevInfo,
+      [name]: value,
+    }));
+  };
 
   return (
     <>
@@ -94,50 +111,78 @@ const Checkout = () => {
                 {/* Full Name */}
                 <input
                   type="text"
+                  required
                   placeholder="Full Name"
+                  name="fullName"
+                  value={billingInfo.fullName}
+                  onChange={handleInputChange}
                   className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Email Address */}
                 <input
                   type="email"
+                  required
                   placeholder="Email Address"
+                  name="email"
+                  value={billingInfo.email}
+                  onChange={handleInputChange}
                   className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Phone Number */}
                 <input
                   type="text"
+                  required
                   minLength={11}
                   placeholder="Phone Number 03000000000"
+                  name="phone"
+                  value={billingInfo.phone}
+                  onChange={handleInputChange}
                   className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Address */}
                 <input
                   type="text"
+                  required
                   placeholder="Address"
+                  name="address"
+                  value={billingInfo.address}
+                  onChange={handleInputChange}
                   className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* City */}
                 <input
                   type="text"
+                  required
                   placeholder="City"
+                    name="city"
+                    value={billingInfo.city}
+                    onChange={handleInputChange}
                   className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Zip Code */}
                 <input
                   type="text"
+                  required
                   placeholder="Zip Code"
+                  name="zipCode"
+                  value={billingInfo.zipCode}
+                  onChange={handleInputChange}
                   className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Country */}
                 <input
                   type="text"
+                  required
                   placeholder="Country"
+                  name="country"
+                  value={billingInfo.country}
+                  onChange={handleInputChange}
                   className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
