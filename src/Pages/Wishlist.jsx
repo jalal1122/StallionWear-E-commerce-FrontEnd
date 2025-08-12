@@ -96,11 +96,10 @@ const Wishlist = () => {
                 <h2 className="text-xl font-semibold">{item?.product?.name}</h2>
                 <p className="text-gray-600">${item?.priceAtTime}</p>
                 <button
-                  onClick={() => handleMoveToCart(item?.product?._id, item?.size, item?.color)}
+                  onClick={() => handleAddToCart(item)}
                   className="flex items-center justify-center mt-3 w-full bg-black text-white rounded-full px-4 py-2 rounded hover:bg-gray-600"
                 >
                   <FaShoppingCart className="mx-2" />
-                  Add to Cart
                   Add to Cart
                 </button>
                 <button

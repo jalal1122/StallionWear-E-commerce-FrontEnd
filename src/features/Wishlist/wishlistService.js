@@ -23,16 +23,10 @@ const addToWishlist = async (productId, size, color) => {
 // Fixed: Correct DELETE request syntax
 const removeFromWishlist = async (productId, size, color) => {
   const response = await axios.delete(`${API_URL}/remove`, {
-    data: {
-      productId,
-      size,
-      color,
-    },
-    {
-      headers: {},
-    }
-   
-  );
+    productId,
+    size,
+    color,
+  });
   return response.data;
 };
 
@@ -42,17 +36,6 @@ const moveToCart = async (productId, size, color) => {
     size,
     color,
   });
-  return response.data;
-};
-
-const moveToCart = async (productId, size, color) => {
-  const response = await axios.post(
-    "/api/cart",
-    { productId, size, color },
-    {
-      headers: {},
-    }
-  );
   return response.data;
 };
 
