@@ -34,14 +34,15 @@ const Cart = () => {
     dispatch(removeFromCart(itemId));
   };
 
-  const handleDecrement = (productId, size, color, quantity) => {
+  const handleDecrement = (productId, size, color) => {
     dispatch(
-      decrementCartItems({ productId, size, color, quantity: quantity - 1 })
+      decrementCartItems({ productId, size, color })
     );
   };
-  const handleIncrement = (productId, size, color, quantity) => {
+  const handleIncrement = (productId, size, color) => {
+    console.log(productId, size, color)
     dispatch(
-      incrementCartItems({ productId, size, color, quantity: quantity + 1 })
+      incrementCartItems({ productId, size, color})
     );
   };
 
@@ -146,13 +147,13 @@ const Cart = () => {
                           onClick={() =>
                             handleDecrement(
                               item.product._id,
-                              item.product.size,
-                              item.product.color,
-                              item.product.quantity - 1
+                              item.size,
+                              item.color,
+                              
                             )
                           }
                           className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-                          disabled={item.product.quantity <= 1}
+                          // disabled={item.quantity < 1}
                         >
                           -
                         </button>
@@ -161,11 +162,12 @@ const Cart = () => {
                         </span>
                         <button
                           onClick={() =>
+                            
                             handleIncrement(
                               item.product._id,
-                              item.product.size,
-                              item.product.color,
-                              item.product.quantity + 1
+                              item.size,
+                              item.color,
+                              
                             )
                           }
                           className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"

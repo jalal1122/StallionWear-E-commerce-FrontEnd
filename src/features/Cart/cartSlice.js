@@ -12,9 +12,9 @@ const initialState = {
 
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async (item, { rejectWithValue }) => {
+  async ({ productId, size, color }, { rejectWithValue }) => {
     try {
-      const response = await cartService.addToCart(item);
+      const response = await cartService.addToCart(productId, size, color);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -24,9 +24,9 @@ export const addToCart = createAsyncThunk(
 
 export const removeFromCart = createAsyncThunk(
   "cart/removeFromCart",
-  async (itemId, { rejectWithValue }) => {
+  async ({ productId, size, color }, { rejectWithValue }) => {
     try {
-      const response = await cartService.removeFromCart(itemId);
+      const response = await cartService.removeFromCart(productId, size, color);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -50,7 +50,7 @@ export const decrementCartItems = createAsyncThunk(
   "cart/decrementCartItems",
   async ({ productId, size, color }, { rejectWithValue }) => {
     try {
-      const response = await cartService.decrementCartItem( productId, size, color);
+      const response = await cartService.decrementCartItems( productId, size, color);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -62,7 +62,8 @@ export const incrementCartItems = createAsyncThunk(
   "cart/incrementCartItems",
   async ({productId, size, color}, { rejectWithValue}) => {
     try {
-      const response = await cartService.incrementCartItem(productId, size, color);
+      const response = await cartService.incrementCartItems(productId, size, color);
+      console.log(response)
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -139,11 +140,7 @@ const cartSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message = "Cart item decremented successfully";
-        state.items = state.items.map((item) =>
-          item.id === action.payload.data.itemId
-            ? { ...item, quantity: action.payload.data.quantity }
-            : item
-        );
+         console.log(action.payload.data)
       })
       .addCase(decrementCartItems.rejected, (state, action) => {
         state.loading = false;
@@ -157,11 +154,16 @@ const cartSlice = createSlice({
         state.loading = false;
         state.success = true;
         state.message = "Cart item incremented successfully";
-        state.items = state.items.map((item) =>
-          item.id === action.payload.data.itemId
-            ? { ...item, quantity: action.payload.data.quantity }
-            : item
-        );
+       console.log(action.payload.data)
+       state.items = state.items.map(
+        (item) => {
+          if( item.product._id === action.payload.data.updatedItem.productId ){
+            item.quantity = action.payload.data.updatedItem.newQuantity
+
+          }
+          
+        }
+       )
       })
       .addCase(incrementCartItems.rejected, (state, action) => {
         state.loading = false;

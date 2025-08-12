@@ -3,17 +3,27 @@ import axios from "../../utils/axios.js";
 const API_URL = "/api/cart";
 
 const cartService = {
-  addToCart: async (item) => {
+  addToCart: async ( productId, size, color) => {
     try {
-      const response = await axios.post(`${API_URL}/add`, item);
+      const response = await axios.post(`${API_URL}/add`, {
+        productId,
+        size,
+        color,
+      });
       return response.data;
     } catch (error) {
       throw error;
     }
   },
-  removeFromCart: async () => {
+  removeFromCart: async ( productId, size, color) => {
     try {
-      const response = await axios.delete(`${API_URL}/remove`);
+      const response = await axios.delete(`${API_URL}/remove`, {
+         data:{
+           productId,
+          size,
+          color,
+         }
+      });
       return response.data;
     } catch (error) {
       throw error;
@@ -38,18 +48,31 @@ const cartService = {
     }
   },
 
-  decrementCartItems: async () => {
+  decrementCartItems: async ( productId, size, color) => {
     try {
-      const response = await axios.delete(`${API_URL}/decrement`);
+      const response = await axios.patch(`${API_URL}/decrement`, {
+         
+          productId,
+          size,
+          color
+         
+      });
       return response.data;
     } catch (error) {
       throw error;
     }
   },
 
-  incrementCartItems: async () => {
+  incrementCartItems: async ( productId, size, color) => {
+    console.log(productId, size, color)
     try {
-      const response = await axios.post(`${API_URL}/increment`);
+      const response = await axios.patch(`${API_URL}/increment`, {
+       
+        productId,
+        size,
+        color
+       
+      });
       return response.data;
     } catch (error) {
       throw error;
