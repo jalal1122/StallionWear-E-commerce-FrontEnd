@@ -18,6 +18,8 @@ import ImageGallery from "../Components/ProductPage/ImageGallery";
 import SizeOptions from "../Components/ProductPage/SizeOptions";
 import ColorOptions from "../Components/ProductPage/ColorOptions";
 import QuantitySelection from "../Components/ProductPage/QuantitySelection";
+import { addToCart } from "../features/Cart/cartSlice.js";
+import { addWishlistItem } from "../features/Wishlist/wishlistSlice.js";
 
 // ProductPage component
 
@@ -66,6 +68,7 @@ const ProductPage = () => {
     if (id) {
       console.log("Fetching product with ID:", id);
       dispatch(getProductById(id));
+      console.log("Product fetched successfully:", product);
     }
   }, [dispatch, id]); // Remove 'product' to avoid infinite loop
 
@@ -103,8 +106,6 @@ const ProductPage = () => {
     dispatch,
   ]); // Optimize dependencies
 
-  
-
   // Retry loading the product
   const handleRetry = () => {
     console.log("Retrying product fetch for ID:", id);
@@ -112,6 +113,32 @@ const ProductPage = () => {
     if (id) {
       dispatch(getProductById(id));
     }
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+
+    dispatch(
+      addToCart({
+        productId: id,
+        size: currentSize,
+        color: currentColor,
+        quantity: quantity,
+        price: finalPrice,
+      })
+    );
+  };
+
+  const handleAddToWishlist = (e) => {
+    e.stopPropagation();
+
+    dispatch(
+      addWishlistItem({
+        productId: id,
+        size: currentSize,
+        color: currentColor,
+      })
+    );
   };
 
   // Loading state
@@ -312,22 +339,17 @@ const ProductPage = () => {
             {/* Add to Cart Section */}
             <div className="flex flex-col gap-4 w-full mt-4">
               {/* Quantity Selector */}
-              <QuantitySelection quantity={quantity} setQuantity={setQuantity} />
+              <QuantitySelection
+                quantity={quantity}
+                setQuantity={setQuantity}
+              />
 
               {/* Action Buttons */}
               <div className="flex gap-4 w-full">
                 <button
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
                   disabled={!currentSize || !currentColor}
-                  onClick={() =>
-                    console.log("Add to cart:", {
-                      productId: id,
-                      size: currentSize,
-                      color: currentColor,
-                      quantity: quantity,
-                      price: finalPrice,
-                    })
-                  }
+                  onClick={(e) => handleAddToCart(e)}
                   aria-label={
                     !currentSize || !currentColor
                       ? "Select size and color to add to cart"
@@ -340,7 +362,7 @@ const ProductPage = () => {
                 </button>
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200"
-                  onClick={() => console.log("Add to wishlist:", id)}
+                  onClick={(e) => handleAddToWishlist(e)}
                   title="Add to Wishlist"
                   aria-label="Add to wishlist"
                 >

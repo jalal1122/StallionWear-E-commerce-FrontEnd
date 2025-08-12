@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import RenderStars from "../utils/RenderStars";
 import { useDispatch } from "react-redux";
 import { addWishlistItem } from "../features/Wishlist/wishlistSlice.js";
+import { addToCart } from "../features/Cart/cartSlice.js";
 
 const Product = ({ product }) => {
   const dispatch = useDispatch();
@@ -16,6 +17,21 @@ const Product = ({ product }) => {
         productId: product._id,
         size: product.variants[0].size,
         color: product.variants[0].color,
+      })
+    );
+  };
+
+  const handleAddtoCart = (e) => {
+    e.stopPropagation();
+
+    console.log("Add to Cart", product._id);
+
+    dispatch(
+      addToCart({
+        productId: product._id,
+        size: product.variants[0].size,
+        color: product.variants[0].color,
+        price: product.price
       })
     );
   };
@@ -43,11 +59,7 @@ const Product = ({ product }) => {
               {/* Add to Cart Button */}
               <button
                 className="bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 opacity-0 group-hover:opacity-100 delay-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log("Add to cart:", product._id);
-                  // Add your cart logic here
-                }}
+                onClick={handleAddtoCart}
               >
                 <FaShoppingCart className="inline-block mr-2" /> Add to Cart
               </button>

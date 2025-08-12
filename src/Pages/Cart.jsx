@@ -30,20 +30,22 @@ const Cart = () => {
     dispatch(fetchCartItems());
   }, [dispatch]);
 
-  const handleRemoveFromCart = (itemId) => {
-    dispatch(removeFromCart(itemId));
+  const handleRemoveFromCart = (item) => {
+    dispatch(
+      removeFromCart({
+        productId: item.product._id,
+        size: item.size,
+        color: item.color,
+      })
+    );
   };
 
   const handleDecrement = (productId, size, color) => {
-    dispatch(
-      decrementCartItems({ productId, size, color })
-    );
+    dispatch(decrementCartItems({ productId, size, color }));
   };
   const handleIncrement = (productId, size, color) => {
-    console.log(productId, size, color)
-    dispatch(
-      incrementCartItems({ productId, size, color})
-    );
+    console.log(productId, size, color);
+    dispatch(incrementCartItems({ productId, size, color }));
   };
 
   const handleClearCart = () => {
@@ -148,8 +150,7 @@ const Cart = () => {
                             handleDecrement(
                               item.product._id,
                               item.size,
-                              item.color,
-                              
+                              item.color
                             )
                           }
                           className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
@@ -162,12 +163,10 @@ const Cart = () => {
                         </span>
                         <button
                           onClick={() =>
-                            
                             handleIncrement(
                               item.product._id,
                               item.size,
-                              item.color,
-                              
+                              item.color
                             )
                           }
                           className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
@@ -183,7 +182,7 @@ const Cart = () => {
 
                       {/* Remove Button */}
                       <button
-                        onClick={() => handleRemoveFromCart(itemId)}
+                        onClick={() => handleRemoveFromCart(item)}
                         className="text-red-600 hover:text-red-800 ml-4 p-2"
                       >
                         <FaTrash />
