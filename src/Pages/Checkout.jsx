@@ -2,9 +2,9 @@ import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
 import { useSelector } from "react-redux";
 import COD from "../assets/cash-on-delivery.png";
-import paypal from "../assets/paypal.png";
-import stripe from "../assets/stripe.png";
-import { useState } from "react";
+import Paypal from "../assets/paypal.png";
+import Stripe from "../assets/stripe.png";
+import { useEffect, useState } from "react";
 
 const Checkout = () => {
   // get the colors from the redux store
@@ -12,6 +12,7 @@ const Checkout = () => {
     (state) => state.colors.colors
   );
 
+  // manage billing information state
   const [billingInfo, setBillingInfo] = useState({
     fullName: "",
     email: "",
@@ -22,6 +23,9 @@ const Checkout = () => {
     country: "",
   });
 
+  // manage payment State
+  const [paymentMethod, setPaymentMethod] = useState("");
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBillingInfo((prevInfo) => ({
@@ -29,6 +33,29 @@ const Checkout = () => {
       [name]: value,
     }));
   };
+
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method);
+  };
+
+  useEffect(() => {
+    setPaymentMethod(COD);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+      setBillingInfo((prev) => ({
+        ...prev,
+        fullName: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        address: user.address || "",
+        city: user.city || "",
+        zipCode: user.zipCode || "",
+        country: user.country || "",
+      }));
+    }
+  }, [setBillingInfo]);
 
   return (
     <>
@@ -46,7 +73,7 @@ const Checkout = () => {
         {/* Left */}
         <div className="left w-[62%] flex flex-col gap-5">
           {/* Payment Section */}
-          <div className="flex flex-col p-2 gap-3">
+          <div className="flex flex-col gap-3">
             {/* Payment heading */}
             <h1
               className="text-2xl font-bold py-2 px-4"
@@ -64,37 +91,37 @@ const Checkout = () => {
                 <li
                   className="flex items-center gap-2 px-3 py-2 rounded-lg shadow-md hover:cursor-pointer"
                   style={{
-                    backgroundColor: primaryBg,
-                    color: primaryText,
+                    backgroundColor: primaryText,
                   }}
+                  onClick={() => handlePaymentMethodChange(COD)}
                 >
                   <img src={COD} alt="" className="h-8 w-10" />
                 </li>
                 <li
                   className="flex items-center gap-2 px-3 py-2 rounded-lg shadow-md hover:cursor-pointer"
                   style={{
-                    backgroundColor: primaryBg,
-                    color: primaryText,
+                    backgroundColor: primaryText,
                   }}
+                  onClick={() => handlePaymentMethodChange(Stripe)}
                 >
-                  <img src={stripe} alt="" className="h-8 w-10" />
+                  <img src={Stripe} alt="" className="h-8 w-10" />
                 </li>
                 <li
                   className="flex items-center gap-2 px-2 py-1 rounded-lg shadow-md hover:cursor-pointer"
                   style={{
-                    backgroundColor: primaryBg,
-                    color: primaryText,
+                    backgroundColor: primaryText,
                   }}
+                  onClick={() => handlePaymentMethodChange(Paypal)}
                 >
                   {" "}
-                  <img src={paypal} alt="" className="h-10 w-12" />
+                  <img src={Paypal} alt="" className="h-10 w-12" />
                 </li>
               </ul>
             </div>
           </div>
 
           {/* Form Section */}
-          <div className="flex flex-col p-2 gap-3">
+          <div className="flex flex-col p-2 gap-5">
             {/* heading */}
             <h1
               className="text-2xl font-bold py-2 px-4"
@@ -116,7 +143,7 @@ const Checkout = () => {
                   name="fullName"
                   value={billingInfo.fullName}
                   onChange={handleInputChange}
-                  className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
+                  className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Email Address */}
@@ -127,7 +154,7 @@ const Checkout = () => {
                   name="email"
                   value={billingInfo.email}
                   onChange={handleInputChange}
-                  className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
+                  className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Phone Number */}
@@ -139,7 +166,7 @@ const Checkout = () => {
                   name="phone"
                   value={billingInfo.phone}
                   onChange={handleInputChange}
-                  className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
+                  className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Address */}
@@ -150,7 +177,7 @@ const Checkout = () => {
                   name="address"
                   value={billingInfo.address}
                   onChange={handleInputChange}
-                  className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
+                  className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* City */}
@@ -158,10 +185,10 @@ const Checkout = () => {
                   type="text"
                   required
                   placeholder="City"
-                    name="city"
-                    value={billingInfo.city}
-                    onChange={handleInputChange}
-                  className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
+                  name="city"
+                  value={billingInfo.city}
+                  onChange={handleInputChange}
+                  className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Zip Code */}
@@ -172,7 +199,7 @@ const Checkout = () => {
                   name="zipCode"
                   value={billingInfo.zipCode}
                   onChange={handleInputChange}
-                  className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
+                  className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 {/* Country */}
@@ -183,7 +210,7 @@ const Checkout = () => {
                   name="country"
                   value={billingInfo.country}
                   onChange={handleInputChange}
-                  className="w-full border-2 border-gray-300 rounded-md px-3 py-1"
+                  className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
 
                 <input
@@ -218,25 +245,33 @@ const Checkout = () => {
             {/* Selected Payment Method */}
             <li className="flex justify-between">
               <h3 className="font-semibold">Selected Payment Method</h3>
-              <img src={COD} alt="" className="w-10" />
+              {paymentMethod === COD && (
+                <img src={COD} alt="" className="w-10" />
+              )}
+              {paymentMethod === Stripe && (
+                <img src={Stripe} alt="" className="w-10" />
+              )}
+              {paymentMethod === Paypal && (
+                <img src={Paypal} alt="" className="w-10" />
+              )}
             </li>
 
             {/* Customer Name */}
             <li className="flex justify-between">
               <h3 className="font-semibold">Customer Name</h3>
-              <span>jalal</span>
+              <span>{billingInfo.fullName}</span>
             </li>
 
             {/* Customer Email */}
             <li className="flex justify-between">
               <h3 className="font-semibold">Customer Email</h3>
-              <span>jalal@example.com</span>
+              <span>{billingInfo.email}</span>
             </li>
 
             {/* Customer Phone */}
             <li className="flex justify-between">
               <h3 className="font-semibold">Customer Phone</h3>
-              <span>03000000000</span>
+              <span>{billingInfo?.phone || "03xxxxxx"}</span>
             </li>
 
             {/* Total Amount */}
