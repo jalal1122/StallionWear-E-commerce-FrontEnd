@@ -335,7 +335,11 @@ const Register = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="mt-4 p-2 bg-blue-500 font-bold text-lg text-white rounded hover:scale-105 transition-transform duration-300 hover:cursor-pointer"
+                  className="mt-4 p-2 font-bold text-lg rounded hover:scale-105 transition-transform duration-300 hover:cursor-pointer"
+                  style={{
+                    backgroundColor: primaryText,
+                    color: primaryBg,
+                  }}
                 >
                   Register
                 </button>
