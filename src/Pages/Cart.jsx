@@ -10,6 +10,7 @@ import {
   incrementCartItems,
 } from "../features/Cart/cartSlice.js";
 import { useEffect } from "react";
+import { Link } from "react-router";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -225,9 +226,11 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <button className="w-full mt-6 px-6 py-3 bg-black text-white rounded hover:bg-gray-800 transition-colors">
-                  Proceed to Checkout
-                </button>
+                <Link to="/checkout">
+                  <button className="w-full mt-6 px-6 py-3 bg-black text-white rounded hover:bg-gray-800 hover:cursor-pointer transition-colors">
+                    Proceed to Checkout
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

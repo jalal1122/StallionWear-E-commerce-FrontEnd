@@ -1,16 +1,24 @@
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
 import { useSelector } from "react-redux";
-import COD from "../assets/cash-on-delivery.png";
+import CashOnDelivery from "../assets/cash-on-delivery.png";
 import Paypal from "../assets/paypal.png";
 import Stripe from "../assets/stripe.png";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { createOrder } from "../features/Order/orderSlice.js";
 
 const Checkout = () => {
   // get the colors from the redux store
   const { primaryText, primaryBg } = useSelector(
     (state) => state.colors.colors
   );
+
+  // get the cart items selected
+  const { items, cartSummary } = useSelector((state) => state.cart);
+
+  // initailize the dispatch function
+  const dispatch = useDispatch();
 
   // manage billing information state
   const [billingInfo, setBillingInfo] = useState({
@@ -19,12 +27,13 @@ const Checkout = () => {
     phone: "",
     address: "",
     city: "",
-    zipCode: "",
+    postalCode: "",
     country: "",
   });
 
   // manage payment State
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [payment, setPayment] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,10 +45,18 @@ const Checkout = () => {
 
   const handlePaymentMethodChange = (method) => {
     setPaymentMethod(method);
+    if (method === CashOnDelivery) {
+      setPayment("CashOnDelivery");
+    } else if (method === Stripe) {
+      setPayment("Stripe");
+    } else if (method === Paypal) {
+      setPayment("Paypal");
+    }
   };
 
   useEffect(() => {
-    setPaymentMethod(COD);
+    setPaymentMethod(CashOnDelivery);
+    setPayment("CashOnDelivery");
 
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -51,11 +68,18 @@ const Checkout = () => {
         phone: user.phone || "",
         address: user.address || "",
         city: user.city || "",
-        zipCode: user.zipCode || "",
+        postalCode: user.postalCode || "",
         country: user.country || "",
       }));
     }
   }, [setBillingInfo]);
+
+  const confirmOrder = (e) => {
+    e.preventDefault();
+
+    console.log(cartSummary);
+    dispatch(createOrder({ items, billingInfo, payment }));
+  };
 
   return (
     <>
@@ -93,9 +117,9 @@ const Checkout = () => {
                   style={{
                     backgroundColor: primaryText,
                   }}
-                  onClick={() => handlePaymentMethodChange(COD)}
+                  onClick={() => handlePaymentMethodChange(CashOnDelivery)}
                 >
-                  <img src={COD} alt="" className="h-8 w-10" />
+                  <img src={CashOnDelivery} alt="" className="h-8 w-10" />
                 </li>
                 <li
                   className="flex items-center gap-2 px-3 py-2 rounded-lg shadow-md hover:cursor-pointer"
@@ -133,7 +157,7 @@ const Checkout = () => {
               Billing Information
             </h1>
 
-            <form>
+            <form onSubmit={confirmOrder}>
               <div className="flex flex-col gap-5 text-lg">
                 {/* Full Name */}
                 <input
@@ -196,8 +220,8 @@ const Checkout = () => {
                   type="text"
                   required
                   placeholder="Zip Code"
-                  name="zipCode"
-                  value={billingInfo.zipCode}
+                  name="postalCode"
+                  value={billingInfo.postalCode}
                   onChange={handleInputChange}
                   className="w-full bg-white text-black border-2 border-gray-300 rounded-md px-3 py-1"
                 />
@@ -245,8 +269,8 @@ const Checkout = () => {
             {/* Selected Payment Method */}
             <li className="flex justify-between">
               <h3 className="font-semibold">Selected Payment Method</h3>
-              {paymentMethod === COD && (
-                <img src={COD} alt="" className="w-10" />
+              {paymentMethod === CashOnDelivery && (
+                <img src={CashOnDelivery} alt="" className="w-10" />
               )}
               {paymentMethod === Stripe && (
                 <img src={Stripe} alt="" className="w-10" />
@@ -277,7 +301,7 @@ const Checkout = () => {
             {/* Total Amount */}
             <li className="flex justify-between">
               <h3 className="font-semibold">Total Amount</h3>
-              <span className="font-bold">1000 $</span>
+              <span className="font-bold">{cartSummary?.totalAmount}$</span>
             </li>
           </ul>
         </div>
