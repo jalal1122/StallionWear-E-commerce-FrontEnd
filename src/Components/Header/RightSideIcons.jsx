@@ -2,15 +2,27 @@ import CartIcon from "../Icons/CartIcon";
 import WishList from "../Icons/WishList";
 import { FaSun, FaMoon, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { GetMode } from "../../features/Colors/colorsSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { logoutUser } from "../../features/User/userSlice";
+import { useState } from "react";
 
 const RightSideIcons = () => {
   // initialize the dispatch
   const dispatch = useDispatch();
   // initialize the navigate
   const navigate = useNavigate();
+
+  // get the colors from redux store
+  const { primaryBg, primaryText } = useSelector(
+    (state) => state.colors.colors
+  );
+
+  // get the user from the redux store
+  const { user } = useSelector((state) => state.user);
+
+  // state for the hover on user profile
+  const [isHovered, setIsHovered] = useState(false);
 
   // change the theme
   const toggleTheme = () => {
@@ -24,6 +36,14 @@ const RightSideIcons = () => {
   const currentMode = localStorage.getItem("mode") || "light";
   const isDarkMode = currentMode === "dark";
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   return (
     <div className="flex space-x-4">
       {/* Cart Icon */}
@@ -33,23 +53,60 @@ const RightSideIcons = () => {
 
       {/* Wish List Icon */}
       <Link to="/wishlist">
-         <WishList className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
+        <WishList className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
       </Link>
 
-      {/* If user is logged in, show the sign out icon */}
+      {/* If user is logged in, show the user profile */}
       {/* Sign Out Icon */}
-      {localStorage.getItem("user") ? (
-        <button
-          onClick={() => {
-            dispatch(logoutUser());
-            navigate("/");
-          }}
+      {user ? (
+        <div
+          className="flex flex-col relative"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
-          <FaSignOutAlt
-            size={22}
-            className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
-          />
-        </button>
+          {user && user.profilePicture ? (
+            <>
+              <img
+                src={user.profilePicture}
+                alt="Profile"
+                className="w-7 h-7 object-cover rounded-full hover:cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all duration-200"
+              />
+              {isHovered && user && (
+                <div
+                  className="absolute top-7 right-[-40px] shadow-lg rounded-md z-10 min-w-28 border border-gray-200 dark:border-gray-600"
+                  style={{
+                    backgroundColor: primaryBg,
+                  }}
+                >
+                  <ul className="py-2">
+                    <li
+                      className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                      style={{ color: primaryText }}
+                    >
+                      Profile
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                      style={{ color: primaryText }}
+                      onClick={() => {
+                        dispatch(logoutUser());
+                        navigate("/");
+                        setIsHovered(false);
+                      }}
+                    >
+                      Logout
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </>
+          ) : (
+            <FaUser
+              size={22}
+              className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
+            />
+          )}
+        </div>
       ) : (
         /* If user is not logged in, show the user icon */
 
@@ -89,3 +146,15 @@ const RightSideIcons = () => {
 };
 
 export default RightSideIcons;
+
+// <button
+//   onClick={() => {
+//     dispatch(logoutUser());
+//     navigate("/");
+//   }}
+// >
+//   <FaSignOutAlt
+//     size={22}
+//     className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
+//   />
+// </button>

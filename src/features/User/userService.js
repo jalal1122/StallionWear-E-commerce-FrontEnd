@@ -28,8 +28,9 @@ const loginUser = async (userData) => {
     headers: {},
   });
 
+
   // if the response contains user data, store it in localStorage
-  if (response.data && response.data.success) {
+  if (response.data && response.data.success && response.data.data) {
     localStorage.setItem("user", JSON.stringify(response.data.data));
   }
 

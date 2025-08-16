@@ -78,7 +78,7 @@ const UserSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = false;
       state.message = "";
-      state.user = null;
+      // Don't reset user to null unless explicitly logging out
     },
   },
   extraReducers: (builder) => {
@@ -105,7 +105,10 @@ const UserSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        // Store the user data from the response
         state.user = action.payload.data;
+        // Also update localStorage to ensure consistency
+        localStorage.setItem("user", JSON.stringify(action.payload.data));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -120,8 +123,9 @@ const UserSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
-        console.log("User logged out successfully", state.user);
         state.user = null;
+        // Ensure localStorage is cleared
+        localStorage.removeItem("user");
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;

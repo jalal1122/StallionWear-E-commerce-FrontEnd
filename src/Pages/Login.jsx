@@ -11,8 +11,6 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  
-
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.user
   );
@@ -23,16 +21,15 @@ const Login = () => {
     if (isError) {
       setFormError(message);
       console.log("Error:", message);
+      // Only reset on error to clear error state
+      dispatch(reset());
     }
 
     if (isSuccess && user) {
-      console.log("User logged in:", user);
-
+      console.log("User logged in successfully:", user);
       navigate("/");
+      // Don't reset here - let the user state persist
     }
-    
-    // Reset the user state after handling success or error
-    dispatch(reset());
 
     return () => {
       setFormError("");
@@ -99,7 +96,7 @@ const Login = () => {
     <>
       <Header />
       <div
-        className="register-container w-[1200px] my-10 mx-auto flex flex-col items-center justify-center p-4"
+        className="register-container my-10 mx-auto flex flex-col items-center justify-center px-5 py-9"
         style={{
           backgroundColor: primaryBg,
           color: primaryText,
@@ -169,7 +166,7 @@ const Login = () => {
                 <button
                   type="submit"
                   className="bg-blue-500 text-white p-2 my-2 rounded hover:cursor-pointer hover:scale-105 transition duration-200"
-                   style={{
+                  style={{
                     backgroundColor: primaryText,
                     color: primaryBg,
                   }}

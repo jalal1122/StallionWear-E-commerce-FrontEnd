@@ -25,15 +25,17 @@ const OrderDetails = () => {
       <Header />
 
       {/* Order Details  */}
-      <div className="flex flex-col gap-5 justify-center items-center my-5 font-semibold" style={{
-        backgroundColor: primaryBg,
-      }}>
-        <h1 className="text-5xl font-bold">Order Details</h1>
+      <div
+        className="flex flex-col gap-5 justify-center items-center my-5 font-semibold"
+        style={{
+          backgroundColor: primaryBg,
+          color: primaryText,
+        }}
+      >
+        <h1 className="text-5xl font-bold p-5">Order Details</h1>
         <div
-          className="flex flex-wrap justify-center items-start my-5 p-5 gap-10 rounded-2xl"
-          style={{
-            color: primaryText,
-          }}
+          className="flex flex-wrap justify-center items-start p-5 gap-10 rounded-2xl"
+          style={{}}
         >
           {/* Shipping Address Data */}
           <div className="flex flex-col gap-5">
@@ -75,10 +77,13 @@ const OrderDetails = () => {
           </div>
         </div>
 
-        <button className="py-2 px-4 rounded my-5 hover:cursor-pointer" style={{
-          backgroundColor: primaryText,
-          color: primaryBg
-        }}>
+        <button
+          className="py-2 px-4 rounded my-5 hover:cursor-pointer"
+          style={{
+            backgroundColor: primaryText,
+            color: primaryBg,
+          }}
+        >
           Continue to Payment
         </button>
       </div>

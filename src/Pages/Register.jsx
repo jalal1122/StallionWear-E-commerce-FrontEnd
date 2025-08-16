@@ -178,7 +178,7 @@ const Register = () => {
       <Header />
 
       <div
-        className="register-container w-[1200px] my-10 mx-auto flex flex-col items-center justify-center p-10"
+        className="register-container  my-10 mx-auto flex flex-col items-center justify-center p-10"
         style={{
           backgroundColor: primaryBg,
           color: primaryText,
