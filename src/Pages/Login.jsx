@@ -168,7 +168,11 @@ const Login = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="bg-blue-500 text-white p-2 my-2 rounded hover:bg-blue-600 transition duration-200"
+                  className="bg-blue-500 text-white p-2 my-2 rounded hover:cursor-pointer hover:scale-105 transition duration-200"
+                   style={{
+                    backgroundColor: primaryText,
+                    color: primaryBg,
+                  }}
                 >
                   Login
                 </button>
