@@ -7,6 +7,7 @@ import Stripe from "../assets/stripe.png";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { createOrder } from "../features/Order/orderSlice.js";
+import { useNavigate } from "react-router";
 
 const Checkout = () => {
   // get the colors from the redux store
@@ -17,8 +18,14 @@ const Checkout = () => {
   // get the cart items selected
   const { items, cartSummary } = useSelector((state) => state.cart);
 
+  // get the order data from the redux store
+  const { isSuccess } = useSelector((state) => state.order);
+
   // initailize the dispatch function
   const dispatch = useDispatch();
+
+  // initalize the useNavigate function
+  const navigate = useNavigate();
 
   // manage billing information state
   const [billingInfo, setBillingInfo] = useState({
@@ -80,6 +87,10 @@ const Checkout = () => {
     console.log(cartSummary);
     dispatch(createOrder({ items, billingInfo, payment }));
   };
+
+  if (isSuccess) {
+    navigate("/order-details");
+  }
 
   return (
     <>

@@ -11,6 +11,7 @@ const createOrder = async ({ items, billingInfo, payment }) => {
     paymentMethod: payment,
   });
   console.log("response data...", response.data);
+  
   return response.data;
 };
 
