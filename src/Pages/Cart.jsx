@@ -110,7 +110,9 @@ const Cart = () => {
 
         {items.length === 0 ? (
           <div className="text-center mt-10" style={{ color: primaryText }}>
-            <h2 className="text-2xl font-semibold bg-black text-white p-4">Your cart is empty</h2>
+            <h2 className="text-2xl font-semibold bg-black text-white p-4">
+              Your cart is empty
+            </h2>
             <p className="mt-4" style={{ color: primaryText }}>
               Browse our products and add items to your cart.
             </p>
@@ -153,7 +155,7 @@ const Cart = () => {
                       className="flex flex-col sm:flex-row items-center justify-center w-full gap-10 px-10 py-5 rounded-lg shadow-md border-2"
                       style={{
                         backgroundColor: primaryText,
-                        color: primaryBg
+                        color: primaryBg,
                       }}
                     >
                       {/* Product Image */}
@@ -171,25 +173,15 @@ const Cart = () => {
                       {/* Product Info */}
                       <div className="flex flex-col gap-5 justify-center w-full">
                         <div className="flex flex-col gap-3">
-                          <h2
-                            className="text-2xl font-bold"                            
-                          >
-                            {itemName}
-                          </h2>
-                          <p
-                            className="text-lg font-semibold"
-                            
-                          >
+                          <h2 className="text-2xl font-bold">{itemName}</h2>
+                          <p className="text-lg font-semibold">
                             Size : {item.size}
                           </p>
                         </div>
 
                         <div className="flex gap-3 items-center justify-between">
                           {/* Item Total */}
-                          <h2
-                            className="text-2xl font-bold"
-                            
-                          >
+                          <h2 className="text-2xl font-bold">
                             ${(itemPrice * itemQuantity).toFixed(2)}
                           </h2>
 
@@ -204,13 +196,19 @@ const Cart = () => {
                                 )
                               }
                               className="hover:cursor-pointer text-xl sm:text-2xl rounded-full hover:bg-gray-300 hover:scale-95"
-                              style={{ color: primaryText , backgroundColor: primaryBg }}
+                              style={{
+                                color: primaryText,
+                                backgroundColor: primaryBg,
+                              }}
                             >
                               -
                             </button>
                             <span
                               className="font-bold text-md sm:text-lg px-3"
-                              style={{ color: primaryText, backgroundColor: primaryBg }}
+                              style={{
+                                color: primaryText,
+                                backgroundColor: primaryBg,
+                              }}
                             >
                               {itemQuantity}
                             </span>
@@ -223,23 +221,24 @@ const Cart = () => {
                                 )
                               }
                               className="hover:cursor-pointer text-xl sm:text-2xl rounded-full hover:bg-gray-300 hover:scale-95"
-                              style={{ color: primaryText, backgroundColor: primaryBg }}
+                              style={{
+                                color: primaryText,
+                                backgroundColor: primaryBg,
+                              }}
                             >
                               +
                             </button>
                           </div>
                         </div>
 
-                        <div className="flex justify-center items-center" >
+                        <div className="flex justify-center items-center">
                           <button
                             onClick={() => handleRemoveFromCart(item)}
                             className="flex justify-center items-center w-3/4 px-4 py-2 mt-2 rounded-full hover:cursor-pointer hover:bg-red-600 hover:scale-105"
-                             style={{
+                            style={{
                               backgroundColor: primaryBg,
                               color: primaryText,
-                              
                             }}
-                           
                           >
                             <FaTrash />
                           </button>
@@ -303,12 +302,11 @@ const Cart = () => {
                   </p>
                 </div>
               </div>
-                <Link to="/checkout">
-                  <button className="w-full mt-6 px-6 py-3 bg-black text-white rounded hover:bg-gray-800 hover:cursor-pointer transition-colors">
-                    Proceed to Checkout
-                  </button>
-                </Li
-              </div>
+              <Link to="/checkout">
+                <button className="w-full mt-6 px-6 py-3 bg-black text-white rounded hover:bg-gray-800 hover:cursor-pointer transition-colors">
+                  Proceed to Checkout
+                </button>
+              </Link>
             </div>
           </div>
         )}
