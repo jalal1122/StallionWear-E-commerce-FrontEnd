@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createOrder } from "./orderService.js";
+import { orderService } from "./orderService.js";
 
 const initialState = {
   orderItems: [],
@@ -10,13 +10,20 @@ const initialState = {
   finalAmount: 0,
   discount: 0,
   notes: "",
+  loading: false,
+  error: null,
+  isSuccess: false,
 };
 
 export const createOrder = createAsyncThunk(
   "api/order",
-  async (orderData, { rejectWithValue }) => {
+  async ({ items, billingInfo, payment }, { rejectWithValue }) => {
     try {
-      const response = await createOrder(orderData);
+      const response = await orderService.createOrder({
+        items,
+        billingInfo,
+        payment,
+      });
       return response.data;
     } catch (error) {
       const message =
@@ -44,7 +51,30 @@ const orderSlice = createSlice({
       state.notes = "";
     },
   },
-  extraReducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(createOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isSuccess = true;
+        console.log("Order created successfully:", action.payload);
+
+        state.orderItems = action.payload.orderItems;
+        state.shippingAddress = action.payload.shippingAddress;
+        state.paymentMethod = action.payload.paymentMethod;
+        state.shippingCharge = action.payload.shippingCharge;
+        state.totalAmount = action.payload.totalAmount;
+        state.finalAmount = action.payload.finalAmount;
+        state.discount = action.payload.discount;
+        state.notes = action.payload.notes;
+      })
+      .addCase(createOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
 });
 
 export const { resetOrder } = orderSlice.actions;

@@ -42,10 +42,14 @@ export const logoutUser = async () => {
   // Send POST request to logout user (no body needed, auth from headers)
   const response = await axios.post(`${USER_ENDPOINT}/logout`);
 
-  // if the response is successful, remove user data from localStorage
-  if (response.data.success) {
-    localStorage.removeItem("user");
-  }
+  // remove the user from the local storage
+  localStorage.removeItem("user");
+
+  // remove the accessToken and refreshToken from the cookies
+  document.cookie =
+    "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
   // return the response data
   return response.data;
