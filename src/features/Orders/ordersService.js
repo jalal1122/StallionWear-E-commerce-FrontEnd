@@ -18,7 +18,13 @@ const getOrderbyId = async (orderId) => {
   return response.data;
 };
 
+const cancelOrder = async (orderId) => {
+  const response = await axios.patch(`${api_Url}/${orderId}/cancel`);
+  return response.data;
+};
+
 export const ordersService = {
   getUserOrders,
   getOrderbyId,
+  cancelOrder,
 };

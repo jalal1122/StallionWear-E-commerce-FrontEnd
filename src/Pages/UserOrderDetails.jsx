@@ -1,9 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
 import { useEffect } from "react";
-import { getOrderbyId } from "../features/Orders/ordersSlice.js";
+import { getOrderbyId, cancelOrder } from "../features/Orders/ordersSlice.js";
 import Loader from "../Components/Loader";
 import {
   FaUser,
@@ -22,6 +22,9 @@ const UserOrderDetails = () => {
 
   // initalize the dispatch function
   const dispatch = useDispatch();
+
+  // initialize the navigate function
+  const navigate = useNavigate();
 
   //   get the colors from redux store
   const { primaryBg } = useSelector((state) => state.colors.colors);
@@ -344,8 +347,8 @@ const UserOrderDetails = () => {
                           "Are you sure you want to cancel this order?"
                         )
                       ) {
-                        // Add cancel order logic here
-                        console.log("Cancel order:", orderbyId?.id);
+                        dispatch(cancelOrder(orderbyId.id));
+                        navigate("/orders");
                       }
                     }}
                   >

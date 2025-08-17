@@ -55,6 +55,25 @@ export const getOrderbyId = createAsyncThunk(
   }
 );
 
+export const cancelOrder = createAsyncThunk(
+  "orders/cancelOrder",
+  async (orderId, thunkAPI) => {
+    try {
+      const response = await ordersService.cancelOrder(orderId);
+      console.log("Cancel Order response:", response);
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const ordersSlice = createSlice({
   name: "orders",
   initialState: initialState,
