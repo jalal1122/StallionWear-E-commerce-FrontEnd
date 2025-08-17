@@ -8,6 +8,8 @@ import ProductPage from "../Pages/ProductPage";
 import Wishlist from "../Pages/Wishlist";
 import Checkout from "../Pages/Checkout";
 import OrderDetails from "../Pages/OrderDetails";
+import Orders from "../Pages/Orders";
+import UserOrderDetails from "../Pages/UserOrderDetails";
 
 const Router = () => {
   return (
@@ -39,6 +41,12 @@ const Router = () => {
 
         {/* Order Details Page Route */}
         <Route path="/order-details" element={<OrderDetails />} />
+
+        {/* Orders Route */}
+        <Route path="/orders" element={<Orders />} />
+
+        {/* User Order Details */}
+        <Route path="/orders/:id" element={<UserOrderDetails />} />
 
         {/* Fallback Route */}
         <Route path="*" element={<LandingPage />} />

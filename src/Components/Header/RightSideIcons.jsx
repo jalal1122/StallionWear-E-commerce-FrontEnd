@@ -57,7 +57,6 @@ const RightSideIcons = () => {
       </Link>
 
       {/* If user is logged in, show the user profile */}
-      {/* Sign Out Icon */}
       {user ? (
         <div
           className="flex flex-col relative"
@@ -66,6 +65,7 @@ const RightSideIcons = () => {
         >
           {user && user.profilePicture ? (
             <>
+              {/* Profile Picture */}
               <img
                 src={user.profilePicture}
                 alt="Profile"
@@ -78,13 +78,30 @@ const RightSideIcons = () => {
                     backgroundColor: primaryBg,
                   }}
                 >
+
+                  {/* Profile Options */}
                   <ul className="py-2">
+
+                    {/* Profile */}
                     <li
                       className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
                       style={{ color: primaryText }}
                     >
                       Profile
                     </li>
+
+
+                    {/* Order */}
+                    <Link to="/orders">
+                      <li
+                        className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                        style={{ color: primaryText }}
+                      >
+                        Order
+                      </li>
+                    </Link>
+
+                    {/* Logout */}
                     <li
                       className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
                       style={{ color: primaryText }}
@@ -101,6 +118,8 @@ const RightSideIcons = () => {
               )}
             </>
           ) : (
+            
+            // User Icon
             <FaUser
               size={22}
               className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
@@ -108,6 +127,7 @@ const RightSideIcons = () => {
           )}
         </div>
       ) : (
+
         /* If user is not logged in, show the user icon */
 
         /* User Icon */
@@ -122,6 +142,7 @@ const RightSideIcons = () => {
       {/* conditional Rendering */}
       {isDarkMode ? (
         <>
+
           {/* Dark Mode Icon */}
           <button onClick={toggleTheme}>
             <FaMoon
@@ -133,6 +154,7 @@ const RightSideIcons = () => {
       ) : (
         <>
           <button onClick={toggleTheme}>
+            
             {/* Light Mode Icon */}
             <FaSun
               size={22}
