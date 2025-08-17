@@ -24,7 +24,7 @@ const UserOrderDetails = () => {
   const dispatch = useDispatch();
 
   //   get the colors from redux store
-  const { primaryBg, primaryText, secondaryText, secondaryBg } = useSelector((state) => state.colors.colors);
+  const { primaryBg } = useSelector((state) => state.colors.colors);
 
   //   get the order details from redux store
   const { orderbyId, isLoading, isError, errorMessage } = useSelector(
