@@ -125,7 +125,7 @@ const UserOrderDetails = () => {
 
       {/* Order Details Container */}
       <div
-        className="min-h-screen bg-gray-50"
+        className="min-h-screen bg-gray-50 my-5"
         style={{ backgroundColor: primaryBg }}
       >
         <div className="container mx-auto px-4 py-8">
