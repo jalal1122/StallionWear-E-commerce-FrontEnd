@@ -179,14 +179,17 @@ const Cart = () => {
                           </p>
                         </div>
 
-                        <div className="flex gap-3 items-center justify-between">
+                        <div className="flex gap-3 items-center justify-between" >
                           {/* Item Total */}
                           <h2 className="text-2xl font-bold">
                             ${(itemPrice * itemQuantity).toFixed(2)}
                           </h2>
 
                           {/* Quantity Controls */}
-                          <div className="flex items-center justify-between gap-5 px-3 py-1 rounded-full bg-[#f0f0f0]">
+                          <div className="flex items-center justify-between gap-5 px-3 py-1 rounded-full bg-[#f0f0f0]" style={{
+                                color: primaryText,
+                                backgroundColor: primaryBg,
+                              }}>
                             <button
                               onClick={() =>
                                 handleDecrement(

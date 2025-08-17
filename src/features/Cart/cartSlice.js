@@ -168,7 +168,7 @@ const cartSlice = createSlice({
 
       // Decrement the cart item
       .addCase(decrementCartItems.pending, (state) => {
-        state.loading = true;
+        state.loading = false;
       })
       .addCase(decrementCartItems.fulfilled, (state, action) => {
         state.loading = false;
