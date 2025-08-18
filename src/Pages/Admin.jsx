@@ -85,10 +85,10 @@ const Admin = () => {
 
   // Local State - Streamlined for API-based filtering and pagination
   const [filters, setFilters] = useState({
-    status: "",
+    orderStatus: "",
     paymentStatus: "",
-    dateFrom: "",
-    dateTo: "",
+    startDate: "",
+    endDate: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -154,26 +154,48 @@ const Admin = () => {
   /** Total pages - removed as we calculate it directly in renderPagination */
 
   // ==============================
+  // Helper Functions
+  // ==============================
+
+  /**
+   * Build clean filter parameters for API calls
+   */
+  const buildFilterParams = useCallback(() => {
+    const filterParams = {
+      page: currentPage,
+      limit: itemsPerPage,
+    };
+
+    // Only add non-empty filters
+    if (filters.orderStatus && filters.orderStatus.trim() !== "") {
+      filterParams.orderStatus = filters.orderStatus;
+    }
+    if (filters.paymentStatus && filters.paymentStatus.trim() !== "") {
+      filterParams.paymentStatus = filters.paymentStatus;
+    }
+    if (filters.startDate && filters.startDate.trim() !== "") {
+      filterParams.startDate = filters.startDate;
+    }
+    if (filters.endDate && filters.endDate.trim() !== "") {
+      filterParams.endDate = filters.endDate;
+    }
+
+    return filterParams;
+  }, [currentPage, itemsPerPage, filters]);
+
+  // ==============================
   // Effects
   // ==============================
 
   useEffect(() => {
     // Debounce API calls to prevent excessive requests
     const timeoutId = setTimeout(() => {
-      const filterParams = {
-        page: currentPage,
-        limit: itemsPerPage,
-        ...(filters.status && { status: filters.status }),
-        ...(filters.paymentStatus && { paymentStatus: filters.paymentStatus }),
-        ...(filters.dateFrom && { dateFrom: filters.dateFrom }),
-        ...(filters.dateTo && { dateTo: filters.dateTo }),
-      };
-
+      const filterParams = buildFilterParams();
       dispatch(getAllOrders(filterParams));
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timeoutId);
-  }, [dispatch, currentPage, itemsPerPage, filters]);
+  }, [dispatch, buildFilterParams]);
 
   // Load analytics separately (only once)
   useEffect(() => {
@@ -203,23 +225,14 @@ const Admin = () => {
       // Refresh orders after update with current filters
       setTimeout(() => {
         try {
-          const filterParams = {
-            page: currentPage,
-            limit: itemsPerPage,
-            ...(filters.status && { status: filters.status }),
-            ...(filters.paymentStatus && {
-              paymentStatus: filters.paymentStatus,
-            }),
-            ...(filters.dateFrom && { dateFrom: filters.dateFrom }),
-            ...(filters.dateTo && { dateTo: filters.dateTo }),
-          };
+          const filterParams = buildFilterParams();
           dispatch(getAllOrders(filterParams));
         } catch (error) {
           console.error("Error refreshing orders:", error);
         }
       }, 1000);
     },
-    [dispatch, currentPage, itemsPerPage, filters]
+    [dispatch, buildFilterParams]
   );
 
   /**
@@ -235,10 +248,10 @@ const Admin = () => {
    */
   const clearFilters = useCallback(() => {
     setFilters({
-      status: "",
+      orderStatus: "",
       paymentStatus: "",
-      dateFrom: "",
-      dateTo: "",
+      startDate: "",
+      endDate: "",
     });
     setCurrentPage(1);
   }, []);
@@ -518,16 +531,7 @@ const Admin = () => {
         </button>
         <button
           onClick={() => {
-            const filterParams = {
-              page: currentPage,
-              limit: itemsPerPage,
-              ...(filters.status && { status: filters.status }),
-              ...(filters.paymentStatus && {
-                paymentStatus: filters.paymentStatus,
-              }),
-              ...(filters.dateFrom && { dateFrom: filters.dateFrom }),
-              ...(filters.dateTo && { dateTo: filters.dateTo }),
-            };
+            const filterParams = buildFilterParams();
             dispatch(getAllOrders(filterParams));
             dispatch(getAnalytics("30"));
           }}
@@ -554,8 +558,10 @@ const Admin = () => {
               Order Status
             </label>
             <select
-              value={filters.status}
-              onChange={(e) => handleFilterChange("status", e.target.value)}
+              value={filters.orderStatus}
+              onChange={(e) =>
+                handleFilterChange("orderStatus", e.target.value)
+              }
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               style={inputStyles}
             >
@@ -593,35 +599,35 @@ const Admin = () => {
             </select>
           </div>
 
-          {/* Date From */}
+          {/* Start Date */}
           <div>
             <label
               className="block text-sm font-medium mb-1"
               style={{ color: primaryText }}
             >
-              Date From
+              Start Date
             </label>
             <input
               type="date"
-              value={filters.dateFrom}
-              onChange={(e) => handleFilterChange("dateFrom", e.target.value)}
+              value={filters.startDate}
+              onChange={(e) => handleFilterChange("startDate", e.target.value)}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               style={inputStyles}
             />
           </div>
 
-          {/* Date To */}
+          {/* End Date */}
           <div>
             <label
               className="block text-sm font-medium mb-1"
               style={{ color: primaryText }}
             >
-              Date To
+              End Date
             </label>
             <input
               type="date"
-              value={filters.dateTo}
-              onChange={(e) => handleFilterChange("dateTo", e.target.value)}
+              value={filters.endDate}
+              onChange={(e) => handleFilterChange("endDate", e.target.value)}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               style={inputStyles}
             />
@@ -1182,16 +1188,7 @@ const Admin = () => {
           </p>
           <button
             onClick={() => {
-              const filterParams = {
-                page: currentPage,
-                limit: itemsPerPage,
-                ...(filters.status && { status: filters.status }),
-                ...(filters.paymentStatus && {
-                  paymentStatus: filters.paymentStatus,
-                }),
-                ...(filters.dateFrom && { dateFrom: filters.dateFrom }),
-                ...(filters.dateTo && { dateTo: filters.dateTo }),
-              };
+              const filterParams = buildFilterParams();
               dispatch(getAllOrders(filterParams));
               dispatch(getAnalytics("30"));
             }}

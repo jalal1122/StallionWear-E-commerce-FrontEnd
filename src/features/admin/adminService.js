@@ -15,14 +15,14 @@ const getAllOrders = async (filter) => {
     `${api_url}/admin/all`,
     filter ? { params: filter } : {}
   );
-  return response.data;
+  return response;
 };
 
 const getAnalytics = async (period) => {
   const response = await axios.get(`${api_url}/admin/analytics`, {
     params: { period },
   });
-  return response.data;
+  return response;
 };
 
 export const adminService = {
