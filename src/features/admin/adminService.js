@@ -18,7 +18,15 @@ const getAllOrders = async (filter) => {
   return response.data;
 };
 
+const getAnalytics = async (period) => {
+  const response = await axios.get(`${api_url}/admin/analytics`, {
+    params: { period },
+  });
+  return response.data;
+};
+
 export const adminService = {
   updateOrderStatus,
   getAllOrders,
+  getAnalytics,
 };

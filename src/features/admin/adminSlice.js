@@ -5,6 +5,7 @@ import { adminService } from "./adminService.js";
 const initialState = {
   updatedOrder: null,
   allOrders: null,
+  analyticsData: null,
   isLoading: false,
   isError: false,
   errorMessage: null,
@@ -45,6 +46,26 @@ export const getAllOrders = createAsyncThunk(
         error.message ||
         error.toString();
       return thunkApi.rejectWithValue(message);
+    }
+  }
+);
+
+export const getAnalytics = createAsyncThunk(
+  "admin/getAnalytics",
+  async (period, thunkAPI) => {
+    try {
+      const response = await adminService.getAnalytics(period);
+      console.log(response.data);
+
+      return response.data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -99,6 +120,27 @@ const adminSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(getAllOrders.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.errorMessage = action.payload;
+        state.isSuccess = false;
+      })
+
+      //   get analytics
+      .addCase(getAnalytics.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.errorMessage = null;
+        state.isSuccess = false;
+      })
+      .addCase(getAnalytics.fulfilled, (state, action) => {
+        state.analyticsData = action.payload;
+        state.isLoading = false;
+        state.isError = false;
+        state.errorMessage = null;
+        state.isSuccess = true;
+      })
+      .addCase(getAnalytics.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.errorMessage = action.payload;
