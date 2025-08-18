@@ -1,6 +1,12 @@
 import CartIcon from "../Icons/CartIcon";
 import WishList from "../Icons/WishList";
-import { FaSun, FaMoon, FaUser, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaSun,
+  FaMoon,
+  FaUser,
+  FaSignOutAlt,
+  FaShoppingBag,
+} from "react-icons/fa";
 import { GetMode } from "../../features/Colors/colorsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -23,6 +29,10 @@ const RightSideIcons = () => {
 
   // state for the hover on user profile
   const [isHovered, setIsHovered] = useState(false);
+  const [showThemeTooltip, setShowThemeTooltip] = useState(false);
+
+  // Detect if current theme is dark
+  const isDarkMode = primaryBg === "#000000" || primaryBg === "#000";
 
   // change the theme
   const toggleTheme = () => {
@@ -31,10 +41,6 @@ const RightSideIcons = () => {
     localStorage.setItem("mode", newMode);
     dispatch(GetMode(newMode));
   };
-
-  //   Check the current mode to conditionally render the sun/moon icon
-  const currentMode = localStorage.getItem("mode") || "light";
-  const isDarkMode = currentMode === "dark";
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -45,124 +51,207 @@ const RightSideIcons = () => {
   };
 
   return (
-    <div className="flex space-x-4">
-      {/* Cart Icon */}
-      <Link to="/cart">
-        <CartIcon className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
+    <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
+      {/* Cart Icon with Badge */}
+      <Link to="/cart" className="relative group">
+        <div className="relative p-1.5 sm:p-2 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-110">
+          <CartIcon className="transition-all duration-300 w-5 h-5 sm:w-6 sm:h-6" />
+          {/* Cart Badge - You can add cart count here */}
+          <div className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold shadow-lg">
+            3
+          </div>
+        </div>
+        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap hidden sm:block">
+          Shopping Cart
+        </div>
       </Link>
 
-      {/* Wish List Icon */}
-      <Link to="/wishlist">
-        <WishList className="hover:scale-105 transition-all duration-300 hover:cursor-pointer" />
+      {/* Wishlist Icon with Badge */}
+      <Link to="/wishlist" className="relative group">
+        <div className="relative p-1.5 sm:p-2 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-110">
+          <WishList className="transition-all duration-300 w-5 h-5 sm:w-6 sm:h-6" />
+          {/* Wishlist Badge */}
+          <div className="absolute -top-1 -right-1 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-bold shadow-lg">
+            2
+          </div>
+        </div>
+        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap hidden sm:block">
+          Wishlist
+        </div>
       </Link>
 
-      {/* If user is logged in, show the user profile */}
+      {/* User Profile/Login */}
       {user ? (
         <div
-          className="flex flex-col relative"
+          className="relative"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           {user && user.profilePicture ? (
-            <>
-              {/* Profile Picture */}
-              <img
-                src={user.profilePicture}
-                alt="Profile"
-                className="w-7 h-7 object-cover rounded-full hover:cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all duration-200"
-              />
-              {isHovered && user && (
+            <div className="relative group cursor-pointer">
+              <div className="relative">
+                <img
+                  src={user.profilePicture}
+                  alt="Profile"
+                  className="w-8 h-8 sm:w-10 sm:h-10 object-cover rounded-full border-2 border-transparent hover:border-blue-400 transition-all duration-300 hover:scale-110 shadow-lg"
+                />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
+              </div>
+
+              {/* User Dropdown Menu */}
+              {isHovered && (
                 <div
-                  className="absolute top-7 right-[-40px] shadow-lg rounded-md z-10 min-w-28 border border-gray-200 dark:border-gray-600"
+                  className="absolute top-10 sm:top-12 right-0 w-44 sm:w-48 shadow-xl rounded-2xl border backdrop-blur-md z-50 overflow-hidden"
                   style={{
-                    backgroundColor: primaryBg,
+                    backgroundColor: isDarkMode
+                      ? "rgba(0, 0, 0, 0.95)"
+                      : "rgba(255, 255, 255, 0.95)",
+                    border: `1px solid ${
+                      isDarkMode
+                        ? "rgba(255, 255, 255, 0.1)"
+                        : "rgba(0, 0, 0, 0.1)"
+                    }`,
                   }}
                 >
+                  {/* User Info Header */}
+                  <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={user.profilePicture}
+                        alt="Profile"
+                        className="w-8 h-8 object-cover rounded-full"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className="font-semibold text-sm truncate"
+                          style={{ color: primaryText }}
+                        >
+                          {user.name || "User"}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-                  {/* Profile Options */}
-                  <ul className="py-2">
-
-                    {/* Profile */}
-                    <li
-                      className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-                      style={{ color: primaryText }}
-                    >
-                      Profile
-                    </li>
-
-
-                    {/* Order */}
-                    <Link to="/orders">
-                      <li
-                        className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                  {/* Menu Items */}
+                  <div className="py-2">
+                    {[
+                      {
+                        icon: FaUser,
+                        label: "Profile",
+                        action: () => {
+                          /* Add profile navigation */
+                        },
+                      },
+                      {
+                        icon: FaShoppingBag,
+                        label: "Orders",
+                        action: () => navigate("/orders"),
+                      },
+                    ].map((item, index) => (
+                      <button
+                        key={index}
+                        className="w-full px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 flex items-center gap-3"
                         style={{ color: primaryText }}
+                        onClick={() => {
+                          item.action();
+                          setIsHovered(false);
+                        }}
                       >
-                        Order
-                      </li>
-                    </Link>
+                        <item.icon size={16} className="text-gray-400" />
+                        {item.label}
+                      </button>
+                    ))}
 
-                    {/* Logout */}
-                    <li
-                      className="px-4 py-2 hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-                      style={{ color: primaryText }}
+                    {/* Logout Button */}
+                    <button
+                      className="w-full px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 flex items-center gap-3 text-red-600 border-t border-gray-200 dark:border-gray-700"
                       onClick={() => {
                         dispatch(logoutUser());
                         navigate("/");
                         setIsHovered(false);
                       }}
                     >
+                      <FaSignOutAlt size={16} />
                       Logout
-                    </li>
-                  </ul>
+                    </button>
+                  </div>
                 </div>
               )}
-            </>
+            </div>
           ) : (
-            
-            // User Icon
-            <FaUser
-              size={22}
-              className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
-            />
+            <Link to="/register" className="relative group">
+              <div className="p-1.5 sm:p-2 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-110">
+                <FaUser
+                  size={18}
+                  className="sm:w-6 sm:h-6 transition-all duration-300"
+                  style={{ color: primaryText }}
+                />
+              </div>
+              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap hidden sm:block">
+                Account
+              </div>
+            </Link>
           )}
         </div>
       ) : (
-
-        /* If user is not logged in, show the user icon */
-
-        /* User Icon */
-        <Link to="/register">
-          <FaUser
-            size={22}
-            className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
-          />
+        <Link to="/register" className="relative group">
+          <div className="p-1.5 sm:p-2 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-110">
+            <FaUser
+              size={18}
+              className="sm:w-6 sm:h-6 transition-all duration-300"
+              style={{ color: primaryText }}
+            />
+          </div>
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap hidden sm:block">
+            Sign In
+          </div>
         </Link>
       )}
 
-      {/* conditional Rendering */}
-      {isDarkMode ? (
-        <>
+      {/* Theme Toggle Button */}
+      <div className="relative group">
+        <button
+          onClick={toggleTheme}
+          className="p-1.5 sm:p-2 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-110"
+          onMouseEnter={() => setShowThemeTooltip(true)}
+          onMouseLeave={() => setShowThemeTooltip(false)}
+        >
+          <div className="relative">
+            {isDarkMode ? (
+              <FaMoon
+                size={18}
+                className="sm:w-6 sm:h-6 text-yellow-400 transition-all duration-500 rotate-0 hover:rotate-12"
+              />
+            ) : (
+              <FaSun
+                size={18}
+                className="sm:w-6 sm:h-6 text-yellow-500 transition-all duration-500 rotate-0 hover:rotate-180"
+              />
+            )}
 
-          {/* Dark Mode Icon */}
-          <button onClick={toggleTheme}>
-            <FaMoon
-              size={22}
-              className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
-            />
-          </button>
-        </>
-      ) : (
-        <>
-          <button onClick={toggleTheme}>
-            
-            {/* Light Mode Icon */}
-            <FaSun
-              size={22}
-              className="hover:scale-105 transition-all duration-300 hover:cursor-pointer"
-            />
-          </button>
-        </>
-      )}
+            {/* Glow Effect */}
+            <div
+              className={`absolute inset-0 rounded-full transition-all duration-300 ${
+                isDarkMode
+                  ? "bg-yellow-400 opacity-0 hover:opacity-20 blur-lg"
+                  : "bg-yellow-500 opacity-0 hover:opacity-20 blur-lg"
+              }`}
+            ></div>
+          </div>
+        </button>
+
+        {/* Tooltip */}
+        <div
+          className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded transition-opacity duration-300 whitespace-nowrap hidden sm:block ${
+            showThemeTooltip ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {isDarkMode ? "Light Mode" : "Dark Mode"}
+        </div>
+      </div>
     </div>
   );
 };
