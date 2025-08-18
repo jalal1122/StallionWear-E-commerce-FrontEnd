@@ -10,8 +10,12 @@ import Checkout from "../Pages/Checkout";
 import OrderDetails from "../Pages/OrderDetails";
 import Orders from "../Pages/Orders";
 import UserOrderDetails from "../Pages/UserOrderDetails";
+import Admin from "../Pages/Admin";
 
 const Router = () => {
+  const user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null;
   return (
     <>
       <Routes>
@@ -47,6 +51,11 @@ const Router = () => {
 
         {/* User Order Details */}
         <Route path="/orders/:id" element={<UserOrderDetails />} />
+
+        {user.role === "admin" && (
+          /* Admin Dashboard Route */
+          <Route path="/admin" element={<Admin />} />
+        )}
 
         {/* Fallback Route */}
         <Route path="*" element={<LandingPage />} />

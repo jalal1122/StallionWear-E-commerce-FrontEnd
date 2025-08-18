@@ -69,7 +69,7 @@ const Checkout = () => {
     } else if (method === Stripe) {
       setPayment("Stripe");
     } else if (method === Paypal) {
-      setPayment("Paypal");
+      setPayment("PayPal");
     }
   };
 
