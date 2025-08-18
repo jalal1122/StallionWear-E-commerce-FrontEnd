@@ -223,7 +223,7 @@ const RightSideIcons = () => {
             {isDarkMode ? (
               <FaMoon
                 size={18}
-                className="sm:w-6 sm:h-6 text-yellow-400 transition-all duration-500 rotate-0 hover:rotate-12"
+                className="sm:w-6 sm:h-6 text-white transition-all duration-500 rotate-0 hover:rotate-12"
               />
             ) : (
               <FaSun
