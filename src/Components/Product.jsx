@@ -93,7 +93,7 @@ const Product = ({ product }) => {
             <img
               src={product.images?.[0] || "/placeholder-image.jpg"}
               alt={product.name}
-              className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+              className="w-full h-30 xs:h-35 object-cover transition-transform duration-700 group-hover:scale-110"
             />
           </div>
 

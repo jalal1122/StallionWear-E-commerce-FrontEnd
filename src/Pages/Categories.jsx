@@ -63,10 +63,10 @@ const Categories = () => {
     <>
       <Header />
 
-      <div className="flex flex-row items-center justify-center my-10 gap-5 relative">
+      <div className="flex flex-col sm:flex-row items-center justify-center px-5 my-10 gap-5 relative">
         {/* Left Side */}
         <div
-          className="left sticky top-5 self-start flex flex-col gap-5 w-[20%] border border-gray-500 p-3 rounded-2xl"
+          className="left relative sm:sticky top-5 self-start flex flex-col gap-5 w-full sm:w-[30%] lg:w-[20%] border border-gray-500 p-3 rounded-2xl"
           style={{ backgroundColor: primaryBg, color: primaryText }}
         >
           {/* main Heading */}
@@ -108,11 +108,11 @@ const Categories = () => {
 
         {/* Right Side */}
         <div
-          className="h-fit right w-[75%] flex flex-col gap-5 rounded-2xl p-4"
+          className="h-fit right w-full sm:w-[75%] flex flex-col gap-5 rounded-2xl p-4"
           style={{ backgroundColor: primaryBg, color: primaryText }}
         >
           {/* Heading  */}
-          <div className="heading flex items-center justify-between border-b border-gray-500 pb-3">
+          <div className="heading flex flex-col md:flex-row gap-5 items-center justify-between border-b border-gray-500 pb-3">
             <h1 className="font-bold text-2xl">Stallion Wear Products</h1>
 
             {/* Sort By */}

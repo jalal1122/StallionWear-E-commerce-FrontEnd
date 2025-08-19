@@ -15,7 +15,7 @@ const Hero = () => {
         {/* Left side */}
         <div className="hero-content space-y-6 lg:w-[60%] text-center">
           <h1
-            className="hero-title text-7xl font-bold text-black"
+            className="hero-title text-4xl xs:text-7xl font-bold text-black"
             style={{ color: primaryText }}
           >
             FIND OUT-FITS THAT

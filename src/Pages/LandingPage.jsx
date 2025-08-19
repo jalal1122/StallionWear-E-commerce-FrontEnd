@@ -32,13 +32,13 @@ const reviews = [
 const LandingPage = () => {
   return (
     <>
-      <Header />
-      <Hero />
-      <NewArrivals />
-      <TopSelling />
-      <BrowseByCategories />
-      <Reviews heading={"OUR HAPPY CUSTOMERS"} reviews={reviews} />
-      <Footer />
+        <Header />
+        <Hero />
+        <NewArrivals />
+        <TopSelling />
+        <BrowseByCategories />
+        <Reviews heading={"OUR HAPPY CUSTOMERS"} reviews={reviews} />
+        <Footer />
     </>
   );
 };

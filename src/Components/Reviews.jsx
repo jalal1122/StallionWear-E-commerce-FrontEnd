@@ -104,14 +104,14 @@ const Reviews = ({ heading, reviews }) => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <div
-            className="inline-flex items-center gap-3 mb-6 px-6 py-3 rounded-full"
+            className="inline-flex items-center gap-3 text-xl xs:text-2xl md:text-4xl mb-6 px-6 py-3 rounded-full"
             style={{
               backgroundColor: isDarkMode ? "#1f2937" : "#f3f4f6",
             }}
           >
             <FaStar className="text-yellow-400" size={24} />
-            <h2 className="text-4xl font-bold tracking-wide">
-              {heading || "Customer Reviews"}
+            <h2 className=" font-bold tracking-wide">
+              {heading}
             </h2>
           </div>
 

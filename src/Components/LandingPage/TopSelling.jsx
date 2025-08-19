@@ -32,7 +32,7 @@ const TopSelling = () => {
       >
         {/* Heading */}
         <h2
-          className="text-6xl font-bold mb-8"
+          className="text-4xl xs:text-6xl font-bold mb-8"
           style={{
             color: primaryText,
           }}

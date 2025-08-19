@@ -6,7 +6,9 @@ import Shoes from "../../Images/Shoes.png";
 import { useSelector } from "react-redux";
 
 const Categories = () => {
-  const { primaryBg, primaryText } = useSelector((state) => state.colors.colors);
+  const { primaryBg, primaryText } = useSelector(
+    (state) => state.colors.colors
+  );
 
   const categoriesList = [
     "Jackets",
@@ -21,10 +23,10 @@ const Categories = () => {
   return (
     <>
       <div
-        className="categories-container py-16 px-5 sm:px-20"
+        className="categories-container py-16 px-5 mt-10 sm:px-20"
         style={{ backgroundColor: primaryBg, color: primaryText }}
       >
-        <h2 className="sm:text-5xl text-4xl font-extrabold text-center mb-12 tracking-wide">
+        <h2 className="text-4xl xs:text-5xl font-extrabold text-center mb-12 tracking-wide">
           Browse By Categories
         </h2>
         <div className="category-layer-1 flex flex-wrap justify-center gap-10">
@@ -35,10 +37,9 @@ const Categories = () => {
                 className={`category-${
                   index + 1
                 } w-[200px] h-[250px] flex flex-col items-center justify-center mt-5 text-center px-8 py-2 gap-2 rounded-lg shadow-2xl hover:transition-shadow duration-300 cursor-pointer overflow-hidden`}
-               style={{
+                style={{
                   backgroundColor: primaryText === "#fff" ? "#1F2937" : "",
-
-                  }}
+                }}
               >
                 <h1
                   className="sm:text-xl text-lg font-bold"
