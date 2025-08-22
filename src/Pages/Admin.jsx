@@ -25,6 +25,11 @@ import {
   FaChartLine,
   FaDownload,
   FaSyncAlt,
+  FaPlus,
+  FaTrash,
+  FaImage,
+  FaTag,
+  FaStar,
 } from "react-icons/fa";
 
 // Redux Actions
@@ -32,6 +37,12 @@ import {
   getAllOrders,
   updateOrderStatus,
   getAnalytics,
+  getAllProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  setSelectedProduct,
+  clearSelectedProduct,
 } from "../features/admin/adminSlice.js";
 
 // Header and Footer Importing
@@ -77,8 +88,15 @@ const Admin = () => {
   const dispatch = useDispatch();
 
   // Redux State
-  const { allOrders, analyticsData, isLoading, isError, errorMessage } =
-    useSelector((state) => state.admin);
+  const {
+    allOrders,
+    analyticsData,
+    products,
+    selectedProduct,
+    isLoading,
+    isError,
+    errorMessage,
+  } = useSelector((state) => state.admin);
   const { primaryBg, primaryText } = useSelector(
     (state) => state.colors.colors
   );
@@ -95,6 +113,25 @@ const Admin = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Product Management State
+  const [activeTab, setActiveTab] = useState("orders");
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [productModalMode, setProductModalMode] = useState("create"); // "create" or "edit"
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+
+  // Product Form State
+  const [productForm, setProductForm] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category: "",
+    brand: "",
+    stock: "",
+    variants: [],
+    images: [],
+  });
 
   // ==============================
   // Memoized Values
@@ -190,12 +227,16 @@ const Admin = () => {
   useEffect(() => {
     // Debounce API calls to prevent excessive requests
     const timeoutId = setTimeout(() => {
-      const filterParams = buildFilterParams();
-      dispatch(getAllOrders(filterParams));
+      if (activeTab === "orders") {
+        const filterParams = buildFilterParams();
+        dispatch(getAllOrders(filterParams));
+      } else if (activeTab === "products") {
+        dispatch(getAllProducts());
+      }
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timeoutId);
-  }, [dispatch, buildFilterParams]);
+  }, [dispatch, buildFilterParams, activeTab]);
 
   // Load analytics separately (only once)
   useEffect(() => {
@@ -1154,6 +1195,453 @@ const Admin = () => {
   };
 
   // ==============================
+  // Product Management Functions
+  // ==============================
+
+  const handleCreateProduct = () => {
+    setProductForm({
+      name: "",
+      description: "",
+      price: "",
+      category: "",
+      brand: "",
+      stock: "",
+      variants: [],
+      images: [],
+    });
+    setProductModalMode("create");
+    setShowProductModal(true);
+  };
+
+  const handleEditProduct = (product) => {
+    setProductForm({
+      name: product.name || "",
+      description: product.description || "",
+      price: product.price?.toString() || "",
+      category: product.category || "",
+      brand: product.brand || "",
+      stock: product.stock?.toString() || "",
+      variants: product.variants || [],
+      images: product.images || [],
+    });
+    dispatch(setSelectedProduct(product));
+    setProductModalMode("edit");
+    setShowProductModal(true);
+  };
+
+  const handleDeleteProduct = (product) => {
+    setProductToDelete(product);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteProduct = async () => {
+    if (productToDelete) {
+      await dispatch(deleteProduct(productToDelete._id));
+      setShowDeleteConfirm(false);
+      setProductToDelete(null);
+    }
+  };
+
+  const handleProductSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", productForm.name);
+    formData.append("description", productForm.description);
+    formData.append("price", productForm.price);
+    formData.append("category", productForm.category);
+    formData.append("brand", productForm.brand);
+    formData.append("stock", productForm.stock);
+    formData.append("variants", JSON.stringify(productForm.variants));
+
+    // Handle image files
+    productForm.images.forEach((image) => {
+      if (image instanceof File) {
+        formData.append("images", image);
+      }
+    });
+
+    try {
+      if (productModalMode === "create") {
+        await dispatch(createProduct(formData)).unwrap();
+      } else {
+        await dispatch(
+          updateProduct({
+            productId: selectedProduct._id,
+            productData: formData,
+          })
+        ).unwrap();
+      }
+
+      setShowProductModal(false);
+      dispatch(getAllProducts()); // Refresh products list
+    } catch (error) {
+      console.error("Product operation failed:", error);
+    }
+  };
+
+  const renderProductManagement = () => (
+    <div className="space-y-6">
+      {/* Product Management Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold" style={{ color: primaryText }}>
+            Products Management
+          </h2>
+          <p className="opacity-70" style={{ color: primaryText }}>
+            Create, update, and manage your product catalog
+          </p>
+        </div>
+        <button
+          onClick={handleCreateProduct}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+        >
+          <FaPlus size={16} />
+          Add New Product
+        </button>
+      </div>
+
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {products && products.length > 0 ? (
+          products.map((product) => (
+            <div
+              key={product._id}
+              className="rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition-shadow duration-200"
+              style={cardStyles}
+            >
+              {/* Product Image */}
+              <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                {product.images && product.images[0] ? (
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-48 object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-48 bg-gray-100">
+                    <FaImage className="text-gray-400" size={48} />
+                  </div>
+                )}
+              </div>
+
+              {/* Product Info */}
+              <div className="p-4">
+                <h3
+                  className="font-semibold text-lg mb-2 truncate"
+                  style={{ color: primaryText }}
+                >
+                  {product.name}
+                </h3>
+                <p
+                  className="text-sm opacity-70 mb-2 line-clamp-2"
+                  style={{ color: primaryText }}
+                >
+                  {product.description}
+                </p>
+
+                <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                  <div>
+                    <span className="font-medium">Price: </span>
+                    <span className="text-green-600 font-bold">
+                      ${product.price}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Stock: </span>
+                    <span>{product.stock || 0}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Brand: </span>
+                    <span>{product.brand}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Rating: </span>
+                    <div className="flex items-center">
+                      <FaStar className="text-yellow-400 mr-1" size={12} />
+                      <span>{product.averageRating?.toFixed(1) || "N/A"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEditProduct(product)}
+                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
+                  >
+                    <FaEdit size={14} />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProduct(product)}
+                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200"
+                  >
+                    <FaTrash size={14} />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center py-12">
+            <FaBox className="mx-auto mb-4 text-gray-400" size={64} />
+            <h3
+              className="text-xl font-semibold mb-2"
+              style={{ color: primaryText }}
+            >
+              No Products Found
+            </h3>
+            <p className="opacity-70 mb-4" style={{ color: primaryText }}>
+              Start by adding your first product to the catalog
+            </p>
+            <button
+              onClick={handleCreateProduct}
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              Add Your First Product
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Product Modal */}
+      {showProductModal && renderProductModal()}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && renderDeleteConfirmModal()}
+    </div>
+  );
+
+  const renderProductModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div
+        className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        style={modalStyles}
+      >
+        {/* Modal Header */}
+        <div className="flex justify-between items-center p-6 border-b">
+          <h2 className="text-2xl font-bold" style={{ color: primaryText }}>
+            {productModalMode === "create" ? "Add New Product" : "Edit Product"}
+          </h2>
+          <button
+            onClick={() => setShowProductModal(false)}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <FaTimes size={20} />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <form onSubmit={handleProductSubmit} className="p-6 space-y-6">
+          {/* Basic Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: primaryText }}
+              >
+                Product Name *
+              </label>
+              <input
+                type="text"
+                value={productForm.name}
+                onChange={(e) =>
+                  setProductForm({ ...productForm, name: e.target.value })
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={inputStyles}
+                required
+              />
+            </div>
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: primaryText }}
+              >
+                Brand *
+              </label>
+              <input
+                type="text"
+                value={productForm.brand}
+                onChange={(e) =>
+                  setProductForm({ ...productForm, brand: e.target.value })
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={inputStyles}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: primaryText }}
+            >
+              Description *
+            </label>
+            <textarea
+              value={productForm.description}
+              onChange={(e) =>
+                setProductForm({ ...productForm, description: e.target.value })
+              }
+              rows={4}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={inputStyles}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: primaryText }}
+              >
+                Price ($) *
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={productForm.price}
+                onChange={(e) =>
+                  setProductForm({ ...productForm, price: e.target.value })
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={inputStyles}
+                required
+              />
+            </div>
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: primaryText }}
+              >
+                Category *
+              </label>
+              <input
+                type="text"
+                value={productForm.category}
+                onChange={(e) =>
+                  setProductForm({ ...productForm, category: e.target.value })
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={inputStyles}
+                required
+              />
+            </div>
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                style={{ color: primaryText }}
+              >
+                Stock Quantity
+              </label>
+              <input
+                type="number"
+                value={productForm.stock}
+                onChange={(e) =>
+                  setProductForm({ ...productForm, stock: e.target.value })
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={inputStyles}
+              />
+            </div>
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: primaryText }}
+            >
+              Product Images *
+            </label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => {
+                const files = Array.from(e.target.files);
+                setProductForm({ ...productForm, images: files });
+              }}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={inputStyles}
+              required={productModalMode === "create"}
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Select multiple images for your product. First image will be the
+              main display image.
+            </p>
+          </div>
+
+          {/* Form Actions */}
+          <div className="flex justify-end gap-4 pt-6 border-t">
+            <button
+              type="button"
+              onClick={() => setShowProductModal(false)}
+              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50"
+            >
+              {isLoading
+                ? "Processing..."
+                : productModalMode === "create"
+                ? "Create Product"
+                : "Update Product"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  const renderDeleteConfirmModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div
+        className="bg-white rounded-lg p-6 max-w-md w-full mx-4"
+        style={modalStyles}
+      >
+        <div className="text-center">
+          <FaTrash className="mx-auto mb-4 text-red-500" size={48} />
+          <h3
+            className="text-lg font-semibold mb-2"
+            style={{ color: primaryText }}
+          >
+            Delete Product
+          </h3>
+          <p className="opacity-70 mb-6" style={{ color: primaryText }}>
+            Are you sure you want to delete "{productToDelete?.name}"? This
+            action cannot be undone.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => setShowDeleteConfirm(false)}
+              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDeleteProduct}
+              disabled={isLoading}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 disabled:opacity-50"
+            >
+              {isLoading ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ==============================
   // Loading & Error States
   // ==============================
 
@@ -1221,27 +1709,71 @@ const Admin = () => {
               Admin Dashboard
             </h1>
             <p className="opacity-70" style={{ color: primaryText }}>
-              Manage orders, track performance, and analyze business metrics
+              Manage orders, products, and analyze business metrics
             </p>
           </div>
 
-          {/* Analytics Cards */}
-          {renderAnalyticsCards()}
+          {/* Navigation Tabs */}
+          <div className="mb-8">
+            <div className="border-b border-gray-200 dark:border-gray-700">
+              <nav className="-mb-px flex space-x-8">
+                <button
+                  onClick={() => setActiveTab("orders")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "orders"
+                      ? "border-blue-500 text-blue-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                  style={activeTab === "orders" ? {} : { color: primaryText }}
+                >
+                  <FaBox className="inline mr-2" />
+                  Orders Management
+                </button>
+                <button
+                  onClick={() => setActiveTab("products")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === "products"
+                      ? "border-blue-500 text-blue-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                  style={activeTab === "products" ? {} : { color: primaryText }}
+                >
+                  <FaTag className="inline mr-2" />
+                  Products Management
+                </button>
+              </nav>
+            </div>
+          </div>
 
-          {/* Top Products */}
-          {renderTopProducts()}
+          {/* Content based on active tab */}
+          {activeTab === "orders" && (
+            <>
+              {/* Analytics Cards */}
+              {renderAnalyticsCards()}
 
-          {/* Filters */}
-          {renderFilters()}
+              {/* Top Products */}
+              {renderTopProducts()}
 
-          {/* Orders Table */}
-          {renderOrdersTable()}
+              {/* Filters */}
+              {renderFilters()}
 
-          {/* Pagination */}
-          {renderPagination()}
+              {/* Orders Table */}
+              {renderOrdersTable()}
 
-          {/* Order Details Modal */}
-          {renderOrderModal()}
+              {/* Pagination */}
+              {renderPagination()}
+
+              {/* Order Details Modal */}
+              {renderOrderModal()}
+            </>
+          )}
+
+          {activeTab === "products" && (
+            <>
+              {/* Product Management Section */}
+              {renderProductManagement()}
+            </>
+          )}
         </div>
       </div>
       <Footer />
