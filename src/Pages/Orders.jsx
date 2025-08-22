@@ -2,6 +2,8 @@ import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserOrders } from "../features/Orders/ordersSlice.js";
+import { getOrdersToReview } from "../features/Reviews/reviewsSlice.js";
+import ReviewModal from "../Components/Reviews/ReviewModal.jsx";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../Components/Loader.jsx";
@@ -15,6 +17,7 @@ import {
   FaTimesCircle,
   FaClock,
   FaCog,
+  FaStar,
 } from "react-icons/fa";
 
 const Orders = () => {
@@ -27,8 +30,15 @@ const Orders = () => {
   const { orders, totalPages, currentPage, isLoading, isError, errorMessage } =
     useSelector((state) => state.orders);
 
+  const { reviewableProducts } = useSelector((state) => state.reviews);
+
   //   state for order Status
   const [orderStatus, setOrderStatus] = useState("");
+
+  // Review modal state
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedReviewProduct, setSelectedReviewProduct] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
 
   const handleOrderStatusChange = (e) => {
     const selectedValue = e.target.value;
@@ -45,7 +55,31 @@ const Orders = () => {
   // Fetch user orders on component mount
   useEffect(() => {
     dispatch(getUserOrders());
+    dispatch(getOrdersToReview());
   }, [dispatch]);
+
+  // Function to handle review button click
+  const handleReviewClick = (product, orderId) => {
+    setSelectedReviewProduct(product);
+    setSelectedOrderId(orderId);
+    setShowReviewModal(true);
+  };
+
+  // Function to close review modal
+  const handleCloseReviewModal = () => {
+    setShowReviewModal(false);
+    setSelectedReviewProduct(null);
+    setSelectedOrderId(null);
+    // Refresh reviewable products after review submission
+    dispatch(getOrdersToReview());
+  };
+
+  // Function to check if a product is reviewable
+  const isProductReviewable = (productId, orderId) => {
+    return reviewableProducts.some(
+      (rp) => rp.product._id === productId && rp.orderId === orderId
+    );
+  };
 
   // Get status color and icon
   const getStatusInfo = (status) => {
@@ -494,6 +528,59 @@ const Orders = () => {
                           </p>
                         </div>
                       )}
+
+                      {/* Review Section for Delivered Orders */}
+                      {order.orderStatus?.toLowerCase() === "delivered" && (
+                        <div
+                          className="mt-4 pt-4 border-t"
+                          style={{
+                            borderColor:
+                              colors?.primaryBg === "#000"
+                                ? "#374151"
+                                : "#e5e7eb",
+                          }}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <p
+                              className="text-sm font-medium"
+                              style={{ color: colors?.primaryText }}
+                            >
+                              Rate Your Experience
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap gap-2">
+                            {order.orderItems?.map((item) => {
+                              const reviewableProduct = reviewableProducts.find(
+                                (rp) =>
+                                  rp.product._id === item.product._id &&
+                                  rp.orderId === order._id
+                              );
+
+                              if (!reviewableProduct) return null;
+
+                              return (
+                                <button
+                                  key={`${item.product._id}-${order._id}`}
+                                  onClick={() =>
+                                    handleReviewClick(
+                                      reviewableProduct,
+                                      order._id
+                                    )
+                                  }
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors duration-200 text-sm font-medium"
+                                >
+                                  <FaStar size={14} />
+                                  Review{" "}
+                                  {item.product.name.length > 20
+                                    ? `${item.product.name.substring(0, 20)}...`
+                                    : item.product.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -548,6 +635,16 @@ const Orders = () => {
           )}
         </div>
       </div>
+
+      {/* Review Modal */}
+      {showReviewModal && selectedReviewProduct && selectedOrderId && (
+        <ReviewModal
+          isOpen={showReviewModal}
+          onClose={handleCloseReviewModal}
+          product={selectedReviewProduct}
+          orderId={selectedOrderId}
+        />
+      )}
 
       {/* Footer Component */}
       <Footer />

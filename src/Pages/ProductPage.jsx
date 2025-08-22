@@ -12,7 +12,7 @@ import {
 } from "../features/Products/productSlice.js";
 import RenderStars from "../utils/RenderStars";
 import { useState } from "react";
-import Reviews from "../Components/Reviews";
+import ProductReviews from "../Components/Reviews/ProductReviews";
 import RelevantProducts from "../Components/ProductPage/RelevantProducts";
 import ImageGallery from "../Components/ProductPage/ImageGallery";
 import SizeOptions from "../Components/ProductPage/SizeOptions";
@@ -334,7 +334,7 @@ const ProductPage = () => {
       {/* Header */}
       <Header />
       <div
-      className="my-5"
+        className="my-5"
         style={{
           backgroundColor: primaryBg,
           color: primaryText,
@@ -509,7 +509,7 @@ const ProductPage = () => {
         </div>
 
         {/* Reviews Section */}
-        <Reviews heading={"Rating & Reviews"} reviews={product?.reviews} />
+        <ProductReviews productId={id} heading="Customer Reviews & Ratings" />
 
         {/* Related Products Section */}
         <RelevantProducts />
