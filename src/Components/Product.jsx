@@ -52,6 +52,12 @@ const Product = ({ product }) => {
     );
   };
 
+  // method to get the average rating
+  const getAverageRating = () => {
+    const sum = product.reviews.reduce((acc, review) => acc + review.rating, 0);
+    return Math.round((sum / product.reviews.length) * 10) / 10;
+  };
+
   return (
     <div className="group">
       {/* Product Container */}
@@ -141,15 +147,19 @@ const Product = ({ product }) => {
 
           {/* Rating */}
           <div className="flex items-center gap-2 mb-3">
-            {product.reviews && product.reviews.averageRating ? (
-              <>
-                <div className="flex items-center">
-                  <RenderStars rating={product.reviews.averageRating} />
-                </div>
-                <span className="text-sm opacity-70">
-                  ({product.reviews.totalReviews || 0})
-                </span>
-              </>
+            {product.reviews ? (
+              product.averageRating ? (
+                <>
+                  <div className="flex items-center">
+                    <RenderStars rating={product.averageRating} />
+                  </div>
+                  <span className="text-sm opacity-70">
+                    ({product.reviews.length || 0})
+                  </span>
+                </>
+              ) : (
+                <RenderStars rating={getAverageRating()} />
+              )
             ) : (
               <div className="flex items-center gap-1 text-gray-400">
                 {[...Array(5)].map((_, i) => (

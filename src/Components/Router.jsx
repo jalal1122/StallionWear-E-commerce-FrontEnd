@@ -52,7 +52,7 @@ const Router = () => {
         {/* User Order Details */}
         <Route path="/orders/:id" element={<UserOrderDetails />} />
 
-        {user.role === "admin" && (
+        {user && user.role === "admin" && (
           /* Admin Dashboard Route */
           <Route path="/admin" element={<Admin />} />
         )}

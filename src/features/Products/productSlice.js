@@ -5,8 +5,8 @@ import productService from "./productService";
 const initialState = {
   products: [],
   product: null,
-  newArrivals: JSON.parse(localStorage.getItem("newArrivals")) || [],
-  topSelling: JSON.parse(localStorage.getItem("topSelling")) || [],
+  newArrivals: [],
+  topSelling: [],
   totalPages: JSON.parse(localStorage.getItem("totalPages")) || 0,
   currentPage: JSON.parse(localStorage.getItem("currentPage")) || 1,
   relevantProducts: [],
@@ -187,6 +187,11 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.products = action.payload.data.products;
+        console.log(
+          "All Products fetched successfully:",
+          action.payload.data.products
+        );
+
         state.totalPages = action.payload.data.totalPages;
         state.currentPage = action.payload.data.currentPage;
       })

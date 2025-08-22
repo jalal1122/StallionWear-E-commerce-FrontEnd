@@ -74,10 +74,7 @@ const getNewArrivals = async () => {
   // Fetch new arrivals from the API
   const response = await axios.get(`${Api_URL}/newArrivals`);
 
-  // If the response is successful, store the data in localStorage
-  if (response.status === 200) {
-    localStorage.setItem("newArrivals", JSON.stringify(response.data));
-  }
+  console.log("New Arrivals fetched successfully:", response.data);
 
   // Return the new arrivals data
   return response.data;
@@ -87,11 +84,6 @@ const getNewArrivals = async () => {
 const getTopSelling = async () => {
   // Fetch top selling products from the API
   const response = await axios.get(`${Api_URL}/topSelling`);
-
-  // If the response is successful, store the data in localStorage
-  if (response.status === 200) {
-    localStorage.setItem("topSelling", JSON.stringify(response.data));
-  }
 
   // Return the top selling products data
   return response.data;
