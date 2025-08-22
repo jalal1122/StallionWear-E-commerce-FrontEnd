@@ -30,6 +30,7 @@ import {
   FaImage,
   FaTag,
   FaStar,
+  FaSearch,
 } from "react-icons/fa";
 
 // Redux Actions
@@ -93,11 +94,14 @@ const Admin = () => {
     analyticsData,
     products,
     selectedProduct,
+    totalPages: productTotalPages,
+    currentPage: productCurrentPage,
+    totalProducts,
     isLoading,
     isError,
     errorMessage,
   } = useSelector((state) => state.admin);
-  const { primaryBg, primaryText } = useSelector(
+  const { primaryBg, primaryText, secondaryBg } = useSelector(
     (state) => state.colors.colors
   );
 
@@ -113,6 +117,7 @@ const Admin = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [showProductFilters, setShowProductFilters] = useState(false);
 
   // Product Management State
   const [activeTab, setActiveTab] = useState("orders");
@@ -120,6 +125,31 @@ const Admin = () => {
   const [productModalMode, setProductModalMode] = useState("create"); // "create" or "edit"
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  
+  // Product Management State - Matching Categories page exactly
+  const [filter, setFilter] = useState({
+    nextPage: false,
+    previousPage: false,
+  });
+
+  // state for Brand Input (matching Categories)
+  const [brand, setBrand] = useState("");
+
+  // State for price filters (matching Categories)
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+
+  // State for sort option (matching Categories)
+  const [sortBy, setSortBy] = useState("Newest");
+
+  // State for category filters (matching Categories)
+  const [categoryFilters, setCategoryFilters] = useState({
+    "Men Jackets": false,
+    "Men Clothings": false,
+    "Men Watches Rings Chains": false,
+    "Men Wallets": false,
+    "Men Shoes": false,
+  });
 
   // Product Form State
   const [productForm, setProductForm] = useState({
@@ -231,12 +261,22 @@ const Admin = () => {
         const filterParams = buildFilterParams();
         dispatch(getAllOrders(filterParams));
       } else if (activeTab === "products") {
-        dispatch(getAllProducts());
+        // Build filter object with current filter values
+        const productFilter = {
+          ...filter,
+          sortBy: sortBy,
+          brand: brand,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+          // Add selected categories to filter
+          category: Object.keys(categoryFilters).find(key => categoryFilters[key]) || "",
+        };
+        dispatch(getAllProducts(productFilter));
       }
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timeoutId);
-  }, [dispatch, buildFilterParams, activeTab]);
+  }, [dispatch, buildFilterParams, activeTab, filter, sortBy, brand, minPrice, maxPrice, categoryFilters]);
 
   // Load analytics separately (only once)
   useEffect(() => {
@@ -1198,6 +1238,54 @@ const Admin = () => {
   // Product Management Functions
   // ==============================
 
+  // Simple pagination handlers matching Categories page exactly
+  const paginationButtonOnClickNext = (e) => {
+    if (productCurrentPage >= productTotalPages) {
+      return; // Prevent going to next page if already on the last page
+    }
+
+    if (e.currentTarget.textContent.trim() === "Next") {
+      console.log("Next button clicked");
+
+      const newFilter = {
+        ...filter,
+        nextPage: true,
+        previousPage: false,
+        sortBy: sortBy,
+        brand: brand,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        category: Object.keys(categoryFilters).find(key => categoryFilters[key]) || "",
+      };
+      setFilter(newFilter);
+    }
+
+    dispatch(getAllProducts(filter));
+  };
+
+  const paginationButtonOnClickPrevious = (e) => {
+    if (productCurrentPage <= 1) {
+      return; // Prevent going to previous page if already on the first page
+    }
+
+    if (e.currentTarget.textContent.trim() === "Previous") {
+      console.log("Previous button clicked");
+
+      const newFilter = {
+        ...filter,
+        nextPage: false,
+        previousPage: true,
+        sortBy: sortBy,
+        brand: brand,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+        category: Object.keys(categoryFilters).find(key => categoryFilters[key]) || "",
+      };
+      setFilter(newFilter);
+    }
+    dispatch(getAllProducts(filter));
+  };
+
   const handleCreateProduct = () => {
     setProductForm({
       name: "",
@@ -1283,27 +1371,203 @@ const Admin = () => {
   const renderProductManagement = () => (
     <div className="space-y-6">
       {/* Product Management Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg border" style={cardStyles}>
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: primaryText }}>
-            Products Management
+          <h2 className="text-2xl font-bold mb-2" style={{ color: primaryText }}>
+            Product Management
           </h2>
-          <p className="opacity-70" style={{ color: primaryText }}>
-            Create, update, and manage your product catalog
+          <p className="text-sm opacity-75" style={{ color: primaryText }}>
+            Manage your product catalog ({products?.length || 0} products) - Page {productCurrentPage} of {productTotalPages}
           </p>
         </div>
-        <button
-          onClick={handleCreateProduct}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-        >
-          <FaPlus size={16} />
-          Add New Product
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowProductFilters(!showProductFilters)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+          >
+            <FaFilter />
+            Filters
+          </button>
+          <button
+            onClick={handleCreateProduct}
+            className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 font-medium"
+          >
+            <FaPlus />
+            Add New Product
+          </button>
+        </div>
       </div>
 
+      {showProductFilters && (
+        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border" style={cardStyles}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Category Filter */}
+            <div>
+              <label
+                className="block text-sm font-medium mb-1"
+                style={{ color: primaryText }}
+              >
+                Category
+              </label>
+              <select
+                value={Object.keys(categoryFilters).find(key => categoryFilters[key]) || ""}
+                onChange={(e) => {
+                  setCategoryFilters({
+                    "Men Jackets": false,
+                    "Men Clothings": false,
+                    "Men Watches Rings Chains": false,
+                    "Men Wallets": false,
+                    "Men Shoes": false,
+                    [e.target.value]: e.target.value !== "",
+                  });
+                  setFilter({
+                    ...filter,
+                    nextPage: false,
+                    previousPage: false,
+                  });
+                }}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={inputStyles}
+              >
+                <option value="">All Categories</option>
+                <option value="Men Jackets">Men Jackets</option>
+                <option value="Men Clothings">Men Clothings</option>
+                <option value="Men Watches Rings Chains">Men Watches Rings Chains</option>
+                <option value="Men Wallets">Men Wallets</option>
+                <option value="Men Shoes">Men Shoes</option>
+              </select>
+            </div>
+
+            {/* Brand Filter */}
+            <div>
+              <label
+                className="block text-sm font-medium mb-1"
+                style={{ color: primaryText }}
+              >
+                Brand
+              </label>
+              <input
+                type="text"
+                placeholder="Filter by brand..."
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  setFilter({
+                    ...filter,
+                    nextPage: false,
+                    previousPage: false,
+                  });
+                }}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={inputStyles}
+              />
+            </div>
+
+            {/* Sort By */}
+            <div>
+              <label
+                className="block text-sm font-medium mb-1"
+                style={{ color: primaryText }}
+              >
+                Sort By
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => {
+                  setSortBy(e.target.value);
+                  setFilter({
+                    ...filter,
+                    nextPage: false,
+                    previousPage: false,
+                  });
+                }}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={inputStyles}
+              >
+                <option value="Newest">Newest First</option>
+                <option value="Oldest">Oldest First</option>
+              </select>
+            </div>
+
+            {/* Price Range - Combined in one column */}
+            <div>
+              <label
+                className="block text-sm font-medium mb-1"
+                style={{ color: primaryText }}
+              >
+                Price Range
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={minPrice}
+                  onChange={(e) => {
+                    setMinPrice(e.target.value);
+                    setFilter({
+                      ...filter,
+                      nextPage: false,
+                      previousPage: false,
+                    });
+                  }}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={inputStyles}
+                />
+                <input
+                  type="number"
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChange={(e) => {
+                    setMaxPrice(e.target.value);
+                    setFilter({
+                      ...filter,
+                      nextPage: false,
+                      previousPage: false,
+                    });
+                  }}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  style={inputStyles}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Clear Filters Button */}
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={() => {
+                setBrand("");
+                setMinPrice("");
+                setMaxPrice("");
+                setSortBy("Newest");
+                setCategoryFilters({
+                  "Men Jackets": false,
+                  "Men Clothings": false,
+                  "Men Watches Rings Chains": false,
+                  "Men Wallets": false,
+                  "Men Shoes": false,
+                });
+                setFilter({
+                  nextPage: false,
+                  previousPage: false,
+                });
+              }}
+              className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200"
+            >
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products && products.length > 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">{
+        isLoading ? (
+          <div className="col-span-full text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p style={{ color: primaryText }}>Loading products...</p>
+          </div>
+        ) : products && products.length > 0 ? (
           products.map((product) => (
             <div
               key={product._id}
@@ -1405,6 +1669,66 @@ const Admin = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {products && products.length > 0 && productTotalPages > 1 && (
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border" style={cardStyles}>
+          <button
+            onClick={paginationButtonOnClickPrevious}
+            disabled={productCurrentPage <= 1}
+            className="px-4 py-2 font-semibold rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: productCurrentPage <= 1 ? '#ccc' : primaryText,
+              color: productCurrentPage <= 1 ? '#999' : primaryBg,
+            }}
+            onMouseEnter={(e) => {
+              if (productCurrentPage > 1) {
+                e.currentTarget.style.backgroundColor = secondaryBg;
+                e.currentTarget.style.color = primaryBg;
+                e.currentTarget.style.cursor = "pointer";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (productCurrentPage > 1) {
+                e.currentTarget.style.backgroundColor = primaryText;
+                e.currentTarget.style.color = primaryBg;
+              }
+            }}
+          >
+            Previous
+          </button>
+          <span
+            className="text-lg font-semibold"
+            style={{ color: primaryText }}
+          >
+            Page {productCurrentPage} of {productTotalPages}
+          </span>
+          <button
+            onClick={paginationButtonOnClickNext}
+            disabled={productCurrentPage >= productTotalPages}
+            className="px-4 py-2 font-semibold rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: productCurrentPage >= productTotalPages ? '#ccc' : primaryText,
+              color: productCurrentPage >= productTotalPages ? '#999' : primaryBg,
+            }}
+            onMouseEnter={(e) => {
+              if (productCurrentPage < productTotalPages) {
+                e.currentTarget.style.backgroundColor = secondaryBg;
+                e.currentTarget.style.color = primaryBg;
+                e.currentTarget.style.cursor = "pointer";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (productCurrentPage < productTotalPages) {
+                e.currentTarget.style.backgroundColor = primaryText;
+                e.currentTarget.style.color = primaryBg;
+              }
+            }}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* Product Modal */}
       {showProductModal && renderProductModal()}

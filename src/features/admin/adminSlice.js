@@ -9,6 +9,9 @@ const initialState = {
   // Product management
   products: [],
   selectedProduct: null,
+  totalPages: JSON.parse(localStorage.getItem("adminTotalPages")) || 1,
+  currentPage: JSON.parse(localStorage.getItem("adminCurrentPage")) || 1,
+  totalProducts: 0,
   isLoading: false,
   isError: false,
   errorMessage: null,
@@ -136,8 +139,8 @@ export const getAllProducts = createAsyncThunk(
   async (filters = {}, thunkAPI) => {
     try {
       const response = await adminService.getAllProducts(filters);
-      console.log(response.data.products);
-      return response.data.products;
+      console.log("Admin getAllProducts response:", response);
+      return response;
     } catch (error) {
       const message =
         (error.response &&
@@ -316,11 +319,18 @@ const adminSlice = createSlice({
         state.isSuccess = false;
       })
       .addCase(getAllProducts.fulfilled, (state, action) => {
-        state.products = action.payload;
         state.isLoading = false;
+        state.isSuccess = true;
+        state.products = action.payload.data.products;
+        console.log(
+          "Admin All Products fetched successfully:",
+          action.payload.data.products
+        );
+
+        state.totalPages = action.payload.data.totalPages;
+        state.currentPage = action.payload.data.currentPage;
         state.isError = false;
         state.errorMessage = null;
-        state.isSuccess = true;
       })
       .addCase(getAllProducts.rejected, (state, action) => {
         state.isLoading = false;

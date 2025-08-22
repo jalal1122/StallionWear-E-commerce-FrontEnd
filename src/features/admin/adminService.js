@@ -54,10 +54,55 @@ const deleteProduct = async (productId) => {
   return response.data;
 };
 
-const getAllProducts = async (filters = {}) => {
-  const response = await axios.get(`${product_api_url}`, {
-    params: filters,
-  });
+const getAllProducts = async (filter) => {
+  const previousPage =
+    parseInt(JSON.parse(localStorage.getItem("adminCurrentPage"))) || 1;
+
+  // if next page button is pressed, increment the current page
+  if (filter && filter.nextPage) {
+    localStorage.setItem("adminCurrentPage", JSON.stringify(previousPage + 1));
+  }
+
+  // if previous page button is pressed, decrement the current page
+  if (filter && filter.previousPage) {
+    localStorage.setItem("adminCurrentPage", JSON.stringify(previousPage - 1));
+  }
+
+  // get the current page from localStorage
+  const currentPage =
+    parseInt(JSON.parse(localStorage.getItem("adminCurrentPage"))) || 1;
+
+  // Build query parameters for filters
+  let queryParams = `page=${currentPage}&sortOrder=${filter?.sortBy || "desc"}`;
+  
+  if (filter?.category) queryParams += `&category=${filter.category}`;
+  if (filter?.brand) queryParams += `&brand=${filter.brand}`;
+  if (filter?.minPrice) queryParams += `&minPrice=${filter.minPrice}`;
+  if (filter?.maxPrice) queryParams += `&maxPrice=${filter.maxPrice}`;
+
+  // fetch all products from the API with optional filter
+  const response = await axios.get(
+    `${product_api_url}?${queryParams}`,
+    {},
+    {
+      Headers: {},
+    }
+  );
+
+  // If the response is successful, store the data in localStorage
+  if (response.status === 200) {
+    localStorage.setItem("adminProducts", JSON.stringify(response.data));
+    localStorage.setItem(
+      "adminTotalPages",
+      JSON.stringify(response.data.data.totalPages)
+    );
+    localStorage.setItem(
+      "adminCurrentPage",
+      JSON.stringify(response.data.data.currentPage)
+    );
+  }
+
+  // Return the products data
   return response.data;
 };
 
