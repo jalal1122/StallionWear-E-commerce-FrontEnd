@@ -4,7 +4,7 @@ import {
   getProductReviews,
   clearProductReviews,
 } from "../../features/Reviews/reviewsSlice";
-import RenderStars from "../../utils/RenderStars";
+import RenderStars from "../../utils/RenderStars.jsx";
 import {
   FaUser,
   FaStar,

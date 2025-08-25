@@ -1,6 +1,6 @@
 import { FaShoppingCart, FaHeart, FaStar, FaEye, FaTag } from "react-icons/fa";
 import { Link } from "react-router";
-import RenderStars from "../utils/RenderStars";
+import RenderStars from "../utils/RenderStars.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { addWishlistItem } from "../features/Wishlist/wishlistSlice.js";
 import { addToCart } from "../features/Cart/cartSlice.js";
@@ -99,7 +99,7 @@ const Product = ({ product }) => {
             <img
               src={product.images?.[0] || "/placeholder-image.jpg"}
               alt={product.name}
-              className="w-full h-30 xs:h-35 lg:h-50 object-cover transition-transform duration-700 group-hover:scale-110"
+              className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
             />
           </div>
 

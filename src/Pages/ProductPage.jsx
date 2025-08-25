@@ -10,7 +10,7 @@ import {
   clearError,
   getRelevantProducts,
 } from "../features/Products/productSlice.js";
-import RenderStars from "../utils/RenderStars";
+import RenderStars from "../utils/RenderStars.jsx";
 import { useState } from "react";
 import ProductReviews from "../Components/Reviews/ProductReviews";
 import RelevantProducts from "../Components/ProductPage/RelevantProducts";
