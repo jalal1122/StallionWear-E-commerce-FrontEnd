@@ -36,9 +36,15 @@ const refreshAccessToken = async () => {
 // Request interceptor to add access token
 instance.interceptors.request.use(
   (config) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.accessToken) {
-      config.headers.Authorization = `Bearer ${user.accessToken}`;
+    try {
+      const userString = localStorage.getItem("user");
+      const user = userString ? JSON.parse(userString) : null;
+      if (user && user.accessToken) {
+        config.headers.Authorization = `Bearer ${user.accessToken}`;
+      }
+    } catch (error) {
+      console.error("Error parsing user data from localStorage:", error);
+      localStorage.removeItem("user");
     }
     return config;
   },
