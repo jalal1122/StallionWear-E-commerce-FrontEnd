@@ -125,7 +125,7 @@ const Admin = () => {
   const [productModalMode, setProductModalMode] = useState("create"); // "create" or "edit"
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
-  
+
   // Product Management State - Matching Categories page exactly
   const [filter, setFilter] = useState({
     nextPage: false,
@@ -269,14 +269,26 @@ const Admin = () => {
           minPrice: minPrice,
           maxPrice: maxPrice,
           // Add selected categories to filter
-          category: Object.keys(categoryFilters).find(key => categoryFilters[key]) || "",
+          category:
+            Object.keys(categoryFilters).find((key) => categoryFilters[key]) ||
+            "",
         };
         dispatch(getAllProducts(productFilter));
       }
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timeoutId);
-  }, [dispatch, buildFilterParams, activeTab, filter, sortBy, brand, minPrice, maxPrice, categoryFilters]);
+  }, [
+    dispatch,
+    buildFilterParams,
+    activeTab,
+    filter,
+    sortBy,
+    brand,
+    minPrice,
+    maxPrice,
+    categoryFilters,
+  ]);
 
   // Load analytics separately (only once)
   useEffect(() => {
@@ -1255,7 +1267,9 @@ const Admin = () => {
         brand: brand,
         minPrice: minPrice,
         maxPrice: maxPrice,
-        category: Object.keys(categoryFilters).find(key => categoryFilters[key]) || "",
+        category:
+          Object.keys(categoryFilters).find((key) => categoryFilters[key]) ||
+          "",
       };
       setFilter(newFilter);
     }
@@ -1279,7 +1293,9 @@ const Admin = () => {
         brand: brand,
         minPrice: minPrice,
         maxPrice: maxPrice,
-        category: Object.keys(categoryFilters).find(key => categoryFilters[key]) || "",
+        category:
+          Object.keys(categoryFilters).find((key) => categoryFilters[key]) ||
+          "",
       };
       setFilter(newFilter);
     }
@@ -1371,13 +1387,20 @@ const Admin = () => {
   const renderProductManagement = () => (
     <div className="space-y-6">
       {/* Product Management Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg border" style={cardStyles}>
+      <div
+        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg border"
+        style={cardStyles}
+      >
         <div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: primaryText }}>
+          <h2
+            className="text-2xl font-bold mb-2"
+            style={{ color: primaryText }}
+          >
             Product Management
           </h2>
           <p className="text-sm opacity-75" style={{ color: primaryText }}>
-            Manage your product catalog ({products?.length || 0} products) - Page {productCurrentPage} of {productTotalPages}
+            Manage your product catalog ({products?.length || 0} products) -
+            Page {productCurrentPage} of {productTotalPages}
           </p>
         </div>
         <div className="flex gap-3">
@@ -1399,7 +1422,10 @@ const Admin = () => {
       </div>
 
       {showProductFilters && (
-        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border" style={cardStyles}>
+        <div
+          className="p-4 bg-white dark:bg-gray-800 rounded-lg border"
+          style={cardStyles}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Category Filter */}
             <div>
@@ -1410,7 +1436,11 @@ const Admin = () => {
                 Category
               </label>
               <select
-                value={Object.keys(categoryFilters).find(key => categoryFilters[key]) || ""}
+                value={
+                  Object.keys(categoryFilters).find(
+                    (key) => categoryFilters[key]
+                  ) || ""
+                }
                 onChange={(e) => {
                   setCategoryFilters({
                     "Men Jackets": false,
@@ -1432,7 +1462,9 @@ const Admin = () => {
                 <option value="">All Categories</option>
                 <option value="Men Jackets">Men Jackets</option>
                 <option value="Men Clothings">Men Clothings</option>
-                <option value="Men Watches Rings Chains">Men Watches Rings Chains</option>
+                <option value="Men Watches Rings Chains">
+                  Men Watches Rings Chains
+                </option>
                 <option value="Men Wallets">Men Wallets</option>
                 <option value="Men Shoes">Men Shoes</option>
               </select>
@@ -1561,8 +1593,8 @@ const Admin = () => {
       )}
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">{
-        isLoading ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {isLoading ? (
           <div className="col-span-full text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p style={{ color: primaryText }}>Loading products...</p>
@@ -1672,14 +1704,17 @@ const Admin = () => {
 
       {/* Pagination */}
       {products && products.length > 0 && productTotalPages > 1 && (
-        <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border" style={cardStyles}>
+        <div
+          className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border"
+          style={cardStyles}
+        >
           <button
             onClick={paginationButtonOnClickPrevious}
             disabled={productCurrentPage <= 1}
             className="px-4 py-2 font-semibold rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              backgroundColor: productCurrentPage <= 1 ? '#ccc' : primaryText,
-              color: productCurrentPage <= 1 ? '#999' : primaryBg,
+              backgroundColor: productCurrentPage <= 1 ? "#ccc" : primaryText,
+              color: productCurrentPage <= 1 ? "#999" : primaryBg,
             }}
             onMouseEnter={(e) => {
               if (productCurrentPage > 1) {
@@ -1708,8 +1743,10 @@ const Admin = () => {
             disabled={productCurrentPage >= productTotalPages}
             className="px-4 py-2 font-semibold rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              backgroundColor: productCurrentPage >= productTotalPages ? '#ccc' : primaryText,
-              color: productCurrentPage >= productTotalPages ? '#999' : primaryBg,
+              backgroundColor:
+                productCurrentPage >= productTotalPages ? "#ccc" : primaryText,
+              color:
+                productCurrentPage >= productTotalPages ? "#999" : primaryBg,
             }}
             onMouseEnter={(e) => {
               if (productCurrentPage < productTotalPages) {

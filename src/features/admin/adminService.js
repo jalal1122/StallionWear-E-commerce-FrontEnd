@@ -74,7 +74,7 @@ const getAllProducts = async (filter) => {
 
   // Build query parameters for filters
   let queryParams = `page=${currentPage}&sortOrder=${filter?.sortBy || "desc"}`;
-  
+
   if (filter?.category) queryParams += `&category=${filter.category}`;
   if (filter?.brand) queryParams += `&brand=${filter.brand}`;
   if (filter?.minPrice) queryParams += `&minPrice=${filter.minPrice}`;
