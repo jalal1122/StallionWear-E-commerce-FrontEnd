@@ -20,13 +20,11 @@ const Login = () => {
   useEffect(() => {
     if (isError) {
       setFormError(message);
-      console.log("Error:", message);
       // Only reset on error to clear error state
       dispatch(reset());
     }
 
     if (isSuccess && user) {
-      console.log("User logged in successfully:", user);
       navigate("/");
       // Don't reset here - let the user state persist
     }
@@ -75,8 +73,8 @@ const Login = () => {
     if (validateForm()) {
       dispatch(loginUser(userData))
         .unwrap()
-        .then((data) => {
-          console.log("Login successful:", data);
+        .then(() => {
+          // Login successful - handled by useEffect
         })
         .catch((error) => {
           const errorMessage =
@@ -84,7 +82,7 @@ const Login = () => {
           setErrors((prev) => ({ ...prev, form: errorMessage }));
         });
     } else {
-      console.error("Form validation failed:", errors);
+      // Form validation failed - errors will be shown in UI
     }
   };
 

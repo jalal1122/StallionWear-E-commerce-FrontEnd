@@ -81,7 +81,6 @@ export const getProductById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await productService.getProductById(id);
-      console.log("Product fetched successfully:", response);
       return response;
     } catch (error) {
       const message =
@@ -101,7 +100,6 @@ export const getRelevantProducts = createAsyncThunk(
   async (category, { rejectWithValue }) => {
     try {
       const response = await productService.getRelevantProducts(category);
-      console.log("Relevant Products fetched successfully:", response);
       return response;
     } catch (error) {
       const message =
@@ -187,10 +185,6 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.products = action.payload.data.products;
-        console.log(
-          "All Products fetched successfully:",
-          action.payload.data.products
-        );
 
         state.totalPages = action.payload.data.totalPages;
         state.currentPage = action.payload.data.currentPage;

@@ -15,7 +15,6 @@ export const fetchWishlist = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await wishlistService.getWishlist();
-      console.log(response);
       return response;
     } catch (error) {
       const message =
@@ -55,8 +54,6 @@ export const removeWishlistItem = createAsyncThunk(
   "wishlist/removeWishlistItem",
   async ({ productId, size, color }, thunkAPI) => {
     try {
-      console.log(productId, size, color);
-
       const response = await wishlistService.removeFromWishlist(
         productId,
         size,

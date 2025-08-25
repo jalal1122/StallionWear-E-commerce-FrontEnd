@@ -74,8 +74,6 @@ const getNewArrivals = async () => {
   // Fetch new arrivals from the API
   const response = await axios.get(`${Api_URL}/newArrivals`);
 
-  console.log("New Arrivals fetched successfully:", response.data);
-
   // Return the new arrivals data
   return response.data;
 };

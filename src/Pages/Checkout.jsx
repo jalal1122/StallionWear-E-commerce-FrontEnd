@@ -96,7 +96,6 @@ const Checkout = () => {
   const confirmOrder = (e) => {
     e.preventDefault();
 
-    console.log(cartSummary);
     dispatch(createOrder({ items, billingInfo, payment }));
   };
 

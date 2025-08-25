@@ -80,7 +80,6 @@ const ProductPage = () => {
 
     // Fetch product details by ID when the component mounts
     if (id) {
-      console.log("Fetching product with ID:", id);
       dispatch(getProductById(id));
     }
   }, [dispatch, id]); // Removed 'product' dependency to avoid infinite loop
@@ -106,7 +105,6 @@ const ProductPage = () => {
     // Fetch relevant products when product is loaded and has a category
     // Only fetch if we don't already have relevant products or if the category changed
     if (product?.category) {
-      console.log("Fetching relevant products for category:", product.category);
       dispatch(getRelevantProducts(product.category));
     }
   }, [
@@ -121,7 +119,6 @@ const ProductPage = () => {
 
   // Retry loading the product
   const handleRetry = () => {
-    console.log("Retrying product fetch for ID:", id);
     dispatch(clearError());
     if (id) {
       dispatch(getProductById(id));

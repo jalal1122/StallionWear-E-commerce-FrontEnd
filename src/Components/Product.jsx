@@ -25,7 +25,6 @@ const Product = ({ product }) => {
   const handleAddToWishlist = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    console.log("Add to wishlist:", product._id);
 
     dispatch(
       addWishlistItem({
@@ -39,8 +38,6 @@ const Product = ({ product }) => {
   const handleAddtoCart = (e) => {
     e.stopPropagation();
     e.preventDefault();
-
-    console.log("Add to Cart", product._id);
 
     dispatch(
       addToCart({

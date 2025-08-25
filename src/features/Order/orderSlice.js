@@ -59,8 +59,6 @@ const orderSlice = createSlice({
       .addCase(createOrder.fulfilled, (state, action) => {
         state.loading = false;
         state.isSuccess = true;
-        console.log("Order created successfully:", action.payload);
-
         state.orderItems = action.payload.orderItems;
         state.shippingAddress = action.payload.shippingAddress;
         state.paymentMethod = action.payload.paymentMethod;

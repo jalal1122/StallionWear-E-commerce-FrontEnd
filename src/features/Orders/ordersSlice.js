@@ -22,7 +22,6 @@ export const getUserOrders = createAsyncThunk(
         currentPage,
         orderStatus
       );
-      console.log("Orders response:", response);
       return response.data;
     } catch (error) {
       const message =
@@ -41,7 +40,6 @@ export const getOrderbyId = createAsyncThunk(
   async (orderId, thunkAPI) => {
     try {
       const response = await ordersService.getOrderbyId(orderId);
-      console.log("Order response:", response);
       return response.data;
     } catch (error) {
       const message =
@@ -60,7 +58,6 @@ export const cancelOrder = createAsyncThunk(
   async (orderId, thunkAPI) => {
     try {
       const response = await ordersService.cancelOrder(orderId);
-      console.log("Cancel Order response:", response);
       return response.data;
     } catch (error) {
       const message =

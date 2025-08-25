@@ -1,7 +1,6 @@
 import { FaSliders } from "react-icons/fa6";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
-import RenderStars from "../utils/RenderStars";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

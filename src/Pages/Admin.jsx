@@ -43,7 +43,6 @@ import {
   updateProduct,
   deleteProduct,
   setSelectedProduct,
-  clearSelectedProduct,
 } from "../features/admin/adminSlice.js";
 
 // Header and Footer Importing
@@ -96,7 +95,6 @@ const Admin = () => {
     selectedProduct,
     totalPages: productTotalPages,
     currentPage: productCurrentPage,
-    totalProducts,
     isLoading,
     isError,
     errorMessage,
@@ -1257,8 +1255,6 @@ const Admin = () => {
     }
 
     if (e.currentTarget.textContent.trim() === "Next") {
-      console.log("Next button clicked");
-
       const newFilter = {
         ...filter,
         nextPage: true,
@@ -1283,8 +1279,6 @@ const Admin = () => {
     }
 
     if (e.currentTarget.textContent.trim() === "Previous") {
-      console.log("Previous button clicked");
-
       const newFilter = {
         ...filter,
         nextPage: false,
