@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance
 const instance = axios.create({
-  baseURL: "http://localhost:5000", // Adjust to match your backend port
+  baseURL: "https://stallion-wear-e-commerce-back-end.vercel.app/", // Adjust to match your backend port
   withCredentials: true,
 });
 
