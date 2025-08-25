@@ -13,7 +13,7 @@ import {
   FaClock,
 } from "react-icons/fa";
 import { useRef } from "react";
-import RenderStars from "../utils/RenderStars.jsx";
+import RenderStars from "../utils/RenderStars";
 import { useSelector } from "react-redux";
 
 const Reviews = ({ heading, reviews }) => {

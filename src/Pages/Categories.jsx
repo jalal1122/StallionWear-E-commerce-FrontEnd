@@ -1,14 +1,11 @@
 import { FaSliders } from "react-icons/fa6";
-import { MdCategory } from "react-icons/md";
 import Header from "../Components/Header/Header";
 import Footer from "../Components/Footer";
-import RenderStars from "../utils/RenderStars.jsx";
+import RenderStars from "../utils/RenderStars";
 import { useSelector } from "react-redux";
-import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getAllProducts } from "../features/Products/productSlice.js";
-import { Link } from "react-router-dom";
 import Product from "../Components/Product";
 import PriceFilter from "../Components/Categories/PriceFilter";
 import BrandFilter from "../Components/Categories/BrandFilter";

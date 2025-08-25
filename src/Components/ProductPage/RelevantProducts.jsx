@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { FaShoppingCart, FaHeart } from "react-icons/fa";
-import RenderStars from "../../utils/RenderStars.jsx";
+import RenderStars from "../../utils/RenderStars";
 import Product from "../Product";
 
 const RelevantProducts = () => {
   // get the colors from redux store
-  const {primaryText, primaryBg} = useSelector((state) => state.colors.colors);
+  const { primaryText, primaryBg } = useSelector(
+    (state) => state.colors.colors
+  );
 
   // get the relevant products from the redux store
   const { relevantProducts, isLoading, isError } = useSelector(
@@ -15,10 +15,13 @@ const RelevantProducts = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center my-10 p-5" style={{
-              backgroundColor: primaryBg,
-              color: primaryText
-            }}>
+      <div
+        className="flex flex-col justify-center items-center my-10 p-5"
+        style={{
+          backgroundColor: primaryBg,
+          color: primaryText,
+        }}
+      >
         <h1 className="text-4xl font-bold my-10">You Might Also Like</h1>
 
         {/* Loading State */}
