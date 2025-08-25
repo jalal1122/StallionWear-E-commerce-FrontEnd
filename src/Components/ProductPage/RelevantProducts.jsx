@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import RenderStars from "../../utils/RenderStars";
+import RenderStars from "../RenderStars";
 import Product from "../Product";
 
 const RelevantProducts = () => {

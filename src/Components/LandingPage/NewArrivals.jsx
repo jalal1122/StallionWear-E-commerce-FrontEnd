@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getNewArrivals } from "../../features/Products/productSlice.js";
 import { FaShoppingCart, FaHeart } from "react-icons/fa";
 import { useEffect } from "react";
-import RenderStars from "../../utils/RenderStars";
+import RenderStars from "../RenderStars.jsx";
 import Product from "../Product.jsx";
 
 const NewArrivals = () => {

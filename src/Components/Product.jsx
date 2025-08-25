@@ -1,6 +1,6 @@
 import { FaShoppingCart, FaHeart, FaStar, FaEye, FaTag } from "react-icons/fa";
 import { Link } from "react-router";
-import RenderStars from "../utils/RenderStars";
+import RenderStars from "./RenderStars.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { addWishlistItem } from "../features/Wishlist/wishlistSlice.js";
 import { addToCart } from "../features/Cart/cartSlice.js";
