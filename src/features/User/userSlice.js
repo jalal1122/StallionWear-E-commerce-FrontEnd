@@ -67,6 +67,25 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
+// Thunk for refreshing access token
+export const refreshAccessToken = createAsyncThunk(
+  "user/refreshToken",
+  async (_, thunkApi) => {
+    try {
+      const result = await userService.refreshAccessToken();
+      return result;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+);
+
 // User Slice
 const UserSlice = createSlice({
   name: "user",
@@ -132,6 +151,26 @@ const UserSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.user = null;
+      })
+      // Refresh access token cases
+      .addCase(refreshAccessToken.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        // Store the updated user data with new access token
+        state.user = action.payload.data.user;
+        // Also update localStorage to ensure consistency
+        localStorage.setItem("user", JSON.stringify(action.payload.data.user));
+      })
+      .addCase(refreshAccessToken.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+        state.user = null;
+        // Clear localStorage on refresh failure
+        localStorage.removeItem("user");
       });
   },
 });
