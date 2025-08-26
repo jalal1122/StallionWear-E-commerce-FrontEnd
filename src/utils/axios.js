@@ -1,13 +1,17 @@
 import axios from "axios";
 
 const localLink = "http://localhost:5000";
+const productionLink =
+  import.meta.env.VITE_API_URL || "https://stallionwearbackend.vercel.app";
 
-const productionLink = "https://stallionwearbackend.vercel.app";
+// Determine base URL based on environment
+const baseURL = import.meta.env.DEV ? localLink : productionLink;
 
 // Create axios instance
 const instance = axios.create({
-  baseURL: productionLink , // Adjust to match your backend port
+  baseURL: baseURL,
   withCredentials: true,
+  timeout: 30000, // 30 second timeout
 });
 
 // Function to refresh access token
