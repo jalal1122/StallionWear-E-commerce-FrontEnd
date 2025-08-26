@@ -35,7 +35,8 @@ const LandingPage = () => {
     const fetchsome = async () => {
       try {
         const response = await fetch("https://stallionwearbackend.vercel.app/");
-        console.log("Data fetched successfully:", response.data);
+        const data = await response.json();
+        console.log("Data fetched successfully:", data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
