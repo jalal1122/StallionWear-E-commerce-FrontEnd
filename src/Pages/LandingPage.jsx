@@ -6,6 +6,7 @@ import TopSelling from "../Components/LandingPage/TopSelling";
 import Reviews from "../Components/Reviews";
 import Footer from "../Components/Footer";
 import { useEffect } from "react";
+import axios from "axios";
 
 const reviews = [
   {
@@ -34,9 +35,8 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchsome = async () => {
       try {
-        const response = await fetch("https://stallionwearbackend.vercel.app/");
-        const data = await response.json();
-        console.log("Data fetched successfully:", data);
+        const response = await axios.get("https://stallionwearbackend/");
+        console.log("Data fetched successfully:", response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
