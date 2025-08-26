@@ -1,8 +1,12 @@
 import axios from "axios";
 
+const localLink = "http://localhost:5000";
+
+const productionLink = "https://stallionwearbackend.vercel.app/";
+
 // Create axios instance
 const instance = axios.create({
-  baseURL: "https://stallionwearbackend.vercel.app/", // Adjust to match your backend port
+  baseURL: productionLink || localLink, // Adjust to match your backend port
   withCredentials: true,
 });
 
