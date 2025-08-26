@@ -29,16 +29,29 @@ const reviews = [
   },
 ];
 
+useEffect(() => {
+  const fetchsome = async () => {
+    try {
+      const response = await fetch("https://stallionwearbackend.vercel.app/");
+      console.log("Data fetched successfully:", response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  fetchsome();
+}, []);
+
 const LandingPage = () => {
   return (
     <>
-        <Header />
-        <Hero />
-        <NewArrivals />
-        <TopSelling />
-        <BrowseByCategories />
-        <Reviews heading={"OUR HAPPY CUSTOMERS"} reviews={reviews} />
-        <Footer />
+      <Header />
+      <Hero />
+      <NewArrivals />
+      <TopSelling />
+      <BrowseByCategories />
+      <Reviews heading={"OUR HAPPY CUSTOMERS"} reviews={reviews} />
+      <Footer />
     </>
   );
 };
