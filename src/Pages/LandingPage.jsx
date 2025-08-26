@@ -5,6 +5,7 @@ import NewArrivals from "../Components/LandingPage/NewArrivals";
 import TopSelling from "../Components/LandingPage/TopSelling";
 import Reviews from "../Components/Reviews";
 import Footer from "../Components/Footer";
+import { useEffect } from "react";
 
 const reviews = [
   {
@@ -29,20 +30,19 @@ const reviews = [
   },
 ];
 
-useEffect(() => {
-  const fetchsome = async () => {
-    try {
-      const response = await fetch("https://stallionwearbackend.vercel.app/");
-      console.log("Data fetched successfully:", response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  fetchsome();
-}, []);
-
 const LandingPage = () => {
+  useEffect(() => {
+    const fetchsome = async () => {
+      try {
+        const response = await fetch("https://stallionwearbackend.vercel.app/");
+        console.log("Data fetched successfully:", response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchsome();
+  }, []);
   return (
     <>
       <Header />
