@@ -6,7 +6,7 @@ const productionLink = "https://stallionwearbackend.vercel.app";
 
 // Create axios instance
 const instance = axios.create({
-  baseURL: productionLink || localLink, // Adjust to match your backend port
+  baseURL: productionLink , // Adjust to match your backend port
   withCredentials: true,
 });
 

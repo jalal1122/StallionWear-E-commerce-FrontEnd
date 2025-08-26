@@ -1,6 +1,6 @@
 import axios from "../../utils/axios.js";
 
-const Api_URL = "api/product";
+const Api_URL = "/api/product";
 
 // Function to get all products with optional filtering
 const getAllProducts = async (filter) => {
