@@ -2,7 +2,7 @@ import axios from "axios";
 
 const localLink = "http://localhost:5000";
 
-const productionLink = "https://stallionwearbackend.vercel.app/";
+const productionLink = "https://stallionwearbackend.vercel.app";
 
 // Create axios instance
 const instance = axios.create({
