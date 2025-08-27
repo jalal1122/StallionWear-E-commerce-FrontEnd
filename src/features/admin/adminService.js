@@ -83,10 +83,6 @@ const getAllProducts = async (filter) => {
   // fetch all products from the API with optional filter
   const response = await axios.get(
     `${product_api_url}?${queryParams}`,
-    {},
-    {
-      Headers: {},
-    }
   );
 
   // If the response is successful, store the data in localStorage

@@ -17,7 +17,9 @@ const instance = axios.create({
 // Function to refresh access token
 const refreshAccessToken = async () => {
   try {
-    const response = await instance.post("/refresh-token");
+    const response = await instance.post("/api/user/refresh-token");
+
+    console.log("Refresh token response:", response);
     const { user } = response.data.data;
 
     // Update localStorage with new user data including new access token
