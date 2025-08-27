@@ -31,7 +31,7 @@ const Checkout = () => {
   const { items, cartSummary } = useSelector((state) => state.cart);
 
   // get the order data from the redux store
-  const { isSuccess } = useSelector((state) => state.order);
+  const { isSuccess, error } = useSelector((state) => state.order);
 
   // initailize the dispatch function
   const dispatch = useDispatch();
@@ -101,6 +101,14 @@ const Checkout = () => {
 
   if (isSuccess) {
     navigate("/order-details");
+  }
+
+  if (error) {
+    return (
+      <div className="text-red-500">
+        <p>Error: {error}</p>
+      </div>
+    );
   }
 
   return (
