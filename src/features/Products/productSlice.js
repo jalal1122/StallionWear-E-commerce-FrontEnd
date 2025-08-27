@@ -113,6 +113,66 @@ export const getRelevantProducts = createAsyncThunk(
   }
 );
 
+// create a new product (Admin)
+export const createProduct = createAsyncThunk(
+  "product/createProduct",
+  async (productData, { rejectWithValue }) => {
+    try {
+      const response = await productService.createProduct(productData);
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+// update a product (Admin)
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async ({ productId, productData }, { rejectWithValue }) => {
+    try {
+      const response = await productService.updateProduct({
+        productId,
+        productData,
+      });
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+// delete a product (Admin)
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await productService.deleteProduct(productId);
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
 // define the product slice
 const productSlice = createSlice({
   name: "products",
@@ -224,6 +284,57 @@ const productSlice = createSlice({
         state.relevantProducts = action.payload.data.products;
       })
       .addCase(getRelevantProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // Handle the createProduct action
+      .addCase(createProduct.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(createProduct.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "Product created successfully";
+      })
+      .addCase(createProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // Handle the updateProduct action
+      .addCase(updateProduct.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(updateProduct.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "Product updated successfully";
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // Handle the deleteProduct action
+      .addCase(deleteProduct.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+      })
+      .addCase(deleteProduct.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = "Product deleted successfully";
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;

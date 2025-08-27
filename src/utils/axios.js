@@ -5,7 +5,7 @@ const productionLink =
   import.meta.env.VITE_API_URL || "https://stallionwearbackend.vercel.app";
 
 // Determine base URL based on environment
-const baseURL = import.meta.env.DEV ? localLink : productionLink;
+const baseURL = import.meta.env.VITE_NODE_ENV ? localLink : productionLink;
 
 // Create axios instance
 const instance = axios.create({
@@ -17,7 +17,7 @@ const instance = axios.create({
 // Function to refresh access token
 const refreshAccessToken = async () => {
   try {
-    const response = await instance.post("/refresh-token", {});
+    const response = await instance.post("/refresh-token");
     const { user } = response.data.data;
 
     // Update localStorage with new user data including new access token

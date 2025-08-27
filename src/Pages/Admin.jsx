@@ -1304,7 +1304,14 @@ const Admin = () => {
       category: "",
       brand: "",
       stock: "",
-      variants: [],
+      variants: [
+        {
+          size: "",
+          color: "",
+          quantity: 0,
+          priceModifier: 0,
+        },
+      ], // Start with one default variant
       images: [],
     });
     setProductModalMode("create");
@@ -1319,7 +1326,7 @@ const Admin = () => {
       category: product.category || "",
       brand: product.brand || "",
       stock: product.stock?.toString() || "",
-      variants: product.variants || [],
+      variants: product.variants || [], // Load existing variants
       images: product.images || [],
     });
     dispatch(setSelectedProduct(product));
@@ -1376,6 +1383,37 @@ const Admin = () => {
     } catch (error) {
       console.error("Product operation failed:", error);
     }
+  };
+
+  const addVariant = () => {
+    setProductForm({
+      ...productForm,
+      variants: [
+        ...productForm.variants,
+        {
+          size: "",
+          color: "",
+          quantity: 0,
+          priceModifier: 0,
+        },
+      ],
+    });
+  };
+
+  const removeVariant = (index) => {
+    setProductForm({
+      ...productForm,
+      variants: productForm.variants.filter((_, i) => i !== index),
+    });
+  };
+
+  const updateVariant = (index, field, value) => {
+    setProductForm({
+      ...productForm,
+      variants: productForm.variants.map((variant, i) =>
+        i === index ? { ...variant, [field]: value } : variant
+      ),
+    });
   };
 
   const renderProductManagement = () => (
@@ -1596,26 +1634,31 @@ const Admin = () => {
         ) : products && products.length > 0 ? (
           products.map((product) => (
             <div
-              key={product._id}
-              className="rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition-shadow duration-200"
+              key={product._id || product.id}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border"
               style={cardStyles}
             >
               {/* Product Image */}
-              <div className="aspect-w-16 aspect-h-9 bg-gray-200">
-                {product.images && product.images[0] ? (
+              <div className="aspect-square bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
+                {product.images && product.images.length > 0 ? (
                   <img
                     src={product.images[0]}
                     alt={product.name}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-48 bg-gray-100">
+                  <div className="w-full h-full flex items-center justify-center">
                     <FaImage className="text-gray-400" size={48} />
                   </div>
                 )}
+                {/* Category Badge */}
+                <div className="absolute top-2 right-2">
+                  <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full">
+                    {product.category}
+                  </span>
+                </div>
               </div>
 
-              {/* Product Info */}
               <div className="p-4">
                 <h3
                   className="font-semibold text-lg mb-2 truncate"
@@ -1624,7 +1667,7 @@ const Admin = () => {
                   {product.name}
                 </h3>
                 <p
-                  className="text-sm opacity-70 mb-2 line-clamp-2"
+                  className="text-sm opacity-70 mb-3 line-clamp-2"
                   style={{ color: primaryText }}
                 >
                   {product.description}
@@ -1639,20 +1682,44 @@ const Admin = () => {
                   </div>
                   <div>
                     <span className="font-medium">Stock: </span>
-                    <span>{product.stock || 0}</span>
+                    <span>{product.totalStock || product.stock || 0}</span>
                   </div>
                   <div>
                     <span className="font-medium">Brand: </span>
                     <span>{product.brand}</span>
                   </div>
                   <div>
-                    <span className="font-medium">Rating: </span>
-                    <div className="flex items-center">
-                      <FaStar className="text-yellow-400 mr-1" size={12} />
-                      <span>{product.averageRating?.toFixed(1) || "N/A"}</span>
-                    </div>
+                    <span className="font-medium">Variants: </span>
+                    <span>{product.variants?.length || 0}</span>
                   </div>
                 </div>
+
+                {/* Show variant summary */}
+                {product.variants && product.variants.length > 0 && (
+                  <div className="mb-3 p-2 bg-gray-50 dark:bg-gray-700 rounded text-xs">
+                    <div
+                      className="font-medium mb-1"
+                      style={{ color: primaryText }}
+                    >
+                      Available Variants:
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {product.variants.slice(0, 3).map((variant, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400 rounded-full"
+                        >
+                          {variant.size}/{variant.color}
+                        </span>
+                      ))}
+                      {product.variants.length > 3 && (
+                        <span className="text-gray-500">
+                          +{product.variants.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
@@ -1772,7 +1839,7 @@ const Admin = () => {
   const renderProductModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div
-        className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto"
         style={modalStyles}
       >
         {/* Modal Header */}
@@ -1855,7 +1922,7 @@ const Admin = () => {
                 className="block text-sm font-medium mb-2"
                 style={{ color: primaryText }}
               >
-                Price ($) *
+                Base Price ($) *
               </label>
               <input
                 type="number"
@@ -1876,8 +1943,7 @@ const Admin = () => {
               >
                 Category *
               </label>
-              <input
-                type="text"
+              <select
                 value={productForm.category}
                 onChange={(e) =>
                   setProductForm({ ...productForm, category: e.target.value })
@@ -1885,14 +1951,23 @@ const Admin = () => {
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={inputStyles}
                 required
-              />
+              >
+                <option value="">Select Category</option>
+                <option value="Men Jackets">Men Jackets</option>
+                <option value="Men Clothings">Men Clothings</option>
+                <option value="Men Watches Rings Chains">
+                  Men Watches Rings Chains
+                </option>
+                <option value="Men Wallets">Men Wallets</option>
+                <option value="Men Shoes">Men Shoes</option>
+              </select>
             </div>
             <div>
               <label
                 className="block text-sm font-medium mb-2"
                 style={{ color: primaryText }}
               >
-                Stock Quantity
+                Base Stock Quantity
               </label>
               <input
                 type="number"
@@ -1904,6 +1979,160 @@ const Admin = () => {
                 style={inputStyles}
               />
             </div>
+          </div>
+
+          {/* Product Variants Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <label
+                className="block text-sm font-medium"
+                style={{ color: primaryText }}
+              >
+                Product Variants
+              </label>
+              <button
+                type="button"
+                onClick={addVariant}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 flex items-center gap-2"
+              >
+                <FaPlus size={14} />
+                Add Variant
+              </button>
+            </div>
+
+            {productForm.variants && productForm.variants.length > 0 ? (
+              <div className="space-y-4 max-h-60 overflow-y-auto">
+                {productForm.variants.map((variant, index) => (
+                  <div
+                    key={index}
+                    className="p-4 border rounded-lg"
+                    style={{
+                      borderColor: isDarkMode ? "#374151" : "#e5e7eb",
+                      backgroundColor: isDarkMode ? "#374151" : "#f9fafb",
+                    }}
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                      <div>
+                        <label
+                          className="block text-xs font-medium mb-1"
+                          style={{ color: primaryText }}
+                        >
+                          Size *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g., S, M, L, XL"
+                          value={variant.size || ""}
+                          onChange={(e) =>
+                            updateVariant(index, "size", e.target.value)
+                          }
+                          className="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-blue-500 text-sm"
+                          style={inputStyles}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label
+                          className="block text-xs font-medium mb-1"
+                          style={{ color: primaryText }}
+                        >
+                          Color *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Red, Blue"
+                          value={variant.color || ""}
+                          onChange={(e) =>
+                            updateVariant(index, "color", e.target.value)
+                          }
+                          className="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-blue-500 text-sm"
+                          style={inputStyles}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label
+                          className="block text-xs font-medium mb-1"
+                          style={{ color: primaryText }}
+                        >
+                          Quantity
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={variant.quantity || 0}
+                          onChange={(e) =>
+                            updateVariant(
+                              index,
+                              "quantity",
+                              parseInt(e.target.value) || 0
+                            )
+                          }
+                          className="w-full px-2 py-1 border rounded focus:ring-1 focus:ring-blue-500 text-sm"
+                          style={inputStyles}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          className="block text-xs font-medium mb-1"
+                          style={{ color: primaryText }}
+                        >
+                          Price Modifier ($)
+                        </label>
+                        <div className="flex gap-1">
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={variant.priceModifier || 0}
+                            onChange={(e) =>
+                              updateVariant(
+                                index,
+                                "priceModifier",
+                                parseFloat(e.target.value) || 0
+                              )
+                            }
+                            className="flex-1 px-2 py-1 border rounded focus:ring-1 focus:ring-blue-500 text-sm"
+                            style={inputStyles}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeVariant(index)}
+                            className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                            title="Remove variant"
+                          >
+                            <FaTrash size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="mt-2 text-xs"
+                      style={{ color: isDarkMode ? "#9ca3af" : "#6b7280" }}
+                    >
+                      Final Price: $
+                      {(
+                        (parseFloat(productForm.price) || 0) +
+                        (variant.priceModifier || 0)
+                      ).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div
+                className="text-center py-8 border-2 border-dashed rounded-lg"
+                style={{ borderColor: isDarkMode ? "#374151" : "#e5e7eb" }}
+              >
+                <FaBox className="mx-auto mb-2 text-gray-400" size={32} />
+                <p
+                  className="text-sm"
+                  style={{ color: isDarkMode ? "#9ca3af" : "#6b7280" }}
+                >
+                  No variants added. Click "Add Variant" to create size and
+                  color options.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Image Upload */}

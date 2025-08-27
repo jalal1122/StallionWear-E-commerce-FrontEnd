@@ -87,12 +87,41 @@ const getTopSelling = async () => {
   return response.data;
 };
 
+// Function to create a new product
+const createProduct = async (productData) => {
+  const response = await axios.post(`${Api_URL}/create`, productData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+// Function to update a product
+const updateProduct = async ({ productId, productData }) => {
+  const response = await axios.put(`${Api_URL}/${productId}`, productData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+// Function to delete a product
+const deleteProduct = async (productId) => {
+  const response = await axios.delete(`${Api_URL}/${productId}`);
+  return response.data;
+};
+
 const productService = {
   getNewArrivals,
   getTopSelling,
   getAllProducts,
   getProductById,
   getRelevantProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
 };
 
 export default productService;
