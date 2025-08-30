@@ -5,7 +5,8 @@ const productionLink =
   import.meta.env.VITE_API_URL || "https://stallionwearbackend.vercel.app";
 
 // Determine base URL based on environment
-const baseURL = import.meta.env.VITE_NODE_ENV ? localLink : productionLink;
+const baseURL =
+  import.meta.env.VITE_NODE_ENV === "production" ? productionLink : localLink;
 
 // Create axios instance
 const instance = axios.create({
