@@ -4,6 +4,7 @@ import WRC from "../../Images/Watch.png";
 import Wallets from "../../Images/Wallet.png";
 import Shoes from "../../Images/Shoes.png";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
 const Categories = () => {
   const { primaryBg, primaryText } = useSelector(
@@ -17,6 +18,8 @@ const Categories = () => {
     "Wallets",
     "Shoes",
   ];
+
+  const navigate = useNavigate();
 
   const categoryImages = [Jacket, TS, WRC, Wallets, Shoes];
 
@@ -40,6 +43,7 @@ const Categories = () => {
                 style={{
                   backgroundColor: primaryText === "#fff" ? "#1F2937" : "",
                 }}
+                onClick={() => navigate("/categories")}
               >
                 <h1
                   className="sm:text-xl text-lg font-bold"

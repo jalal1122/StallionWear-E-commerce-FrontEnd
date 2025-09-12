@@ -101,7 +101,7 @@ const RightSideIcons = () => {
               {/* User Dropdown Menu */}
               {isHovered && (
                 <div
-                  className="absolute top-10 sm:top-12 right-0 w-44 sm:w-48 shadow-xl rounded-2xl border backdrop-blur-md z-50 overflow-hidden"
+                  className="absolute top-10 sm:top-10 right-0 w-44 sm:w-48 shadow-xl rounded-2xl border backdrop-blur-md z-50 overflow-hidden"
                   style={{
                     backgroundColor: isDarkMode
                       ? "rgba(0, 0, 0, 0.95)"
@@ -137,20 +137,22 @@ const RightSideIcons = () => {
 
                   {/* Menu Items */}
                   <div className="py-2">
-                    {[
-                      {
-                        icon: FaUser,
-                        label: "Profile",
-                        action: () => {
-                          /* Add profile navigation */
-                        },
-                      },
-                      {
-                        icon: FaShoppingBag,
-                        label: "Orders",
-                        action: () => navigate("/orders"),
-                      },
-                    ].map((item, index) => (
+                    {(user.role === "user"
+                      ? [
+                          {
+                            icon: FaShoppingBag,
+                            label: "Orders",
+                            action: () => navigate("/orders"),
+                          },
+                        ]
+                      : [
+                          {
+                            icon: FaUser,
+                            label: "Admin",
+                            action: () => navigate("/admin"),
+                          },
+                        ]
+                    ).map((item, index) => (
                       <button
                         key={index}
                         className="w-full px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 flex items-center gap-3"

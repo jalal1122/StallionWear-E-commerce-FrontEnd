@@ -16,7 +16,7 @@ const Categories = () => {
   const dispatch = useDispatch();
 
   // Get products, totalPages, and currentPage from the Redux store
-  const { products, totalPages, currentPage } = useSelector(
+  const { products, totalPages, currentPage, isLoading } = useSelector(
     (state) => state.products
   );
 
@@ -124,13 +124,28 @@ const Categories = () => {
 
           {/* Product List */}
           <div className="product-list flex flex-wrap gap-5 justify-center items-center border-b border-gray-500 pb-3">
-            {products.length === 0 && (
+            {isLoading && (
+              <div
+                className="min-h-screen flex items-center justify-center"
+                style={{ backgroundColor: primaryBg }}
+              >
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p style={{ color: primaryText }}>
+                    Loading Products...
+                  </p>
+                </div>
+              </div>
+            )}
+            {!isLoading && products && products.length === 0 && (
               <p className="text-gray-500">No products found.</p>
             )}
             <div className="flex justify-center items-center text-center flex-wrap gap-10">
-              {products.map((product) => (
-                <Product key={product._id} product={product} />
-              ))}
+              {!isLoading &&
+                products &&
+                products.map((product) => (
+                  <Product key={product._id} product={product} />
+                ))}
             </div>
           </div>
 
