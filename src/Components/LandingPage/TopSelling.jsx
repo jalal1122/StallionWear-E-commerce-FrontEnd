@@ -30,6 +30,17 @@ const TopSelling = () => {
           backgroundColor: primaryBg,
         }}
       >
+        {isLoading && (
+          <div
+            className="min-h-screen flex items-center justify-center"
+            style={{ backgroundColor: primaryBg }}
+          >
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p style={{ color: primaryText }}>Loading Products...</p>
+            </div>
+          </div>
+        )}
         {/* Heading */}
         <h2
           className="text-4xl xs:text-6xl font-bold mb-8"
@@ -41,9 +52,6 @@ const TopSelling = () => {
         </h2>
         {/* Top Selling Products */}
         <div className="topSelling">
-          {/* Loading */}
-          {isLoading && <p>Loading...</p>}
-
           {/* Error Message */}
           {isError && <p className="text-red-500">{message}</p>}
 
