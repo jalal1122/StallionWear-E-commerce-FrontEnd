@@ -404,7 +404,7 @@ const Checkout = () => {
                         type="text"
                         required
                         minLength={11}
-                        placeholder="Phone Number"
+                        placeholder="9230XXXXXXX"
                         name="phone"
                         value={billingInfo.phone}
                         onChange={handleInputChange}

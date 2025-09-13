@@ -303,7 +303,7 @@ const OrderDetails = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 justify-center mt-12">
-            <button
+            {/* <button
               className="flex items-center px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               style={{
                 backgroundColor: "#3b82f6",
@@ -323,7 +323,7 @@ const OrderDetails = () => {
             >
               <FaDownload className="mr-2" size={16} />
               Download Invoice
-            </button>
+            </button> */}
 
             <Link
               to="/"
