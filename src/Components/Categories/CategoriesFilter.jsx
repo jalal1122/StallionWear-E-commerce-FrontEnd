@@ -4,14 +4,15 @@ const CategoriesFilter = ({
   categoryFilters,
   setCategoryFilters,
   setFilter,
-  dispatch,
-  getAllProducts,
+  // dispatch,
+  // getAllProducts,
   filter,
 }) => {
-
   // Handle checkbox change
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
+
+    console.log("name, checked:", name, checked);
 
     setCategoryFilters((prev) => ({
       ...prev,
@@ -24,14 +25,16 @@ const CategoriesFilter = ({
       (key) => updatedFilters[key]
     );
 
-    setFilter({
-      ...filter,
+    setFilter((prev) => ({
+      ...prev,
       category: selectedCategories,
       nextPage: false,
       previousPage: false,
-    });
+    }));
 
-    dispatch(getAllProducts(filter));
+    console.log(filter);
+
+    // dispatch(getAllProducts(filter));
   };
 
   return (
@@ -53,7 +56,7 @@ const CategoriesFilter = ({
             type="checkbox"
             className={`appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200`}
             name="Men Jackets"
-            checked={categoryFilters.menJackets}
+            checked={categoryFilters["Men Jackets"]}
             onChange={handleCheckboxChange}
           />
         </div>
@@ -65,7 +68,7 @@ const CategoriesFilter = ({
             type="checkbox"
             className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
             name="Men Clothings"
-            checked={categoryFilters.menClothings}
+            checked={categoryFilters["Men Clothings"]}
             onChange={handleCheckboxChange}
           />
         </div>
@@ -77,7 +80,7 @@ const CategoriesFilter = ({
             type="checkbox"
             className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
             name="Men Watches Rings Chains"
-            checked={categoryFilters.menWatchesRingsChains}
+            checked={categoryFilters["Men Watches Rings Chains"]}
             onChange={handleCheckboxChange}
           />
         </div>
@@ -89,7 +92,7 @@ const CategoriesFilter = ({
             type="checkbox"
             className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
             name="Men Wallets"
-            checked={categoryFilters.menWallets}
+            checked={categoryFilters["Men Wallets"]}
             onChange={handleCheckboxChange}
           />
         </div>
@@ -101,7 +104,7 @@ const CategoriesFilter = ({
             type="checkbox"
             className="appearance-none h-4 w-4 rounded-md border border-gray-300 checked:bg-black checked:border-transparent focus:outline-none transition-all duration-200"
             name="Men Shoes"
-            checked={categoryFilters.menShoes}
+            checked={categoryFilters["Men Shoes"]}
             onChange={handleCheckboxChange}
           />
         </div>

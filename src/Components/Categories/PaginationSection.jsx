@@ -4,8 +4,8 @@ const PaginationSection = ({
   currentPage,
   totalPages,
   setFilter,
-  dispatch,
-  getAllProducts,
+  // dispatch,
+  // getAllProducts,
   filter
 }) => {
   const { primaryText, primaryBg, secondaryBg } = useSelector(
@@ -41,7 +41,7 @@ const PaginationSection = ({
       });
     }
 
-    dispatch(getAllProducts(filter));
+    // dispatch(getAllProducts(filter));
   };
 
   // Pagination Previous Button OnClick Function
@@ -60,7 +60,7 @@ const PaginationSection = ({
         previousPage: true,
       });
     }
-    dispatch(getAllProducts(filter));
+    // dispatch(getAllProducts(filter));
   };
 
   return (

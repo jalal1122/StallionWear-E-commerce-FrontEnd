@@ -27,6 +27,7 @@ const Categories = () => {
 
   // State for filter options
   const [filter, setFilter] = useState({
+    category: [],
     nextPage: false,
     previousPage: false,
   });
