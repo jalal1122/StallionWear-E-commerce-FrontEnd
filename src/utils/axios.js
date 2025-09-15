@@ -31,6 +31,8 @@ const refreshAccessToken = async () => {
     // If refresh fails, clear user data and redirect to login
     localStorage.removeItem("user");
 
+    console.log(error)
+
     // Clear cookies
     document.cookie =
       "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

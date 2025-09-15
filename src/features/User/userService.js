@@ -60,6 +60,8 @@ const refreshAccessToken = async () => {
   // Send POST request to refresh token
   const response = await axios.post(`/refresh-token`);
 
+  console.log("Refresh Token Response:", response);
+
   // if the response contains user data, store it in localStorage
   if (response.data && response.data.success && response.data.data) {
     localStorage.setItem("user", JSON.stringify(response.data.data.user));
