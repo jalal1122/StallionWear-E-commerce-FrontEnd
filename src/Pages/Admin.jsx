@@ -102,6 +102,7 @@ const Admin = () => {
   const { primaryBg, primaryText, secondaryBg } = useSelector(
     (state) => state.colors.colors
   );
+  const { user } = useSelector((state) => state.user);
 
   // Local State - Streamlined for API-based filtering and pagination
   const [filters, setFilters] = useState({
@@ -2224,6 +2225,45 @@ const Admin = () => {
       </div>
     </div>
   );
+
+  // ==============================
+  // Authorization Check
+  // ==============================
+
+  // Additional security check - should never reach here due to ProtectedRoute
+  // but provides extra security and better error messaging
+  if (!user || user.role !== "admin") {
+    return (
+      <>
+        <Header />
+        <div
+          className="min-h-screen flex items-center justify-center"
+          style={{ backgroundColor: primaryBg }}
+        >
+          <div
+            className="text-center p-8 rounded-xl shadow-lg max-w-md"
+            style={cardStyles}
+          >
+            <FaTimes className="text-red-500 mx-auto mb-4" size={48} />
+            <h2 className="text-2xl font-bold text-red-600 mb-2">
+              Access Denied
+            </h2>
+            <p className="mb-4" style={{ color: primaryText }}>
+              You don't have permission to access the admin dashboard. Only
+              administrators can view this page.
+            </p>
+            <button
+              onClick={() => window.location.href = "/"}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              Go to Home
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   // ==============================
   // Loading & Error States

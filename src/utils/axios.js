@@ -15,35 +15,19 @@ const instance = axios.create({
   timeout: 30000, // 30 second timeout
 });
 
-// Function to refresh access token
-const refreshAccessToken = async () => {
-  try {
-    const response = await instance.post("/api/user/refresh-token");
+// Function to handle logout when token expires
+const handleTokenExpiration = () => {
+  // Clear user data from localStorage
+  localStorage.removeItem("user");
 
-    console.log("Refresh token response:", response);
-    const { user } = response.data.data;
+  // Clear cookies
+  document.cookie =
+    "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-    // Update localStorage with new user data including new access token
-    localStorage.setItem("user", JSON.stringify(user));
-
-    return user.accessToken;
-  } catch (error) {
-    // If refresh fails, clear user data and redirect to login
-    localStorage.removeItem("user");
-
-    console.log(error)
-
-    // Clear cookies
-    document.cookie =
-      "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-    // Redirect to login page
-    window.location.href = "/login";
-
-    return null;
-  }
+  // Redirect to login page
+  window.location.href = "/login";
 };
 
 // Request interceptor to add access token
@@ -64,23 +48,15 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle 401 errors and refresh token
+// Response interceptor to handle 401 errors (token expired)
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-
-      const newToken = await refreshAccessToken();
-      if (newToken) {
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return instance(originalRequest);
+    // If token expired (401), logout the user directly
+    if (error.response && error.response.status === 401) {
+      // Prevent multiple redirects by checking if we're not already on login page
+      if (!window.location.pathname.includes("/login")) {
+        handleTokenExpiration();
       }
     }
 

@@ -55,25 +55,8 @@ export const logoutUser = async () => {
   return response.data;
 };
 
-// function to refresh access token using refresh token
-const refreshAccessToken = async () => {
-  // Send POST request to refresh token
-  const response = await axios.post(`/refresh-token`);
-
-  console.log("Refresh Token Response:", response);
-
-  // if the response contains user data, store it in localStorage
-  if (response.data && response.data.success && response.data.data) {
-    localStorage.setItem("user", JSON.stringify(response.data.data.user));
-  }
-
-  // return the response data
-  return response.data;
-};
-
 export const userService = {
   registerUser,
   loginUser,
   logoutUser,
-  refreshAccessToken,
 };

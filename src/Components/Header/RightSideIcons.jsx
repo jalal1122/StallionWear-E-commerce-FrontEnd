@@ -50,6 +50,14 @@ const RightSideIcons = () => {
     setIsHovered(false);
   };
 
+  const handleProfileClick = () => {
+    setIsHovered(!isHovered);
+  };
+
+  const closeDropdown = () => {
+    setIsHovered(false);
+  };
+
   return (
     <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
       {/* Cart Icon with Badge */}
@@ -89,7 +97,7 @@ const RightSideIcons = () => {
         >
           {user && user.profilePicture ? (
             <div className="relative group cursor-pointer">
-              <div className="relative">
+              <div className="relative" onClick={handleProfileClick}>
                 <img
                   src={user.profilePicture}
                   alt="Profile"
@@ -137,19 +145,25 @@ const RightSideIcons = () => {
 
                   {/* Menu Items */}
                   <div className="py-2">
-                    {(user.role === "user"
+                    {(user.role === "admin"
                       ? [
                           {
-                            icon: FaShoppingBag,
-                            label: "Orders",
-                            action: () => navigate("/orders"),
+                            icon: FaUser,
+                            label: "Admin Dashboard",
+                            action: () => {
+                              navigate("/admin");
+                              closeDropdown();
+                            },
                           },
                         ]
                       : [
                           {
-                            icon: FaUser,
-                            label: "Admin",
-                            action: () => navigate("/admin"),
+                            icon: FaShoppingBag,
+                            label: "My Orders",
+                            action: () => {
+                              navigate("/orders");
+                              closeDropdown();
+                            },
                           },
                         ]
                     ).map((item, index) => (
@@ -157,10 +171,7 @@ const RightSideIcons = () => {
                         key={index}
                         className="w-full px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 flex items-center gap-3"
                         style={{ color: primaryText }}
-                        onClick={() => {
-                          item.action();
-                          setIsHovered(false);
-                        }}
+                        onClick={item.action}
                       >
                         <item.icon size={16} className="text-gray-400" />
                         {item.label}
@@ -170,10 +181,10 @@ const RightSideIcons = () => {
                     {/* Logout Button */}
                     <button
                       className="w-full px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 flex items-center gap-3 text-red-600 border-t border-gray-200 dark:border-gray-700"
-                      onClick={() => {
-                        dispatch(logoutUser());
-                        navigate("/");
-                        setIsHovered(false);
+                      onClick={async () => {
+                        closeDropdown();
+                        await dispatch(logoutUser());
+                        navigate("/", { replace: true });
                       }}
                     >
                       <FaSignOutAlt size={16} />

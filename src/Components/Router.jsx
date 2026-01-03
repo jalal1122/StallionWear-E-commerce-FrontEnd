@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import LandingPage from "../Pages/LandingPage";
 import Register from "../Pages/Register";
 import Login from "../Pages/Login";
@@ -11,11 +12,12 @@ import OrderDetails from "../Pages/OrderDetails";
 import Orders from "../Pages/Orders";
 import UserOrderDetails from "../Pages/UserOrderDetails";
 import Admin from "../Pages/Admin";
+import ProtectedRoute from "./ProtectedRoute";
 
 const Router = () => {
-  const user = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
-    : null;
+  // Get user from Redux store instead of localStorage for reactive updates
+  const { user } = useSelector((state) => state.user);
+
   return (
     <>
       <Routes>
@@ -28,11 +30,17 @@ const Router = () => {
         {/* Cart Route */}
         <Route path="/cart" element={<Cart />} />
 
-        {/* Register Route */}
-        <Route path="/register" element={<Register />} />
+        {/* Register Route - redirect to home if already logged in */}
+        <Route 
+          path="/register" 
+          element={user ? <Navigate to="/" replace /> : <Register />} 
+        />
 
-        {/* Login Route */}
-        <Route path="/login" element={<Login />} />
+        {/* Login Route - redirect to home if already logged in */}
+        <Route 
+          path="/login" 
+          element={user ? <Navigate to="/" replace /> : <Login />} 
+        />
 
         {/* Categories Route */}
         <Route path="/categories" element={<Categories />} />
@@ -40,22 +48,55 @@ const Router = () => {
         {/* Product Page Route */}
         <Route path="/product/:id" element={<ProductPage />} />
 
-        {/* Checkout Page Route */}
-        <Route path="/checkout" element={<Checkout />} />
+        {/* Checkout Page Route - Protected (requires authentication) */}
+        <Route 
+          path="/checkout" 
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } 
+        />
 
-        {/* Order Details Page Route */}
-        <Route path="/order-details" element={<OrderDetails />} />
+        {/* Order Details Page Route - Protected (requires authentication) */}
+        <Route 
+          path="/order-details" 
+          element={
+            <ProtectedRoute>
+              <OrderDetails />
+            </ProtectedRoute>
+          } 
+        />
 
-        {/* Orders Route */}
-        <Route path="/orders" element={<Orders />} />
+        {/* Orders Route - Protected (requires authentication) */}
+        <Route 
+          path="/orders" 
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          } 
+        />
 
-        {/* User Order Details */}
-        <Route path="/orders/:id" element={<UserOrderDetails />} />
+        {/* User Order Details - Protected (requires authentication) */}
+        <Route 
+          path="/orders/:id" 
+          element={
+            <ProtectedRoute>
+              <UserOrderDetails />
+            </ProtectedRoute>
+          } 
+        />
 
-        {user && user.role === "admin" && (
-          /* Admin Dashboard Route */
-          <Route path="/admin" element={<Admin />} />
-        )}
+        {/* Admin Dashboard Route - Protected (requires admin role) */}
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute requiredRole="admin" redirectTo="/">
+              <Admin />
+            </ProtectedRoute>
+          } 
+        />
 
         {/* Fallback Route */}
         <Route path="*" element={<LandingPage />} />
